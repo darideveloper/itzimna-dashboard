@@ -125,4 +125,7 @@ input[type=checkbox], input[type=radio] {
   .container-fluid > .row > div:nth-child(2) {
     justify-content: flex-start !important;
   }
+}
+.sidebar {
+  overflow: hidden !important;
 }/*# sourceMappingURL=custom.css.map */
