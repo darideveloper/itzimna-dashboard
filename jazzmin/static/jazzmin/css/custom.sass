@@ -3,63 +3,22 @@
 // Login page
 // Overwrite the default jazzmin app login page styles
 .jazzmin-page
-    background: $color-white
+    background: $color-green
 
     img
-        border-radius: 10%
         width: 200px
 
     .card-body
-        background: $color-grey
-
-    .card-body
+        background: $color-black
         color: $color-white
-
-    button[type="submit"]
-        background: $color-red
-        color: $color-white
-        border: 4px solid $color-red !important
-        font-weight: bold
-        margin-bottom: 15px
-
-        &:hover, &:focus, &:active
-            background: rgba($color-grey, 0) !important
-            color: $color-red !important
-
-    .input-group input:focus
-        border-color: $color-red
-
-    .callout.callout-danger a:hover
-        color: $color-black !important
-
-    .login-box-msg
-
-        &.small
-            font-size: 12px
-            padding-bottom: 5px
-
-        a
-            font-weight: bold
-            color: $color-red
-            text-decoration: underline
-
-            &:hover
-                color: $color-red
-
-    .input-group.is-invalid
-        border: 2px solid red
-        border-radius: 5px
 
 // Dahsboard
 // Overwrite the default jazzmin app dashboard styles
 .content-wrapper
     background-color: $color-white
 
-.navbar-white, .main-footer
-    background-color: $color-grey-light !important
-    color: $color-black
 a
-    color: $color-red !important
+    color: $color-green !important
     font-weight: bold
     duration: 0.2s
 
@@ -67,72 +26,78 @@ a
         color: $color-black !important
 
 [class*=sidebar-dark-]
-    background-color: $color-black
+    background-color: $color-green
 
     a
         color: $color-white !important
 
         &:hover
-            color: $color-grey-light !important
+            color: $color-yellow !important
 
 .btn-success
-    background-color: $color-red
-    border-color: $color-red
-    color: $color-white !important
+    background-color: $color-yellow
+    border-color: $color-yellow
+    color: $color-black !important
     font-weight: bold
 
     &:hover, &:focus, &:active
-        background-color: $color-grey !important
-        border-color: $color-grey !important
-        color: $color-white
-
-.btn-info, .btn-secondary
-    background-color: $color-grey
-    border-color: $color-grey
-    color: $color-white !important
-    font-weight: bold
-
-    &:hover, &:focus, &:active
-        background-color: $color-grey-light !important
-        border-color: $color-grey-light !important
-        color: $color-white
-
-.btn-primary, .btn-danger
-    background-color: $color-black
-    border-color: $color-black
-    color: $color-white !important
-    font-weight: bold
-
-    &:hover, &:focus, &:active
-        background-color: $color-grey !important
-        border-color: $color-grey !important
+        background-color: $color-black !important
+        border-color: $color-black !important
         color: $color-white !important
 
-.nav-link.active, .select2-results__option--highlighted
-    background-color: rgba($color-red, 0.5) !important
+.btn-info, .btn-secondary
+    background-color: $color-green-light
+    border-color: $color-green-light
+    color: $color-black !important
+    font-weight: bold
+
+    &:hover, &:focus, &:active
+        &:hover, &:focus, &:active
+        background-color: $color-black !important
+        border-color: $color-black !important
+        color: $color-white !important
+
+.btn-primary, .btn-danger
+    background-color: $color-green
+    border-color: $color-green
+    color: $color-white !important
+    font-weight: bold
+
+    &:hover, &:focus, &:active
+        background-color: $color-yellow !important
+        border-color: $color-yellow !important
+        color: $color-black !important
+
+.select2-results__option--highlighted
+    background-color: rgba($color-green, 0.5) !important
+
+.nav-link.active
+    background-color: $color-yellow !important
+    color: $color-black !important
+    transition-duration: 0.2s
+
+    &:hover
+        color: rgba($color-black, 0.5) !important
 
 .collapsible-header:hover
-    background-color: rgba($color-red, 0.8) !important
+    background-color: rgba($color-green, 0.8) !important
 
 input[type=checkbox], input[type=radio]
-    accent-color: $color-red
+    accent-color: $color-green
 
 .selector-chosen h2
-    background-color: $color-red
+    background-color: $color-green
 
 .calendar td.selected a
-    background-color: $color-grey
+    background-color: $color-green
 
 .calendar caption, .clockbox h2
-    background-color: $color-grey
+    background-color: $color-green
     color: $color-white
 
-.select2-selection__choice__display
-    color: $color-black !important
-
-input:focus-visible, textarea:focus-visible, select:focus-visible
-    outline: 2px solid $color-red !important
-
+.clockbox a:hover
+    background-color: $color-green
+    color: $color-white !important
 
 // Fix dashboard responsive
 @media screen and (max-width: 768px)
@@ -150,11 +115,3 @@ input:focus-visible, textarea:focus-visible, select:focus-visible
 
     .container-fluid > .row > div:nth-child(2)
         justify-content: flex-start !important
-
-// custom classes
-.w-110
-    width: 110px
-
-// Custom textarea in assistance model
-.field-notes > textarea
-    height: 37px
