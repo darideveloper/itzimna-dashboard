@@ -165,11 +165,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Jazzmin (layout template) settings
 JAZZMIN_SETTINGS = {
     # Text
-    "site_title": "Elite Guard Services",
+    "site_title": "Itzimna Dahsboard",
     "site_header": "Admin",
-    "site_brand": "EGS Dashboard",
-    "welcome_sign": "Bienvenido a Elite Guard Services Dashboard",
-    "copyright": "",
+    "site_brand": "Itzimna Dashboard",
+    "welcome_sign": "Bienvenido a Itzimna Dashboard",
+    "copyright": "Powered by Dari Developer",
 
     # Media
     "site_logo": "core/imgs/logo.webp",
@@ -219,13 +219,6 @@ JAZZMIN_SETTINGS = {
 
     # Hide these models when generating side menu (e.g auth.user)
     "hide_models": [
-        "employees.Neighborhood",
-        "employees.Municipality",
-        "employees.MaritalStatus",
-        "employees.Status",
-        "employees.Bank",
-        "employees.Relationship",
-        "services.Schedule",
     ],
 
     # List of apps (and/or models) to base side menu ordering off of
@@ -249,14 +242,6 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
-        "employees.Employee": "fas fa-users",
-        "employees.Loan": "fas fa-money-bill",
-        "employees.Ref": "fas fa-people-arrows",
-        "employees.Relative": "fas fa-user-friends",
-        "services.Agreement": "fas fa-handshake",
-        "services.Service": "fas fa-briefcase",
-        "assistance.Assistance": "fas fa-calendar-check",
-        "assistance.WeeklyAssistance": "fas fa-calendar-week",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
@@ -291,10 +276,10 @@ JAZZMIN_SETTINGS = {
     # - carousel
     "changeform_format": "horizontal_tabs",
     # override change forms on a per modeladmin basis
-    "changeform_format_overrides": {
-        "auth.user": "collapsible",
-        "auth.group": "vertical_tabs"
-    },
+    # "changeform_format_overrides": {
+    #     "auth.user": "horizontal_tabs",
+    #     "auth.group": "carousel"
+    # },
 }
 
 # Setup logs
