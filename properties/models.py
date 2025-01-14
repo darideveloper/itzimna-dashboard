@@ -103,6 +103,11 @@ class Property(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Empresa'
     )
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        verbose_name='Ubicación'
+    )
     seller = models.ForeignKey(
         Seller,
         on_delete=models.CASCADE,
@@ -129,3 +134,10 @@ class Property(models.Model):
         auto_now=True,
         verbose_name='Fecha de actualización'
     )
+    
+    class Meta:
+        verbose_name_plural = 'Propiedades'
+        verbose_name = 'Propiedad'
+        
+    def __str__(self):
+        return self.name
