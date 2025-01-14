@@ -36,8 +36,10 @@ INSTALLED_APPS = [
     # Template admin
     'jazzmin',
     
-    # Installed apos
+    # Installed apps
     'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt',
     
     # Django apps
     'django.contrib.admin',
@@ -359,3 +361,17 @@ else:
     # Static files (CSS, JavaScript, Images)
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
+    
+
+# Setup drf
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'EXCEPTION_HANDLER': 'utils.handlers.custom_exception_handler'
+}
