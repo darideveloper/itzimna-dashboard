@@ -25,4 +25,7 @@ urlpatterns = [
     # drf
     path('api/token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
+    
+    # Utils
+    path('markdownx/', include('markdownx.urls')),
 ]

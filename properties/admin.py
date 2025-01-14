@@ -59,3 +59,4 @@ class PropertyAdmin(admin.ModelAdmin):
         'seller__email',
     )
     list_filter = ('category', 'location', 'company', 'seller',)
+    
