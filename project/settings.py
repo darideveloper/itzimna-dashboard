@@ -245,11 +245,13 @@ JAZZMIN_SETTINGS = {
         "auth": "fas fa-users-cog",
         "auth.user": "fas fa-user",
         "auth.Group": "fas fa-users",
+        
         "properties.Category": "fas fa-box",
         "properties.Company": "fas fa-building",
         "properties.Location": "fas fa-map-marker-alt",
         "properties.Property": "fas fa-home",
         "properties.Seller": "fas fa-user-tie",
+        "properties.PropertyImage": "fas fa-image",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",

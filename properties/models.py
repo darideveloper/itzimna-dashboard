@@ -124,7 +124,11 @@ class Property(models.Model):
         decimal_places=2,
         verbose_name='Metros cuadrados'
     )
-    active = models.BooleanField(default=True, verbose_name='Activo')
+    active = models.BooleanField(
+        default=True,
+        verbose_name='Activo',
+        help_text='Indica si la propiedad/desarrollo se mostrará en la página'
+    )
     description = models.TextField(verbose_name='Descripción')
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -141,3 +145,38 @@ class Property(models.Model):
         
     def __str__(self):
         return self.name
+
+
+class PropertyImage(models.Model):
+    id = models.AutoField(primary_key=True)
+    property = models.ForeignKey(
+        Property,
+        on_delete=models.CASCADE,
+        verbose_name='Propiedad'
+    )
+    image = models.ImageField(upload_to='property-images/', verbose_name='Imagen')
+    caption = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name='Pie de foto'
+    )
+    show_gallery = models.BooleanField(
+        default=True,
+        verbose_name='Mostrar en galería'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Fecha de creación'
+    )
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Fecha de actualización'
+    )
+
+    class Meta:
+        verbose_name_plural = 'Imágenes'
+        verbose_name = 'Imagen'
+
+    def __str__(self):
+        return self.image.url

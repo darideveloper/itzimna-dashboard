@@ -60,3 +60,9 @@ class PropertyAdmin(admin.ModelAdmin):
     )
     list_filter = ('category', 'location', 'company', 'seller',)
     
+
+@admin.register(models.PropertyImage)
+class PropertyImageAdmin(admin.ModelAdmin):
+    list_display = ('property', 'image',)
+    search_fields = ('property__name', 'caption',)
+    list_filter = ('property', 'created_at', 'updated_at',)
