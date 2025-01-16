@@ -89,6 +89,9 @@ class Seller(models.Model):
         verbose_name = 'Vendedor'
 
     def __str__(self):
+        return self.get_full_name()
+    
+    def get_full_name(self):
         return self.first_name + ' ' + self.last_name
 
 
