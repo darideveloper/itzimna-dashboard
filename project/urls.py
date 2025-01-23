@@ -1,13 +1,17 @@
 from django.urls import path, include
-from rest_framework import routers
 from django.contrib import admin
 from django.views.generic import RedirectView
+from django.conf.urls.static import static
+from django.conf import settings
+
+from rest_framework import routers
+
 from core.views import (
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
 )
-
 from properties.views import PropertyViewSet
+
 
 # Setup drf router
 router = routers.DefaultRouter()
@@ -35,3 +39,6 @@ urlpatterns = [
     path('api/token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('api/', include(router.urls)),
 ]
+
+if not settings.STORAGE_AWS:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
