@@ -132,4 +132,31 @@ input[type=checkbox], input[type=radio] {
 
 .field-en textarea, .field-es textarea {
   height: 50px !important;
+}
+
+.form-group.field-es.field-en > .row, .form-group.field-description_es.field-description_en > .row {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  grid-template-areas: "es_label en_label" "es_textarea en_textarea" !important;
+}
+.form-group.field-es.field-en > .row label, .form-group.field-description_es.field-description_en > .row label {
+  max-width: 100% !important;
+}
+.form-group.field-es.field-en > .row label[for=id_es], .form-group.field-es.field-en > .row label[for=id_description_es], .form-group.field-description_es.field-description_en > .row label[for=id_es], .form-group.field-description_es.field-description_en > .row label[for=id_description_es] {
+  grid-area: es_label !important;
+}
+.form-group.field-es.field-en > .row label[for=id_en], .form-group.field-es.field-en > .row label[for=id_description_en], .form-group.field-description_es.field-description_en > .row label[for=id_en], .form-group.field-description_es.field-description_en > .row label[for=id_description_en] {
+  grid-area: en_label !important;
+}
+.form-group.field-es.field-en > .row label[for=id_es] + div, .form-group.field-es.field-en > .row label[for=id_description_es] + div, .form-group.field-description_es.field-description_en > .row label[for=id_es] + div, .form-group.field-description_es.field-description_en > .row label[for=id_description_es] + div {
+  grid-area: es_textarea !important;
+}
+.form-group.field-es.field-en > .row label[for=id_en] + div, .form-group.field-es.field-en > .row label[for=id_description_en] + div, .form-group.field-description_es.field-description_en > .row label[for=id_en] + div, .form-group.field-description_es.field-description_en > .row label[for=id_description_en] + div {
+  grid-area: en_textarea !important;
+}
+@media screen and (max-width: 700px) {
+  .form-group.field-es.field-en > .row, .form-group.field-description_es.field-description_en > .row {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "es_label" "es_textarea" "en_label" "en_textarea" !important;
+  }
 }/*# sourceMappingURL=custom.css.map */
