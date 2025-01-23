@@ -381,3 +381,9 @@ REST_FRAMEWORK = {
     ),
     'EXCEPTION_HANDLER': 'utils.handlers.custom_exception_handler'
 }
+
+# Global datetime format
+DATE_FORMAT = "d/b/Y"
+TIME_FORMAT = "H:i"
+DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
+USE_L10N = False
