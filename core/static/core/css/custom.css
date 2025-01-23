@@ -17,6 +17,11 @@
   color: #fefefe;
 }
 
+a.dropdown-item:active {
+  background-color: #0c2110 !important;
+  color: #fefefe !important;
+}
+
 .content-wrapper {
   background-color: #fefefe;
 }
