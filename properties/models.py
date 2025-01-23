@@ -165,11 +165,11 @@ class PropertyImage(models.Model):
         verbose_name='Propiedad'
     )
     image = models.ImageField(upload_to='property-images/', verbose_name='Imagen')
-    caption = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name='Pie de foto'
+    alt_text = models.OneToOneField(
+        Translation,
+        on_delete=models.CASCADE,
+        verbose_name='Texto alternativo',
+        help_text='Texto que se mostrará si la imagen no carga (recomendado para SEO)'
     )
     show_gallery = models.BooleanField(
         default=True,
@@ -189,4 +189,4 @@ class PropertyImage(models.Model):
         verbose_name = 'Imagen'
 
     def __str__(self):
-        return f"{self.property} - {self.image.url}"
+        return f"{self.property} - {self.alt_text.key}"
