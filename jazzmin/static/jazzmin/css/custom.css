@@ -128,4 +128,8 @@ input[type=checkbox], input[type=radio] {
 }
 .sidebar {
   overflow: hidden !important;
+}
+
+.field-en textarea, .field-es textarea {
+  height: 50px !important;
 }/*# sourceMappingURL=custom.css.map */

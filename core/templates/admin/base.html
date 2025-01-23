@@ -2,23 +2,28 @@
 {% load static %}
 
 {% block extrahead %}
-    {{ block.super }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          setTimeout(() => {
-            var simplemde = new SimpleMDE({ 
-                element: document.querySelector("textarea"),
-                toolbar: [
-                    "bold", "italic", "heading", "|",
-                    "quote", "code", "link", "image", "|",
-                    "unordered-list", "ordered-list", "|",
-                    "undo", "redo", "|",
-                    "preview", 
-                ],
-            });
-          }, 100);
-        });
-    </script>
+{{ block.super }}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+
+    const textAreas = document.querySelectorAll('textarea')
+    const skipTextAreas = document.querySelectorAll('textarea[name="en"], textarea[name="es"]')
+    const validTextAreas = Array.from(textAreas).filter(textArea => !Array.from(skipTextAreas).includes(textArea))
+
+    setTimeout(() => {
+      var simplemde = new SimpleMDE({
+        element: validTextAreas,
+        toolbar: [
+          "bold", "italic", "heading", "|",
+          "quote", "code", "link", "image", "|",
+          "unordered-list", "ordered-list", "|",
+          "undo", "redo", "|",
+          "preview",
+        ],
+      })
+    }, 100)
+  });
+</script>
 {% endblock %}

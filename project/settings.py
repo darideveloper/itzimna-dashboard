@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt',
-    'markdownx',
     
     # Django apps
     'django.contrib.admin',
@@ -84,10 +83,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 # Database
 # Setup database for testing and production
@@ -252,6 +247,9 @@ JAZZMIN_SETTINGS = {
         "properties.Property": "fas fa-home",
         "properties.Seller": "fas fa-user-tie",
         "properties.PropertyImage": "fas fa-image",
+        
+        "core.TranslationGroup": "fas fa-bookmark",
+        "core.Translation": "fas fa-language",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
