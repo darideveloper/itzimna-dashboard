@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Translation
+from translations.models import Translation
 
 
 class Company(models.Model):

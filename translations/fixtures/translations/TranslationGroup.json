@@ -1,20 +1,20 @@
 [
     {
-        "model": "core.TranslationGroup",
+        "model": "translations.TranslationGroup",
         "pk": 1,
         "fields": {
             "name": "categorías"
         }
     },
     {
-        "model": "core.TranslationGroup",
+        "model": "translations.TranslationGroup",
         "pk": 2,
         "fields": {
             "name": "imágenes"
         }
     },
     {
-        "model": "core.TranslationGroup",
+        "model": "translations.TranslationGroup",
         "pk": 3,
         "fields": {
             "name": "ubicaciones"

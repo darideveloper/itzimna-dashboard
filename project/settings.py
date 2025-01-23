@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # Local apps
     'core',
     'properties',
+    'translations',
     
     # Template admin
     'jazzmin',
@@ -248,8 +249,8 @@ JAZZMIN_SETTINGS = {
         "properties.Seller": "fas fa-user-tie",
         "properties.PropertyImage": "fas fa-image",
         
-        "core.TranslationGroup": "fas fa-bookmark",
-        "core.Translation": "fas fa-language",
+        "translations.TranslationGroup": "fas fa-bookmark",
+        "translations.Translation": "fas fa-language",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",

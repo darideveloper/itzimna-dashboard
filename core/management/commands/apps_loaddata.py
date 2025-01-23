@@ -11,7 +11,7 @@ class Command(BaseCommand):
     
     def handle(self, *args, **kwargs):
         commands_data = {
-            "core": [
+            "translations": [
                 "TranslationGroup",
             ],
         }
