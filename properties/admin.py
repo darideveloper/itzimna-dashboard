@@ -59,6 +59,34 @@ class PropertyAdmin(admin.ModelAdmin):
         'seller__email',
     )
     list_filter = ('category', 'location', 'company', 'seller',)
+    readonly_fields = ('created_at', 'updated_at',)
+    fieldsets = (
+        (
+            'Información de la propiedad',
+            {
+                'fields': (
+                    'name',
+                    'company',
+                    'location',
+                    'seller',
+                    'category',
+                    'price',
+                    'meters',
+                    'active',
+                    ('description_es', 'description_en',)
+                ),
+            }
+        ),
+        (
+            "Fechas",
+            {
+                'fields': (
+                    'created_at',
+                    'updated_at',
+                ),
+            }
+        )
+    )
     
 
 @admin.register(models.PropertyImage)

@@ -31,13 +31,15 @@ class Translation(models.Model):
         unique=True,
         verbose_name='Clave'
     )
-    es = models.TextField(
+    es = models.CharField(
+        max_length=255,
         verbose_name='Español',
         help_text='Texto original en español'
     )
-    en = models.TextField(
+    en = models.CharField(
+        max_length=255,
         verbose_name='Inglés',
-        help_text='Texto traducido al inglés'
+        help_text='Traducción al inglés'
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -53,4 +55,4 @@ class Translation(models.Model):
         verbose_name_plural = 'Traducciones'
 
     def __str__(self):
-        return self.key
+        return f"{self.group} - {self.key}"

@@ -1,4 +1,5 @@
 from django.db import models
+from core.models import Translation
 
 
 class Company(models.Model):
@@ -30,10 +31,11 @@ class Company(models.Model):
 
 class Location(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name='Nombre de la ubicación')
+    name = models.OneToOneField(
+        Translation,
+        on_delete=models.CASCADE,
+        verbose_name='Nombre de la ubicación',
+    )
     details = models.TextField(
         null=True,
         blank=True,
@@ -45,15 +47,15 @@ class Location(models.Model):
         verbose_name = 'Ubicación'
 
     def __str__(self):
-        return self.name
+        return str(self.name.key)
 
 
 class Category(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name='Nombre de la categoría'
+    name = models.OneToOneField(
+        Translation,
+        on_delete=models.CASCADE,
+        verbose_name='Nombre de la categoría',
     )
     details = models.TextField(
         null=True,
@@ -66,7 +68,7 @@ class Category(models.Model):
         verbose_name = 'Categoría'
 
     def __str__(self):
-        return self.name
+        return str(self.name.key)
 
 
 class Seller(models.Model):
@@ -92,7 +94,7 @@ class Seller(models.Model):
         return self.get_full_name()
     
     def get_full_name(self):
-        return self.first_name + ' ' + self.last_name
+        return f"{self.first_name} {self.last_name}"
 
 
 class Property(models.Model):
@@ -132,7 +134,12 @@ class Property(models.Model):
         verbose_name='Activo',
         help_text='Indica si la propiedad/desarrollo se mostrará en la página'
     )
-    description = models.TextField(verbose_name='Descripción')
+    description_es = models.TextField(
+        verbose_name='Descripción en español'
+    )
+    description_en = models.TextField(
+        verbose_name='Descripción en inglés'
+    )
     created_at = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Fecha de creación'
@@ -147,7 +154,7 @@ class Property(models.Model):
         verbose_name = 'Propiedad'
         
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.location}"
 
 
 class PropertyImage(models.Model):
@@ -182,4 +189,4 @@ class PropertyImage(models.Model):
         verbose_name = 'Imagen'
 
     def __str__(self):
-        return self.image.url
+        return f"{self.property} - {self.image.url}"

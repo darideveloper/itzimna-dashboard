@@ -9,19 +9,22 @@
   document.addEventListener('DOMContentLoaded', function () {
 
     const textAreas = document.querySelectorAll('textarea')
-    const skipTextAreas = document.querySelectorAll('textarea[name="en"], textarea[name="es"]')
-    const validTextAreas = Array.from(textAreas).filter(textArea => !Array.from(skipTextAreas).includes(textArea))
+    const textAreasListView = document.querySelectorAll('td textarea')
+    const textAreasDetailView = document.querySelectorAll('div > textarea')
 
     setTimeout(() => {
-      var simplemde = new SimpleMDE({
-        element: validTextAreas,
-        toolbar: [
-          "bold", "italic", "heading", "|",
-          "quote", "code", "link", "image", "|",
-          "unordered-list", "ordered-list", "|",
-          "undo", "redo", "|",
-          "preview",
-        ],
+      textAreasDetailView.forEach(textArea => {
+        var simplemde = new SimpleMDE({
+          element: textArea,
+          toolbar: [
+            "bold", "italic", "heading", "|",
+            "quote", "code", "link", "image", "|",
+            "unordered-list", "ordered-list", "|",
+            "undo", "redo", "|",
+            "preview",
+          ],
+          spellChecker: false,
+        })
       })
     }, 100)
   });
