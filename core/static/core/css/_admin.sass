@@ -1,0 +1,150 @@
+@import "./_base.sass"
+
+// Login page
+// Overwrite the default jazzmin app login page styles
+.jazzmin-page
+    background: $color-green
+
+    img
+        width: 200px
+
+    .card-body
+        background: $color-black
+        color: $color-white
+
+// Dahsboard
+// Overwrite the default jazzmin app dashboard styles
+.content-wrapper
+    background-color: $color-white
+
+a
+    color: $color-green !important
+    font-weight: bold
+    duration: 0.2s
+
+    &:hover
+        color: $color-black !important
+
+[class*=sidebar-dark-]
+    background-color: $color-green
+
+    a
+        color: $color-white !important
+
+        &:hover
+            color: $color-yellow !important
+
+.btn-success
+    background-color: $color-yellow
+    border-color: $color-yellow
+    color: $color-black !important
+    font-weight: bold
+
+    &:hover, &:focus, &:active
+        background-color: $color-black !important
+        border-color: $color-black !important
+        color: $color-white !important
+
+.btn-info, .btn-secondary
+    background-color: $color-green-light
+    border-color: $color-green-light
+    color: $color-black !important
+    font-weight: bold
+
+    &:hover, &:focus, &:active
+        &:hover, &:focus, &:active
+        background-color: $color-black !important
+        border-color: $color-black !important
+        color: $color-white !important
+
+.btn-primary, .btn-danger
+    background-color: $color-green
+    border-color: $color-green
+    color: $color-white !important
+    font-weight: bold
+
+    &:hover, &:focus, &:active
+        background-color: $color-yellow !important
+        border-color: $color-yellow !important
+        color: $color-black !important
+
+.select2-results__option--highlighted
+    background-color: rgba($color-green, 0.5) !important
+.nav-link.active
+    background-color: $color-yellow !important
+    color: $color-black !important
+    transition-duration: 0.2s
+
+    &:hover
+        color: rgba($color-black, 0.5) !important
+
+.collapsible-header:hover
+    background-color: rgba($color-green, 0.8) !important
+
+input[type=checkbox], input[type=radio]
+    accent-color: $color-green
+
+.selector-chosen h2
+    background-color: $color-green
+
+.calendar td.selected a
+    background-color: $color-green
+
+.calendar caption, .clockbox h2
+    background-color: $color-green
+    color: $color-white
+
+.clockbox a:hover
+    background-color: $color-green
+    color: $color-white !important
+
+// Fix dashboard responsive
+@media screen and (max-width: 768px)
+
+    .container-fluid > .row > div:nth-child(1)
+        flex-direction: column !important
+
+        h1
+            margin-right: 0 !important
+            padding-right: 0 !important
+
+        ol
+            margin-left: 0 !important
+            padding-left: 0 !important
+
+    .container-fluid > .row > div:nth-child(2)
+        justify-content: flex-start !important
+
+@media screen and (max-width: 500px)
+
+    // Main content
+    .content
+        padding: 1rem 0 !important
+
+    // Filters
+    #changelist-search > .form-group
+        width: 100% !important
+
+    // Add button
+    .container-fluid > .row > div:nth-child(2)
+        justify-content: center !important
+
+    // Actions components
+    .actions 
+        button
+            margin-left: 0 !important
+
+        .select2, > label:nth-child(1)
+            width: 100% !important
+
+        > span
+            margin-left: 0 !important
+            display: block !important
+        
+    // Specific inputs
+    input[type="number"]
+        width: 80px !important
+
+// Fix jazzmin sibar overflow 
+.sidebar
+    overflow: hidden !important

@@ -1,0 +1,29 @@
+
+// Custom translation inputs
+.field-en textarea, .field-es textarea
+    height: 50px !important
+
+.form-group
+    &.field-es.field-en > .row, &.field-description_es.field-description_en > .row
+        display: grid !important
+        grid-template-columns: repeat(2, 1fr) !important
+        grid-template-areas: "es_label en_label" "es_textarea en_textarea" !important
+        
+        label
+            max-width: 100% !important
+
+        label[for="id_es"], label[for="id_description_es"]
+            grid-area: es_label !important
+        
+        label[for="id_en"], label[for="id_description_en"]
+            grid-area: en_label !important
+
+        label[for="id_es"] + div, label[for="id_description_es"] + div
+            grid-area: es_textarea !important
+        
+        label[for="id_en"] + div, label[for="id_description_en"] + div
+            grid-area: en_textarea !important
+
+        @media screen and (max-width: 700px)
+            grid-template-columns: 1fr !important
+            grid-template-areas: "es_label" "es_textarea" "en_label" "en_textarea" !important
