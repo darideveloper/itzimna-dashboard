@@ -3,9 +3,9 @@ class AdminSetup {
   /**
    * Setup global data
    */
-  constructor () {
-    this.currrentPage = document.querySelector('h1').textContent.toLowerCase().trim()
-    console.log(this.currrentPage)
+  constructor() {
+    this.currentPage = document.querySelector('h1').textContent.toLowerCase().trim()
+    console.log(this.currentPage)
     this.autorun()
   }
 
@@ -14,37 +14,41 @@ class AdminSetup {
    * @param {string} inputName - The name of the input field (select)
    * @param {string} inputValue  - The value to set the input field to
    */
-  #selectDropdownOption(selectName, optionValue) {
-    const select = document.querySelector(`select[name="${selectName}"]`)
-    if (select) {
-      select.value = optionValue
-    }
-  }
+  loadMarkDown() {
+    const textAreas = document.querySelectorAll('div > textarea')
 
-  /**
-   * Select all the registers in the current page
-   */
-  #selectAllRegisters() {
-    document.querySelector('#action-toggle').click()
-  }
-
-  setupWeeklyAssistance() {
-    this.#selectDropdownOption('action', 'export_excel')
     setTimeout(() => {
-      this.#selectAllRegisters()
-    }, 200)
+      textAreas.forEach(textArea => {
+        var simplemde = new SimpleMDE({
+          element: textArea,
+          toolbar: [
+            "bold", "italic", "heading", "|",
+            "quote", "code", "link", "image", "|",
+            "unordered-list", "ordered-list", "|",
+            "undo", "redo", "|",
+            "preview",
+          ],
+          spellChecker: false,
+        })
+      })
+    }, 100)
   }
 
   /**
    * Run the functions for the current page
    */
-  autorun () {
+  autorun() {
+    // Methods to run for each page
     const methods = {
-      "asistencias semanales": this.setupWeeklyAssistance
+      "propiedades": [this.loadMarkDown],
     }
-    if (methods[this.currrentPage]) {
-      methods[this.currrentPage].call(this)
-    }   
+
+    // Run the methods for the current page
+    if (methods[this.currentPage]) {
+      for (let method of methods[this.currentPage]) {
+        method.call(this)
+      }
+    }
   }
 }
 

@@ -3,30 +3,7 @@
 
 {% block extrahead %}
 {{ block.super }}
+<!-- Load markdown libraries -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-
-    const textAreas = document.querySelectorAll('textarea')
-    const textAreasListView = document.querySelectorAll('td textarea')
-    const textAreasDetailView = document.querySelectorAll('div > textarea')
-
-    setTimeout(() => {
-      textAreasDetailView.forEach(textArea => {
-        var simplemde = new SimpleMDE({
-          element: textArea,
-          toolbar: [
-            "bold", "italic", "heading", "|",
-            "quote", "code", "link", "image", "|",
-            "unordered-list", "ordered-list", "|",
-            "undo", "redo", "|",
-            "preview",
-          ],
-          spellChecker: false,
-        })
-      })
-    }, 100)
-  });
-</script>
 {% endblock %}
