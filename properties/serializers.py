@@ -58,10 +58,10 @@ class PropertySerializer(serializers.ModelSerializer):
 
         all_images = models.PropertyImage.objects.filter(property=obj)
         try:
-            banner = all_images.get(show_gallery=True)
+            banner = all_images[0]
             banner_url = get_media_url(banner.image)
             banner_alt = banner.get_alt_text(self.get_language())
-        except models.PropertyImage.DoesNotExist:
+        except Exception:
             banner_url = ""
             banner_alt = ""
             

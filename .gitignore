@@ -13,3 +13,4 @@ db.*
 credentials.json
 staticfiles/
 info.txt
+/media

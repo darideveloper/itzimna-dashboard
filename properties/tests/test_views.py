@@ -1,5 +1,4 @@
 from rest_framework import status
-
 from core.test_base.test_views import TestPropertiesViewsBase
 
 
@@ -87,3 +86,60 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         # add id to endpoint
         self.endpoint = f"{self.endpoint}1/"
         self.validate_invalid_method("patch")
+
+    def test_property_banner_with_single_image(self):
+        """ valdiate banner in response with single image in property """
+        
+        # Delete second property
+        self.property_2.delete()
+        
+        # Add images to property
+        image_name = "test.webp"
+        property_image = self.create_property_image(
+            property=self.property_1,
+            image_name=image_name
+        )
+            
+        # Validate banner
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        result = json_data["results"][0]
+        self.assertIn(
+            f"/media/property-images/{image_name.replace('.webp', '')}",
+            result["banner"]["url"]
+        )
+        self.assertIn(".webp", result["banner"]["url"])
+        self.assertEqual(result["banner"]["alt"], property_image.get_alt_text("es"))
+
+    def test_property_banner_with_many_images(self):
+        """ Validate response with property images """
+        
+        # Add images to property
+        property_images = []
+        image_names = ["test.webp", "test2.webp"]
+        for image_name in image_names:
+            property_images.append(
+                self.create_property_image(
+                    property=self.property_1,
+                    image_name=image_name,
+                )
+            )
+            
+        # Validate banner
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        result = json_data["results"][0]
+        self.assertIn(
+            f"/media/property-images/{image_names[0].replace('.webp', '')}",
+            result["banner"]["url"]
+        )
+        self.assertIn(".webp", result["banner"]["url"])
+        self.assertEqual(result["banner"]["alt"], property_images[0].get_alt_text("es"))
+    
+        
