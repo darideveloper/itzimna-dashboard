@@ -158,6 +158,14 @@ class Property(models.Model):
         """
 
         return getattr(self, f"description_{language}")
+    
+    def get_price_str(self) -> str:
+        """Retrieve price as a string
+
+        Returns:
+            str: Price as a 1,000.00 string
+        """
+        return f"{self.price:,.2f}"
 
 
 class PropertyImage(models.Model):

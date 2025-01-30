@@ -4,7 +4,7 @@ from properties import models as properties_models
 from translations import models as translations_models
 
 
-class ModelsTestCase(TestCase):
+class TestPropertiesModelsBase(TestCase):
     """Validate model custom methods"""
 
     def create_translation(
@@ -84,6 +84,15 @@ class ModelsTestCase(TestCase):
             last_name=last_name,
             phone=phone,
         )
+        
+    def create_company(
+        self, name: str = "Company test"
+    ) -> properties_models.Company:
+        """Create a company object"""
+
+        return properties_models.Company.objects.create(
+            name=name,
+        )
 
     def create_property(
         self,
@@ -101,7 +110,7 @@ class ModelsTestCase(TestCase):
         """Create a property object"""
 
         if not company:
-            company = properties_models.Company.objects.create()
+            company = self.create_company()
 
         if not location:
             location = self.create_location()

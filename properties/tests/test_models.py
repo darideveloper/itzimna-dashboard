@@ -1,10 +1,7 @@
-from core.test_base.test_properties import ModelsTestCase
-
-from properties import models as properties_models
-from translations import models as translations_models
+from core.test_base.test_models import TestPropertiesModelsBase
 
 
-class LocationTestCase(ModelsTestCase):
+class LocationTestCase(TestPropertiesModelsBase):
     """Validate model custom methods"""
 
     def setUp(self):
@@ -23,7 +20,7 @@ class LocationTestCase(ModelsTestCase):
         )
 
 
-class CategoryTestCase(ModelsTestCase):
+class CategoryTestCase(TestPropertiesModelsBase):
     """Validate model custom methods"""
 
     def setUp(self):
@@ -42,11 +39,11 @@ class CategoryTestCase(ModelsTestCase):
         )
 
 
-class SellerTestCase(ModelsTestCase):
+class SellerTestCase(TestPropertiesModelsBase):
     """Validate model custom methods"""
 
     def setUp(self):
-        self.seller = properties_models.Seller.objects.create()
+        self.seller = self.create_seller()
         
     def test_get_full_name(self):
         """Validate retrieving the full name of the seller"""
@@ -57,7 +54,7 @@ class SellerTestCase(ModelsTestCase):
         )
 
 
-class PropertyTestCase(ModelsTestCase):
+class PropertyTestCase(TestPropertiesModelsBase):
     """Validate model custom methods"""
 
     def setUp(self):
@@ -65,7 +62,7 @@ class PropertyTestCase(ModelsTestCase):
         # Property required models
         self.property = self.create_property()
 
-    def get_description(self):
+    def test_get_description(self):
         """Validate retrieving the description of the property in each language"""
 
         self.assertEqual(
@@ -75,4 +72,12 @@ class PropertyTestCase(ModelsTestCase):
         self.assertEqual(
             self.property.get_description("en"),
             self.property.description_en
+        )
+
+    def test_get_price_str(self):
+        """Validate retrieving the price as a string"""
+
+        self.assertEqual(
+            self.property.get_price_str(),
+            "1,000.00"
         )

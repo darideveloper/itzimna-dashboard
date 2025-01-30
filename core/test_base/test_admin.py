@@ -4,14 +4,15 @@ from django.test import LiveServerTestCase
 from django.core.management import call_command
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.test import TestCase
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 
 
-class TestAdminBase(LiveServerTestCase):
-    """ Base class to test admin (login and setup) """
+class TestAdminSeleniumBase(LiveServerTestCase):
+    """ Base class to test admin with selenium (login and setup) """
     
     def setUp(self, endpont="/admin/"):
         """ Load data, setup and login in each test """

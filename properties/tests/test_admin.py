@@ -1,9 +1,9 @@
 from utils.automation import get_selenium_elems
 
-from core.test_base.test_admin import TestAdminBase
+from core.test_base.test_admin import TestAdminSeleniumBase
 
 
-class PropertyAdminTestCase(TestAdminBase):
+class PropertyAdminTestCase(TestAdminSeleniumBase):
     
     def setUp(self):
         

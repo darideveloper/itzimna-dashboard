@@ -11,7 +11,7 @@ class PropertySerializer(serializers.ModelSerializer):
     company = serializers.CharField(source="company.name", read_only=True)
     location = serializers.SerializerMethodField()
     seller = serializers.CharField(source="seller.get_full_name", read_only=True)
-    category = serializers.CharField(source="category.name", read_only=True)
+    category = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
@@ -74,5 +74,13 @@ class PropertySerializer(serializers.ModelSerializer):
             str: Price in the correct format
         """
 
-        price = obj.price
-        return f"{price:,.2f}"
+        return obj.get_price_str()
+    
+    def get_category(self, obj) -> str:
+        """Retrieve category name in the correct language
+
+        Returns:
+            str: Category name in the correct language
+        """
+
+        return obj.category.get_name(self.get_language())
