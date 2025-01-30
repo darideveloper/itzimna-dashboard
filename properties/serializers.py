@@ -93,4 +93,4 @@ class PropertySerializer(serializers.ModelSerializer):
             str: Short description in the correct language
         """
 
-        return obj.get_short_description(self.get_language())
+        return obj.short_description.get_description(self.get_language())

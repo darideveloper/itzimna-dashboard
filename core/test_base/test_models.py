@@ -115,6 +115,29 @@ class TestPropertiesModelsBase(TestCase):
             name=name,
         )
 
+    def create_short_description(
+        self,
+        name: str = "short_description_test",
+        es: str = "Descripción corta de prueba",
+        en: str = "Test short description"
+    ) -> properties_models.ShortDescription:
+        """ Create a short description object
+        
+        Args:
+            key (str): Short description key
+            es (str): Spanish short description
+            en (str): English short description
+            
+        Returns:
+            properties_models.ShortDescription: Short description object created
+        """
+
+        return properties_models.ShortDescription.objects.create(
+            name=name,
+            es=es,
+            en=en,
+        )
+
     def create_property(
         self,
         name: str = "Property test",
@@ -122,13 +145,12 @@ class TestPropertiesModelsBase(TestCase):
         location: properties_models.Location = None,
         category: properties_models.Category = None,
         seller: properties_models.Seller = None,
+        short_description: properties_models.ShortDescription = None,
         price: float = 1000,
         meters: float = 100,
         active: bool = True,
         description_es: str = "Descripción de la propiedad",
         description_en: str = "Property description",
-        short_description_es: str = "Descripción corta de la propiedad",
-        short_description_en: str = "Short property description",
     ) -> properties_models.Property:
         """ Create a property object
         
@@ -160,10 +182,10 @@ class TestPropertiesModelsBase(TestCase):
         if not seller:
             seller = self.create_seller()
             
-        # Create short description
-        short_description = self.create_translation(
-            f"short_description_test {name}", short_description_es, short_description_en
-        )
+        if not short_description:
+            short_description = self.create_short_description(
+                name=f"short_description {name}"
+            )
 
         return properties_models.Property.objects.create(
             name=name,

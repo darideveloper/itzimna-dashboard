@@ -20,6 +20,12 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('name', 'details')
 
 
+@admin.register(models.ShortDescription)
+class ShortDescriptionAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
+
+
 @admin.register(models.Seller)
 class SellerAdmin(admin.ModelAdmin):
     list_display = (
@@ -73,6 +79,7 @@ class PropertyAdmin(admin.ModelAdmin):
                     'price',
                     'meters',
                     'active',
+                    'short_description',
                     ('description_es', 'description_en',)
                 ),
             }

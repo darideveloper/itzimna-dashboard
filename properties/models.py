@@ -82,6 +82,32 @@ class Category(models.Model):
         return getattr(self.name, language)
 
 
+class ShortDescription(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255, unique=True, verbose_name="Clave")
+    es = models.CharField(max_length=255, verbose_name="Descripción en español")
+    en = models.CharField(max_length=255, verbose_name="Descripción en inglés")
+
+    class Meta:
+        verbose_name_plural = "Descripciones cortas"
+        verbose_name = "Descripción corta"
+
+    def __str__(self):
+        return f"{self.name} - {self.es}"
+    
+    def get_description(self, language: str) -> str:
+        """Retrieve short description in the correct language
+
+        Args:
+            language (str): Language to retrieve the short description in
+
+        Returns:
+            str: Short description in the correct language
+        """
+
+        return getattr(self, language)
+    
+
 class Seller(models.Model):
     id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=255, verbose_name="Nombre del vendedor")
@@ -132,10 +158,10 @@ class Property(models.Model):
         help_text="Indica si la propiedad/desarrollo se mostrará en la página",
     )
     short_description = models.OneToOneField(
-        Translation,
+        ShortDescription,
         on_delete=models.CASCADE,
         verbose_name="Descripción corta",
-        help_text="Descripción que se mostrará en la lista de propiedades",
+        help_text="Descripción corta de la propiedad o desarrollo",
     )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")

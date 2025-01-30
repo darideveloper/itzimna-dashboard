@@ -250,6 +250,7 @@ JAZZMIN_SETTINGS = {
         "properties.Location": "fas fa-map-marker-alt",
         "properties.Property": "fas fa-home",
         "properties.Seller": "fas fa-user-tie",
+        "properties.ShortDescription": "fas fa-align-left",
         "properties.PropertyImage": "fas fa-image",
         
         "translations.TranslationGroup": "fas fa-bookmark",
