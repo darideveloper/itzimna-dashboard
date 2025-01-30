@@ -81,3 +81,15 @@ class PropertyTestCase(TestPropertiesModelsBase):
             self.property.get_price_str(),
             "1,000.00"
         )
+        
+    def test_get_short_description(self):
+        """Validate retrieving the short description of the property in each language"""
+
+        self.assertEqual(
+            self.property.get_short_description("es"),
+            self.property.short_description.es
+        )
+        self.assertEqual(
+            self.property.get_short_description("en"),
+            self.property.short_description.en
+        )

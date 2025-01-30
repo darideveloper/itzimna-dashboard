@@ -131,6 +131,12 @@ class Property(models.Model):
         verbose_name="Activo",
         help_text="Indica si la propiedad/desarrollo se mostrará en la página",
     )
+    short_description = models.OneToOneField(
+        Translation,
+        on_delete=models.CASCADE,
+        verbose_name="Descripción corta",
+        help_text="Descripción que se mostrará en la lista de propiedades",
+    )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")
     created_at = models.DateTimeField(
@@ -146,6 +152,18 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.location}"
+
+    def get_short_description(self, language: str) -> str:
+        """Retrieve short description in the correct language
+
+        Args:
+            language (str): Language to retrieve the short description in
+
+        Returns:
+            str: Short description in the correct language
+        """
+
+        return getattr(self.short_description, language)
 
     def get_description(self, language: str) -> str:
         """Retrieve description in the correct language

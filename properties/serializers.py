@@ -13,6 +13,7 @@ class PropertySerializer(serializers.ModelSerializer):
     seller = serializers.CharField(source="seller.get_full_name", read_only=True)
     category = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+    short_description = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
     meters = serializers.DecimalField(max_digits=10, decimal_places=2)
@@ -84,3 +85,12 @@ class PropertySerializer(serializers.ModelSerializer):
         """
 
         return obj.category.get_name(self.get_language())
+    
+    def get_short_description(self, obj) -> str:
+        """Retrieve short description in the correct language
+
+        Returns:
+            str: Short description in the correct language
+        """
+
+        return obj.get_short_description(self.get_language())

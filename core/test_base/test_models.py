@@ -127,6 +127,8 @@ class TestPropertiesModelsBase(TestCase):
         active: bool = True,
         description_es: str = "Descripción de la propiedad",
         description_en: str = "Property description",
+        short_description_es: str = "Descripción corta de la propiedad",
+        short_description_en: str = "Short property description",
     ) -> properties_models.Property:
         """ Create a property object
         
@@ -157,6 +159,11 @@ class TestPropertiesModelsBase(TestCase):
 
         if not seller:
             seller = self.create_seller()
+            
+        # Create short description
+        short_description = self.create_translation(
+            f"short_description_test {name}", short_description_es, short_description_en
+        )
 
         return properties_models.Property.objects.create(
             name=name,
@@ -169,6 +176,7 @@ class TestPropertiesModelsBase(TestCase):
             active=active,
             description_es=description_es,
             description_en=description_en,
+            short_description=short_description,
         )
 
     def create_property_image(

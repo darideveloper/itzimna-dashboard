@@ -68,6 +68,10 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["description"],
                     getattr(property, f"description_{lang}")
                 )
+                self.assertEqual(
+                    result["short_description"],
+                    getattr(property.short_description, lang)
+                )
     
     def test_authenticated_user_post(self):
         """ Test that authenticated users can not post to the endpoint """
