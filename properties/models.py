@@ -84,16 +84,19 @@ class Category(models.Model):
 
 class ShortDescription(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, unique=True, verbose_name="Clave")
-    es = models.CharField(max_length=255, verbose_name="Descripción en español")
-    en = models.CharField(max_length=255, verbose_name="Descripción en inglés")
+    description = models.OneToOneField(
+        Translation, on_delete=models.CASCADE, verbose_name="Descripción corta"
+    )
+    details = models.TextField(
+        null=True, blank=True, verbose_name="Detalles adicionales"
+    )
 
     class Meta:
         verbose_name_plural = "Descripciones cortas"
         verbose_name = "Descripción corta"
 
     def __str__(self):
-        return f"{self.name} - {self.es}"
+        return self.description.key
     
     def get_description(self, language: str) -> str:
         """Retrieve short description in the correct language
@@ -105,7 +108,7 @@ class ShortDescription(models.Model):
             str: Short description in the correct language
         """
 
-        return getattr(self, language)
+        return getattr(self.description, language)
     
 
 class Seller(models.Model):
@@ -157,7 +160,7 @@ class Property(models.Model):
         verbose_name="Activo",
         help_text="Indica si la propiedad/desarrollo se mostrará en la página",
     )
-    short_description = models.OneToOneField(
+    short_description = models.ForeignKey(
         ShortDescription,
         on_delete=models.CASCADE,
         verbose_name="Descripción corta",
@@ -178,18 +181,6 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.location}"
-
-    def get_short_description(self, language: str) -> str:
-        """Retrieve short description in the correct language
-
-        Args:
-            language (str): Language to retrieve the short description in
-
-        Returns:
-            str: Short description in the correct language
-        """
-
-        return getattr(self.short_description, language)
 
     def get_description(self, language: str) -> str:
         """Retrieve description in the correct language

@@ -22,8 +22,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.ShortDescription)
 class ShortDescriptionAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
+    list_display = ('description',)
+    search_fields = ('description',)
 
 
 @admin.register(models.Seller)

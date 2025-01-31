@@ -38,10 +38,12 @@ class ShortDescriptionTestCase(TestPropertiesModelsBase):
         description in each language"""
 
         self.assertEqual(
-            self.short_description.get_description("es"), self.short_description.es
+            self.short_description.get_description("es"),
+            self.short_description.description.es,
         )
         self.assertEqual(
-            self.short_description.get_description("en"), self.short_description.en
+            self.short_description.get_description("en"),
+            self.short_description.description.en,
         )
 
 
@@ -87,10 +89,10 @@ class PropertyTestCase(TestPropertiesModelsBase):
         """Validate retrieving the short description of the property in each language"""
 
         self.assertEqual(
-            self.property.get_short_description("es"),
-            self.property.short_description.es,
+            self.property.short_description.get_description("es"),
+            self.property.short_description.description.es,
         )
         self.assertEqual(
-            self.property.get_short_description("en"),
-            self.property.short_description.en,
+            self.property.short_description.get_description("en"),
+            self.property.short_description.description.en,
         )

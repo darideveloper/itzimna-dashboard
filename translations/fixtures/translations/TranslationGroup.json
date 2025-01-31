@@ -19,5 +19,12 @@
         "fields": {
             "name": "ubicaciones"
         }
+    },
+    {
+        "model": "translations.TranslationGroup",
+        "pk": 4,
+        "fields": {
+            "name": "descripciones cortas"
+        }
     }
 ]

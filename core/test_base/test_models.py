@@ -133,9 +133,8 @@ class TestPropertiesModelsBase(TestCase):
         """
 
         return properties_models.ShortDescription.objects.create(
-            name=name,
-            es=es,
-            en=en,
+            description=self.create_translation(name, es, en),
+            details="",
         )
 
     def create_property(

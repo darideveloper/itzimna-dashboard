@@ -70,7 +70,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 )
                 self.assertEqual(
                     result["short_description"],
-                    getattr(property.short_description, lang)
+                    getattr(property.short_description.description, lang)
                 )
     
     def test_authenticated_user_post(self):
