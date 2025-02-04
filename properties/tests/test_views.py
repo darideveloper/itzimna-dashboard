@@ -157,3 +157,19 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         json_data = response.json()
         self.assertEqual(json_data["count"], 1)
         self.assertEqual(len(json_data["results"]), 1)
+        
+    def test_featured_property_in_response(self):
+        """ Validate that featured properties are in response """
+        
+        # Deactivate property
+        self.property_1.featured = True
+        self.property_1.save()
+        
+        # Validate response
+        response = self.client.get(
+            self.endpoint + "?featured=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 1)
+        self.assertEqual(len(json_data["results"]), 1)

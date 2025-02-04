@@ -11,12 +11,12 @@ from core.views import (
     CustomTokenRefreshView,
     ValidateRefreshView,
 )
-from properties.views import PropertyViewSet
+from properties import views
 
 
 # Setup drf router
 router = routers.DefaultRouter()
-router.register(r'properties', PropertyViewSet)
+router.register(r'properties', views.PropertyViewSet)
 
 
 urlpatterns = [

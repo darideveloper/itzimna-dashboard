@@ -79,6 +79,7 @@ class PropertyAdmin(admin.ModelAdmin):
                     'price',
                     'meters',
                     'active',
+                    'featured',
                     'short_description',
                     ('description_es', 'description_en',)
                 ),

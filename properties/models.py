@@ -158,7 +158,12 @@ class Property(models.Model):
     active = models.BooleanField(
         default=True,
         verbose_name="Activo",
-        help_text="Indica si la propiedad/desarrollo se mostrará en la página",
+        help_text="Indica si se mostrará en la página",
+    )
+    featured = models.BooleanField(
+        default=False,
+        verbose_name="Destacado",
+        help_text="Indica si se mostrará en la sección de destacados",
     )
     short_description = models.ForeignKey(
         ShortDescription,
