@@ -142,4 +142,18 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertIn(".webp", result["banner"]["url"])
         self.assertEqual(result["banner"]["alt"], property_images[0].get_alt_text("es"))
     
+    def test_inactive_property_not_in_response(self):
+        """ Validate that inactive properties are not in response """
         
+        # Deactivate property
+        self.property_1.active = False
+        self.property_1.save()
+        
+        # Validate response
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 1)
+        self.assertEqual(len(json_data["results"]), 1)
