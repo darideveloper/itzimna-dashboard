@@ -12,7 +12,6 @@ class PropertySerializer(serializers.ModelSerializer):
     location = serializers.SerializerMethodField()
     seller = serializers.CharField(source="seller.get_full_name", read_only=True)
     category = serializers.SerializerMethodField()
-    description = serializers.SerializerMethodField()
     short_description = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
@@ -42,13 +41,13 @@ class PropertySerializer(serializers.ModelSerializer):
 
         return obj.location.get_name(self.get_language())
 
-    def get_description(self, obj) -> str:
-        """Retrieve description in the correct language
+    # def get_description(self, obj) -> str:
+    #     """Retrieve description in the correct language
 
-        Returns:
-            str: Description in the correct language
-        """
-        return obj.get_description(self.get_language())
+    #     Returns:
+    #         str: Description in the correct language
+    #     """
+    #     return obj.get_description(self.get_language())
 
     def get_banner(self, obj) -> str:
         """Retrieve banner url

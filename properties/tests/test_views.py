@@ -65,10 +65,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 self.assertEqual(result["meters"], f"{property.meters}.00")
                 self.assertEqual(result["active"], property.active)
                 self.assertEqual(
-                    result["description"],
-                    getattr(property, f"description_{lang}")
-                )
-                self.assertEqual(
                     result["short_description"],
                     getattr(property.short_description.description, lang)
                 )
