@@ -97,7 +97,7 @@ class ShortDescription(models.Model):
 
     def __str__(self):
         return self.description.key
-    
+
     def get_description(self, language: str) -> str:
         """Retrieve short description in the correct language
 
@@ -109,7 +109,7 @@ class ShortDescription(models.Model):
         """
 
         return getattr(self.description, language)
-    
+
 
 class Seller(models.Model):
     id = models.AutoField(primary_key=True)
@@ -137,7 +137,7 @@ class Seller(models.Model):
 class Property(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(
-        max_length=255, verbose_name="Nombre del desarrollo o propiedad"
+        max_length=255, verbose_name="Nombre del desarrollo o propiedad", unique=True
     )
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, verbose_name="Empresa"
@@ -198,7 +198,7 @@ class Property(models.Model):
         """
 
         return getattr(self, f"description_{language}")
-    
+
     def get_price_str(self) -> str:
         """Retrieve price as a string
 

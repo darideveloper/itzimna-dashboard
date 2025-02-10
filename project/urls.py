@@ -16,7 +16,16 @@ from properties import views
 
 # Setup drf router
 router = routers.DefaultRouter()
-router.register(r'properties', views.PropertyViewSet)
+router.register(
+    r'properties',
+    views.PropertyViewSet,
+    basename='properties'
+)
+router.register(
+    r'properties-names',
+    views.PropertyNameViewSet,
+    basename='properties-names'
+)
 
 
 urlpatterns = [

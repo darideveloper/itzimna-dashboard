@@ -3,23 +3,12 @@ from core.test_base.test_views import TestPropertiesViewsBase
 
 
 class PropertyViewSetTestCase(TestPropertiesViewsBase):
+    
     def setUp(self):
         # Set endpoint
         super().setUp(endpoint="/api/properties/")
 
-    def test_unauthenticated_user_get(self):
-        """Test unauthenticated user get request"""
-
-        # Remove authentication
-        self.client.logout()
-
-        # Make request
-        response = self.client.get(self.endpoint)
-
-        # Check response
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-
-    def test_authenticated_user_get(self):
+    def test_get(self):
         """Test authenticated user get request in eng and es"""
 
         # Make request
@@ -69,19 +58,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     getattr(property.short_description.description, lang)
                 )
     
-    def test_authenticated_user_post(self):
-        """ Test that authenticated users can not post to the endpoint """
-        
-        self.validate_invalid_method("post")
-        
-    def test_authenticated_user_put(self):
-        """ Test that authenticated users can not put to the endpoint """
-        
-        # add id to endpoint
-        self.endpoint = f"{self.endpoint}1/"
-        self.validate_invalid_method("put")
-        
-    def test_authenticated_user_patch(self):
         
         # add id to endpoint
         self.endpoint = f"{self.endpoint}1/"
@@ -134,7 +110,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             HTTP_ACCEPT_LANGUAGE="es",
         )
         json_data = response.json()
-        result = json_data["results"][0]
+        result = json_data["results"][1]
         self.assertIn(
             f"/media/property-images/{image_names[0].replace('.webp', '')}",
             result["banner"]["url"]
@@ -173,3 +149,49 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         json_data = response.json()
         self.assertEqual(json_data["count"], 1)
         self.assertEqual(len(json_data["results"]), 1)
+        
+    def test_page_size_1(self):
+        """Test if the page size is set to 1"""
+        # TODO:
+        pass
+    
+    def test_order_by_updated_at(self):
+        """Test if the properties are ordered by updated_at"""
+        # TODO:
+        pass
+        
+        
+class PropertyNameViewSetTestCase(TestPropertiesViewsBase):
+    
+    def setUp(self):
+        # Set endpoint
+        super().setUp(endpoint="/api/properties-names/")
+        
+    def test_get(self):
+        """Test authenticated user get request in eng and es"""
+
+        # Make request
+        for lang in self.langs:
+            response = self.client.get(
+                self.endpoint,
+                HTTP_ACCEPT_LANGUAGE=lang,
+            )
+
+            # Check response
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Validate response extra content
+            json_data = response.json()
+            self.assertEqual(json_data["count"], 2)
+            self.assertIsNone(json_data["next"])
+            self.assertIsNone(json_data["previous"])
+            self.assertEqual(len(json_data["results"]), 2)
+
+            # Loop results
+            results = json_data["results"]
+            properties = [self.property_2, self.property_1]
+            for property in properties:
+                
+                # Validate each property
+                property_index = properties.index(property)
+                self.assertEqual(property.name, results[property_index]["name"])

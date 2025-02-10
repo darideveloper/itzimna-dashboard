@@ -41,14 +41,6 @@ class PropertySerializer(serializers.ModelSerializer):
 
         return obj.location.get_name(self.get_language())
 
-    # def get_description(self, obj) -> str:
-    #     """Retrieve description in the correct language
-
-    #     Returns:
-    #         str: Description in the correct language
-    #     """
-    #     return obj.get_description(self.get_language())
-
     def get_banner(self, obj) -> str:
         """Retrieve banner url
 
@@ -93,3 +85,14 @@ class PropertySerializer(serializers.ModelSerializer):
         """
 
         return obj.short_description.get_description(self.get_language())
+    
+    
+class PropertyNameSerializer(serializers.ModelSerializer):
+    """ Return only the property's names """
+        
+    class Meta:
+        model = models.Property
+        fields = ("name",)
+        page_size = 1000
+    
+    
