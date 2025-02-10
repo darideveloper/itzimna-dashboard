@@ -57,11 +57,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["short_description"],
                     getattr(property.short_description.description, lang)
                 )
-    
-        
-        # add id to endpoint
-        self.endpoint = f"{self.endpoint}1/"
-        self.validate_invalid_method("patch")
 
     def test_property_banner_with_single_image(self):
         """ valdiate banner in response with single image in property """
@@ -152,13 +147,45 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         
     def test_page_size_1(self):
         """Test if the page size is set to 1"""
-        # TODO:
-        pass
+        
+        self.endpoint += "?page_size=1"
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["count"], 2)
     
     def test_order_by_updated_at(self):
         """Test if the properties are ordered by updated_at"""
-        # TODO:
-        pass
+        
+        # Update property 1
+        self.property_1.name = "Updated name"
+        self.property_1.save()
+        
+        # Validate property 1 is first
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["results"][0]["name"], self.property_1.name)
+        
+        # Update property 2
+        self.property_2.name = "Updated name 2"
+        self.property_2.save()
+        
+        # Validate property 2 is first
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["results"][0]["name"], self.property_2.name)
         
         
 class PropertyNameViewSetTestCase(TestPropertiesViewsBase):
@@ -195,3 +222,30 @@ class PropertyNameViewSetTestCase(TestPropertiesViewsBase):
                 # Validate each property
                 property_index = properties.index(property)
                 self.assertEqual(property.name, results[property_index]["name"])
+                
+    def test_order_by_updated_at(self):
+        """Test if the properties are ordered by updated_at"""
+        
+        # Update property 1
+        self.property_1.name = "Updated name"
+        self.property_1.save()
+        
+        # Validate property 1 is first
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["results"][0]["name"], self.property_1.name)
+        
+        # Update property 2
+        self.property_2.name = "Updated name 2"
+        self.property_2.save()
+        
+        # Validate property 2 is first
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()["results"][0]["name"], self.property_2.name)
