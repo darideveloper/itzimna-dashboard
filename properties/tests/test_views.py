@@ -158,7 +158,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["count"], 2)
+        self.assertEqual(len(response.json()["results"]), 1)
     
     def test_order_by_updated_at(self):
         """Test if the properties are ordered by updated_at"""
@@ -222,7 +222,22 @@ class PropertyNameViewSetTestCase(TestPropertiesViewsBase):
                 # Validate each property
                 property_index = properties.index(property)
                 self.assertEqual(property.name, results[property_index]["name"])
-                
+    
+    def test_page_size_1(self):
+        """Test if the page size is set to 1"""
+        
+        self.endpoint += "?page_size=1"
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["results"]), 1)
+ 
     def test_order_by_updated_at(self):
         """Test if the properties are ordered by updated_at"""
         
