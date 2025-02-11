@@ -7,7 +7,6 @@ from properties import models
 class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
     """ Api viewset for Property model """
     queryset = models.Property.objects.filter(active=True)
-    serializer_class = serializers.PropertySerializer
     
     def get_queryset(self):
         """ filter with get parameters """
@@ -21,15 +20,10 @@ class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
         # return queryset
         return queryset
     
-    
-class PropertyNameViewSet(viewsets.ReadOnlyModelViewSet):
-    """ Api viewset for Property model """
-    queryset = models.Property.objects.filter(active=True)
-    serializer_class = serializers.PropertyNameSerializer
-    
-    def get_queryset(self):
-        """ filter with get parameters """
-        queryset = models.Property.objects.filter(active=True).order_by('-updated_at')
-            
-        # return queryset
-        return queryset
+    def get_serializer_class(self, *args, **kwargs):
+        """ Return serializer class """
+        if "details" in self.request.query_params:
+            return serializers.PropertyDetailSerializer
+        if "only-names" in self.request.query_params:
+            return serializers.PropertyNameSerializer
+        return serializers.PropertySummarySerializer

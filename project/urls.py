@@ -21,12 +21,6 @@ router.register(
     views.PropertyViewSet,
     basename='properties'
 )
-router.register(
-    r'properties-names',
-    views.PropertyNameViewSet,
-    basename='properties-names'
-)
-
 
 urlpatterns = [
     # Redirects
