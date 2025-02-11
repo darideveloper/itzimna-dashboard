@@ -146,7 +146,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
     def test_page_size_1(self):
         """Test if the page size is set to 1"""
 
-        self.endpoint += "?page_size=1"
+        self.endpoint += "?page-size=1"
 
         # Make request
         response = self.client.get(

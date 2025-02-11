@@ -27,3 +27,21 @@ class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
         if "only-names" in self.request.query_params:
             return serializers.PropertyNameSerializer
         return serializers.PropertySummarySerializer
+    
+    def list(self, request, *args, **kwargs):
+        """ Override list method to print incoming cookies """
+        # Print incoming cookies
+        cookies = request.COOKIES
+        print("Incoming Cookies in List View:", cookies)
+        
+        # Call the parent list method to handle the rest
+        return super().list(request, *args, **kwargs)
+    
+    def retrieve(self, request, *args, **kwargs):
+        """ Override retrieve method to print incoming cookies """
+        # Print incoming cookies
+        cookies = request.COOKIES
+        print("Incoming Cookies in Retrieve View:", cookies)
+        
+        # Call the parent retrieve method to handle the rest
+        return super().retrieve(request, *args, **kwargs)
