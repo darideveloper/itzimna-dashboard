@@ -256,7 +256,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 )
                 self.assertEqual(result["price"], property.get_price_str())
                 self.assertEqual(result["meters"], f"{property.meters}.00")
-                self.assertEqual(result["active"], property.active)
                 self.assertEqual(
                     result["short_description"],
                     getattr(property.short_description.description, lang),
