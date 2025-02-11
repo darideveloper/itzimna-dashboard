@@ -96,3 +96,10 @@ class PropertyTestCase(TestPropertiesModelsBase):
             self.property.short_description.get_description("en"),
             self.property.short_description.description.en,
         )
+        
+    def save_generate_slug(self):
+        """Validate generating a slug for the property"""
+
+        self.property.name = "this is á   test name -- **"
+        self.property.save()
+        self.assertEqual(self.property.slug, "this-is-a-test-name")

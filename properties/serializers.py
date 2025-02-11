@@ -101,7 +101,7 @@ class PropertySummarySerializer(serializers.ModelSerializer):
         """
 
         return obj.get_description(self.__get_language__())
-
+    
 
 class PropertyDetailSerializer(PropertySummarySerializer):
     description = serializers.SerializerMethodField()

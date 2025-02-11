@@ -1,5 +1,6 @@
 from django.db import models
 from translations.models import Translation
+from slugify import slugify
 
 
 class Company(models.Model):
@@ -139,6 +140,14 @@ class Property(models.Model):
     name = models.CharField(
         max_length=255, verbose_name="Nombre del desarrollo o propiedad", unique=True
     )
+    slug = models.SlugField(
+        max_length=255,
+        verbose_name="Slug",
+        unique=True,
+        null=True,
+        blank=True,
+        editable=False,
+    )
     company = models.ForeignKey(
         Company, on_delete=models.CASCADE, verbose_name="Empresa"
     )
@@ -186,6 +195,15 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.location}"
+    
+    def save(self, *args, **kwargs):
+        """ Custom save method """
+        
+        # Generate slug
+        self.slug = slugify(self.name)
+        
+        # Call parent save method
+        super().save(*args, **kwargs)
 
     def get_description(self, language: str) -> str:
         """Retrieve description in the correct language
