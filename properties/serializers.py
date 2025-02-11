@@ -109,7 +109,7 @@ class PropertyDetailSerializer(PropertySummarySerializer):
 
     class Meta:
         model = models.Property
-        fields = "__all__"
+        exclude = ["active", "description_es", "description_en"]
 
     def get_images(self, obj) -> list:
         """Retrieve all images for the property
