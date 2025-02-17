@@ -163,6 +163,19 @@ input[type=checkbox], input[type=radio] {
   overflow: hidden !important;
 }
 
+.small.quiet {
+  margin: 0 10px !important;
+}
+
+[role=status] input[type=submit] {
+  margin: 0 10px !important;
+}
+
+@media screen and (max-width: 600px) {
+  footer.main-footer {
+    text-align: center !important;
+  }
+}
 .rendered-media {
   display: block;
   height: auto;
