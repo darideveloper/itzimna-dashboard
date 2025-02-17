@@ -4,6 +4,14 @@ from properties import models
 from utils.media import get_media_url
 
 
+class SellerSerializer(serializers.ModelSerializer):
+    """Api serializer for Seller model"""
+
+    class Meta:
+        model = models.Seller
+        fields = "__all__"
+
+
 class PropertySummarySerializer(serializers.ModelSerializer):
     """Api serializer for Property model"""
 
@@ -106,6 +114,7 @@ class PropertySummarySerializer(serializers.ModelSerializer):
 class PropertyDetailSerializer(PropertySummarySerializer):
     description = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
+    seller = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Property
@@ -123,7 +132,11 @@ class PropertyDetailSerializer(PropertySummarySerializer):
         for image in all_images:
             image_url = get_media_url(image.image)
             image_alt = image.get_alt_text(self.__get_language__())
-            images.append({"url": image_url, "alt": image_alt})
+            images.append({
+                "id": image.id,
+                "url": image_url,
+                "alt": image_alt
+            })
         return images
 
     def get_description(self, obj) -> str:
@@ -134,7 +147,16 @@ class PropertyDetailSerializer(PropertySummarySerializer):
         """
 
         return obj.get_description(self.__get_language__())
+    
+    def get_seller(self, obj) -> str:
+        """Retrieve seller's data
 
+        Returns:
+            obj: Seller's data
+        """
+
+        return SellerSerializer(obj.seller).data
+    
 
 class PropertyNameSerializer(serializers.ModelSerializer):
     """Return only the property's names"""

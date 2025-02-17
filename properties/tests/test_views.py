@@ -1,5 +1,6 @@
 from rest_framework import status
 from core.test_base.test_views import TestPropertiesViewsBase
+from properties import models
 
 
 class PropertyViewSetTestCase(TestPropertiesViewsBase):
@@ -216,6 +217,17 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
     def test_get_details(self):
         """Get properties full data"""
+        
+        # Add images to property
+        property_images = []
+        image_names = ["test.webp", "test2.webp"]
+        for image_name in image_names:
+            property_images.append(
+                self.create_property_image(
+                    property=self.property_1,
+                    image_name=image_name,
+                )
+            )
 
         # Make request
         for lang in self.langs:
@@ -239,17 +251,13 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             properties = [self.property_1, self.property_2]
             for property in properties:
 
-                # Validate each property
+                # Validate each property main data
                 result = list(
                     filter(lambda result: result["id"] == property.id, results)
                 )[0]
                 self.assertEqual(result["name"], property.name)
                 self.assertEqual(
                     result["location"], getattr(property.location.name, lang)
-                )
-                self.assertEqual(
-                    result["seller"],
-                    f"{property.seller.first_name} {property.seller.last_name}",
                 )
                 self.assertEqual(
                     result["category"], getattr(property.category.name, lang)
@@ -260,10 +268,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["short_description"],
                     getattr(property.short_description.description, lang),
                 )
-                self.assertEqual(
-                    result["description"],
-                    property.get_description(lang),
-                )
                 self.assertEqual(result["featured"], property.featured)
                 self.assertEqual(
                     result["created_at"].split(".")[0],
@@ -273,3 +277,31 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["updated_at"].split(".")[0],
                     property.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
                 )
+                
+                # Validate property description
+                self.assertEqual(
+                    result["description"],
+                    property.get_description(lang),
+                )
+                
+                # Validate property images
+                property_images = models.PropertyImage.objects.filter(property=property)
+                self.assertEqual(len(result["images"]), property_images.count())
+                for image in property_images:
+                    image_result = list(
+                        filter(lambda img: img["id"] == image.id, result["images"])
+                    )[0]
+                    self.assertIn(
+                        f"/media/{image.image.name}",
+                        image_result["url"],
+                    )
+                    self.assertEqual(image_result["alt"], image.get_alt_text(lang))
+                    
+                # Validate seller data
+                seller = property.seller
+                self.assertEqual(result["seller"]["id"], seller.id)
+                self.assertEqual(result["seller"]["first_name"], seller.first_name)
+                self.assertEqual(result["seller"]["last_name"], seller.last_name)
+                self.assertEqual(result["seller"]["email"], seller.email)
+                self.assertEqual(result["seller"]["phone"], seller.phone)
+                self.assertEqual(result["seller"]["has_whatsapp"], seller.has_whatsapp)
