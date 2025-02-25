@@ -256,6 +256,8 @@ JAZZMIN_SETTINGS = {
         
         "translations.TranslationGroup": "fas fa-bookmark",
         "translations.Translation": "fas fa-language",
+        
+        "leads.lead": "fas fa-envelope",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
