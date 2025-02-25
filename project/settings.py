@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'core',
     'properties',
     'translations',
+    'leads',
     
     # Template admin
     'jazzmin',
