@@ -6,6 +6,7 @@ class Lead(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     email = models.EmailField(verbose_name="Correo Electrónico")
+    phone = models.CharField(max_length=20, verbose_name="Teléfono")
     message = models.CharField(max_length=300, verbose_name="Mensaje")
     property = models.ForeignKey(
         property_models.Property,
@@ -24,3 +25,24 @@ class Lead(models.Model):
         
     def __str__(self):
         return f"{self.name} - {self.email}"
+    
+    def save(self, *args, **kwargs):
+        
+        super().save(*args, **kwargs)
+
+    def test_get_clean_phone(self) -> str:
+        """ Test get clean phone method
+        
+        Returns:
+            str: Clean phone number
+        """
+        
+        clean_chars = [' ', '-', '(', ')', '+', '.']
+        clean_phone = self.phone
+        for char in clean_chars:
+            clean_phone = clean_phone.replace(char, '')
+            
+        return clean_phone
+    
+    # def get_whatsapp_link(self):
+    #     return f"https://wa.me/{self.phone}"

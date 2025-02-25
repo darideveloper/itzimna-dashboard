@@ -20,7 +20,8 @@ class LeadViewTestCase(TestPropertiesViewsBase):
             "name": "John Doe",
             "email": "test@gmail.com",
             "message": "Hello, World!",
-            "property": 1
+            "property": 1,
+            "phone": "+1(123)456-7890"
         }
         
     def test_post(self):
@@ -43,6 +44,7 @@ class LeadViewTestCase(TestPropertiesViewsBase):
         self.assertEqual(lead.email, self.data["email"])
         self.assertEqual(lead.message, self.data["message"])
         self.assertEqual(lead.property.id, int(self.data["property"]))
+        self.assertEqual(lead.phone, self.data["phone"])
         
     def test_post_missing_fields(self):
         """ Try to send data with missing required fields """
