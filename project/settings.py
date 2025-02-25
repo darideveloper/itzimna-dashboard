@@ -27,7 +27,7 @@ print(f"DEBUG: {DEBUG}")
 print(f"STORAGE_AWS: {STORAGE_AWS}")
 print(f"HOST: {HOST}")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
 
 # Application definition
 
@@ -329,13 +329,11 @@ LOGGING = {
 }
 
 # Cors
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "https://itzimna.apps.darideveloper.com",
-]
+if os.getenv('CORS_ALLOWED_ORIGINS') != 'None':
+    CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS').split(',')
 
-CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
+if os.getenv('CSRF_TRUSTED_ORIGINS') != 'None':
+    CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS').split(',')
 
 # Storage settings
 if STORAGE_AWS:
