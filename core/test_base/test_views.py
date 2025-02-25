@@ -6,9 +6,10 @@ from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import status
 
 from core.test_base.test_models import TestPropertiesModelsBase
+from core.test_base.test_admin import TestAdminBase
 
 
-class TestApiViewsMethods(APITestCase):
+class TestApiViewsMethods(APITestCase, TestAdminBase):
     """Base class for testing api views that only allows get views"""
 
     def setUp(

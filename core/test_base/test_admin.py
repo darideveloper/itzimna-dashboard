@@ -11,7 +11,43 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.common.by import By
 
 
-class TestAdminSeleniumBase(LiveServerTestCase):
+class TestAdminBase(TestCase):
+    """ Base class to test admin """
+    
+    def setUp(self):
+        """ Load data and create admin user """
+        
+        # Load data
+        call_command("apps_loaddata")
+        
+        # Create admin user
+        self.admin_user, self.admin_pass, self.admin = self.create_admin_user()
+        
+        # Login in client
+        self.client.login(username=self.admin_user, password=self.admin_pass)
+    
+    def create_admin_user(self) -> tuple[str, str, User]:
+        """ Create a new admin user and return it
+        
+        Returns:
+            tuple:
+                str: Username of the user created
+                str: Password of the user created
+                User: User created
+        """
+        
+        # Create admin user
+        password = "admin"
+        user = User.objects.create_superuser(
+            username="admin",
+            email="test@gmail.com",
+            password=password,
+        )
+        
+        return user.username, password, user
+
+
+class TestAdminSeleniumBase(TestAdminBase, LiveServerTestCase):
     """ Base class to test admin with selenium (login and setup) """
     
     def setUp(self, endpont="/admin/"):
@@ -21,7 +57,7 @@ class TestAdminSeleniumBase(LiveServerTestCase):
         call_command("apps_loaddata")
         
         # Create admin user
-        self.admin_user, self.admin_pass, _ = self.create_admin_user()
+        self.admin_user, self.admin_pass, self.admin = self.create_admin_user()
         
         # Setup selenium
         self.endpoint = endpont
@@ -88,23 +124,3 @@ class TestAdminSeleniumBase(LiveServerTestCase):
             except Exception:
                 fields[key] = None
         return fields
-    
-    def create_admin_user(self) -> tuple[str, str]:
-        """ Create a new admin user and return it
-        
-        Returns:
-            tuple:
-                str: Username of the user created
-                str: Password of the user created
-                User: User created
-        """
-        
-        # Create admin user
-        password = "admin"
-        user = User.objects.create_superuser(
-            username="admin",
-            email="test@gmail.com",
-            password=password,
-        )
-        
-        return user.username, password, user

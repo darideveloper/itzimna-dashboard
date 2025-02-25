@@ -44,5 +44,10 @@ class Lead(models.Model):
             
         return clean_phone
     
-    # def get_whatsapp_link(self):
-    #     return f"https://wa.me/{self.phone}"
+    def get_whatsapp_link(self):
+        
+        # Add 521 at the start of the number
+        number_fixed = self.test_get_clean_phone()
+        number_last_10 = number_fixed[-10:]
+        number = f"521{number_last_10}"
+        return f"https://wa.me/{number}"
