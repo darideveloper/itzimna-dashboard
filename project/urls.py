@@ -11,15 +11,21 @@ from core.views import (
     CustomTokenRefreshView,
     ValidateRefreshView,
 )
-from properties import views
+from properties import views as properties_views
+from leads import views as leads_views
 
 
 # Setup drf router
 router = routers.DefaultRouter()
 router.register(
     r'properties',
-    views.PropertyViewSet,
+    properties_views.PropertyViewSet,
     basename='properties'
+)
+router.register(
+    r'leads',
+    leads_views.LeadView,
+    basename='leads'
 )
 
 urlpatterns = [

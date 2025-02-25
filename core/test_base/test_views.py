@@ -14,7 +14,7 @@ class TestApiViewsMethods(APITestCase):
     def setUp(
         self,
         endpoint="/api/",
-        restricted_get: bool = False,
+        restricted_get: bool = True,
         restricted_post: bool = True,
         restricted_put: bool = True,
         restricted_delete: bool = True,
@@ -106,6 +106,9 @@ class TestPropertiesViewsBase(TestApiViewsMethods, TestPropertiesModelsBase):
             category=self.category,
             seller=self.seller,
         )
+        
+        # Update restricted methods
+        self.restricted_get = False
 
         # Global data
         self.langs = ["es", "en"]
