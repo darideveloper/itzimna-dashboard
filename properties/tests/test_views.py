@@ -212,6 +212,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             data = {
                 "id": property.id,
                 "name": property.name,
+                "slug": property.slug,
             }
             self.assertEqual(json_data["results"][property_index], data)
 
