@@ -46,10 +46,20 @@ class AdminSetup {
    * @param {string} inputValue  - The value to set the input field to
    */
   loadMarkDown() {
-    const textAreas = document.querySelectorAll('div > textarea')
+
+    // Get text areas
+    const noMarkdownIds = [
+      "google_maps_src",
+    ]
+    let textAreasSelector = 'div > textarea'
+    textAreasSelector = noMarkdownIds.map(id => `${textAreasSelector}:not(#id_${id})`).join(", ")
+    console.log(textAreasSelector)
+    const textAreas = document.querySelectorAll(textAreasSelector)
 
     setTimeout(() => {
       textAreas.forEach(textArea => {
+
+
         var simplemde = new SimpleMDE({
           element: textArea,
           toolbar: [

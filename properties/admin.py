@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from properties import models
 
 
@@ -81,6 +81,7 @@ class PropertyAdmin(admin.ModelAdmin):
                     'active',
                     'featured',
                     'short_description',
+                    'google_maps_src',
                     ('description_es', 'description_en',)
                 ),
             }
@@ -96,6 +97,16 @@ class PropertyAdmin(admin.ModelAdmin):
         )
     )
     
+    def save_model(self, request, obj, form, change):
+        
+        # Catch error if the google maps src is not valid
+        try:
+            obj.save()
+        except Exception as e:
+            messages.set_level(request, messages.WARNING)
+            self.message_user(request, f"Error: {e}", level='ERROR')
+            return
+        
 
 @admin.register(models.PropertyImage)
 class PropertyImageAdmin(admin.ModelAdmin):
