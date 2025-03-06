@@ -57,6 +57,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["short_description"],
                     getattr(property.short_description.description, lang),
                 )
+                self.assertIn("google.com/maps", result["google_maps_src"])
 
     def test_property_banner_with_single_image(self):
         """valdiate banner in response with single image in property"""

@@ -150,6 +150,7 @@ class TestPropertiesModelsBase(TestCase):
         active: bool = True,
         description_es: str = "Descripción de la propiedad",
         description_en: str = "Property description",
+        google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m."
     ) -> properties_models.Property:
         """ Create a property object
         
@@ -198,6 +199,7 @@ class TestPropertiesModelsBase(TestCase):
             description_es=description_es,
             description_en=description_en,
             short_description=short_description,
+            google_maps_src=google_maps_src,
         )
 
     def create_property_image(
