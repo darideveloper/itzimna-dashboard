@@ -1,6 +1,7 @@
 from rest_framework import status
 from core.test_base.test_views import TestPropertiesViewsBase
 from properties import models
+from utils.whatsapp import get_whatsapp_link
 
 
 class PropertyViewSetTestCase(TestPropertiesViewsBase):
@@ -307,3 +308,30 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 self.assertEqual(result["seller"]["email"], seller.email)
                 self.assertEqual(result["seller"]["phone"], seller.phone)
                 self.assertEqual(result["seller"]["has_whatsapp"], seller.has_whatsapp)
+                self.assertEqual(
+                    result["seller"]["whatsapp"],
+                    get_whatsapp_link(seller.phone)
+                )
+                
+    def test_get_details_seller_no_whatsapp(self):
+        """ valdiate seller's whatsapp in property response with no whatsapp"""
+        
+        # Update seller data
+        first_property = self.property_1
+        first_property.seller.has_whatsapp = False
+        first_property.seller.save()
+        
+        # Get data from api
+        response = self.client.get(
+            self.endpoint + "?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        results = json_data["results"]
+        first_result = list(filter(
+            lambda result: result["id"] == first_property.id, results
+        ))[0]
+        
+        self.assertEqual(first_result["seller"]["whatsapp"], "")
+        
+        

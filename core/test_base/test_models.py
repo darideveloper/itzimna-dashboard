@@ -97,6 +97,7 @@ class TestPropertiesModelsBase(TestCase):
             first_name=first_name,
             last_name=last_name,
             phone=phone,
+            has_whatsapp=True,
         )
         
     def create_company(

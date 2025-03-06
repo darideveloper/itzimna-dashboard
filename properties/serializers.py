@@ -2,15 +2,30 @@ from rest_framework import serializers
 
 from properties import models
 from utils.media import get_media_url
+from utils.whatsapp import get_whatsapp_link
 
 
 class SellerSerializer(serializers.ModelSerializer):
     """Api serializer for Seller model"""
+    
+    whatsapp = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Seller
         fields = "__all__"
 
+    def get_whatsapp(self, obj) -> str:
+        """Retrieve whatsapp url
+
+        Returns:
+            str: Whatsapp url
+        """
+        
+        if obj.has_whatsapp:
+            return get_whatsapp_link(obj.phone)
+        else:
+            return ""
+    
 
 class PropertySummarySerializer(serializers.ModelSerializer):
     """Api serializer for Property model"""
@@ -114,8 +129,8 @@ class PropertySummarySerializer(serializers.ModelSerializer):
 class PropertyDetailSerializer(PropertySummarySerializer):
     description = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
-    seller = serializers.SerializerMethodField()
-
+    seller = SellerSerializer()
+    
     class Meta:
         model = models.Property
         exclude = ["active", "description_es", "description_en"]
@@ -147,15 +162,6 @@ class PropertyDetailSerializer(PropertySummarySerializer):
         """
 
         return obj.get_description(self.__get_language__())
-    
-    def get_seller(self, obj) -> str:
-        """Retrieve seller's data
-
-        Returns:
-            obj: Seller's data
-        """
-
-        return SellerSerializer(obj.seller).data
     
 
 class PropertyNameSerializer(serializers.ModelSerializer):
