@@ -180,6 +180,12 @@ class Property(models.Model):
         verbose_name="Descripción corta",
         help_text="Descripción corta de la propiedad o desarrollo",
     )
+    google_maps_src = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="src de Google Maps",
+        help_text="Puedes insertar el iframe completo"
+    )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")
     created_at = models.DateTimeField(
@@ -201,6 +207,22 @@ class Property(models.Model):
         
         # Generate slug
         self.slug = slugify(self.name)
+        
+        # get src from google maps iframe
+        if self.google_maps_src:
+        
+            if "src=" in self.google_maps_src:
+                src_index = self.google_maps_src.index("src=")
+                src = self.google_maps_src[src_index:]
+                src = src.split('"')[1]
+                self.google_maps_src = src
+                
+            # Validate if the links its from google maps
+            elif "google.com/maps" not in self.google_maps_src:
+                self.google_maps_src = None
+                raise ValueError(
+                    "El Src de Google Maps debe ser un iframe de Google Maps o Src"
+                )
         
         # Call parent save method
         super().save(*args, **kwargs)
