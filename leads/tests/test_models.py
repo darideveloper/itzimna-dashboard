@@ -22,5 +22,5 @@ class LeadTestCase(TestCase):
         )
         
         # Validate phone
-        clean_phone = lead.test_get_clean_phone()
-        self.assertEqual(clean_phone, "11234567890")
+        whatsapp_link = "https://wa.me/5211234567890"
+        self.assertEqual(lead.get_whatsapp_link(), whatsapp_link)

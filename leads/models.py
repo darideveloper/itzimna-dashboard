@@ -1,5 +1,6 @@
 from django.db import models
 from properties import models as property_models
+from utils.whatsapp import get_whatsapp_link
 
 
 class Lead(models.Model):
@@ -29,25 +30,8 @@ class Lead(models.Model):
     def save(self, *args, **kwargs):
         
         super().save(*args, **kwargs)
-
-    def test_get_clean_phone(self) -> str:
-        """ Test get clean phone method
-        
-        Returns:
-            str: Clean phone number
-        """
-        
-        clean_chars = [' ', '-', '(', ')', '+', '.']
-        clean_phone = self.phone
-        for char in clean_chars:
-            clean_phone = clean_phone.replace(char, '')
-            
-        return clean_phone
     
     def get_whatsapp_link(self):
         
         # Add 521 at the start of the number
-        number_fixed = self.test_get_clean_phone()
-        number_last_10 = number_fixed[-10:]
-        number = f"521{number_last_10}"
-        return f"https://wa.me/{number}"
+        return get_whatsapp_link(self.phone)
