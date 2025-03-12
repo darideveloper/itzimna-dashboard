@@ -189,7 +189,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(response.json()["results"][0]["name"], self.property_2.name)
 
     def test_get_only_names(self):
-        """Test if only names are returned"""
+        """ get summary data with serializer PropertyNameSerializer """
 
         # Make request
         response = self.client.get(
@@ -211,12 +211,20 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         properties = [self.property_2, self.property_1]
         for property in properties:
             property_index = properties.index(property)
-            data = {
-                "id": property.id,
-                "name": property.name,
-                "slug": property.slug,
-            }
-            self.assertEqual(json_data["results"][property_index], data)
+            
+            # Format date time
+            datetime = property.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+            
+            # Get property data from api
+            property_data = json_data["results"][property_index]
+            
+            self.assertEqual(property_data["id"], property.id)
+            self.assertEqual(property_data["name"], property.name)
+            self.assertEqual(property_data["slug"], property.slug)
+            self.assertEqual(
+                property_data["updated_at"].split(".")[0],
+                datetime.split(".")[0]
+            )
 
     def test_get_details(self):
         """Get properties full data"""

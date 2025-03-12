@@ -169,5 +169,5 @@ class PropertyNameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Property
-        fields = ("id", "name", "slug")
+        fields = ("id", "name", "slug", "updated_at")
         page_size = 1000
