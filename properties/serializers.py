@@ -25,9 +25,27 @@ class SellerSerializer(serializers.ModelSerializer):
             return get_whatsapp_link(obj.phone)
         else:
             return ""
+        
+        
+class LocationSerializer(serializers.ModelSerializer):
+    """Api serializer for Location model"""
+    
+    details = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Location
+        
+    def get_details(self, obj) -> str:
+        """Retrieve details in the correct language
+
+        Returns:
+            str: Details in the correct language
+        """
+
+        return obj.details.get_description(self.__get_language__())
     
 
-class PropertySummarySerializer(serializers.ModelSerializer):
+class PropertyListItemSerializer(serializers.ModelSerializer):
     """Api serializer for Property model"""
 
     # Calculates fields
@@ -126,7 +144,7 @@ class PropertySummarySerializer(serializers.ModelSerializer):
         return obj.get_description(self.__get_language__())
     
 
-class PropertyDetailSerializer(PropertySummarySerializer):
+class PropertyDetailSerializer(PropertyListItemSerializer):
     description = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     seller = SellerSerializer()
@@ -164,10 +182,10 @@ class PropertyDetailSerializer(PropertySummarySerializer):
         return obj.get_description(self.__get_language__())
     
 
-class PropertyNameSerializer(serializers.ModelSerializer):
+class PropertySummarySerializer(serializers.ModelSerializer):
     """Return only the property's names"""
 
     class Meta:
         model = models.Property
-        fields = ("id", "name", "slug", "updated_at")
+        fields = ("id", "name", "slug", "updated_at", "company", "location")
         page_size = 1000

@@ -7,6 +7,7 @@ from properties import models
 class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
     """ Api viewset for Property model """
     queryset = models.Property.objects.filter(active=True)
+    serializer_class = serializers.PropertyListItemSerializer
     
     def get_queryset(self):
         """ filter with get parameters """
@@ -24,6 +25,6 @@ class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
         """ Return serializer class """
         if "details" in self.request.query_params:
             return serializers.PropertyDetailSerializer
-        if "only-names" in self.request.query_params:
-            return serializers.PropertyNameSerializer
-        return serializers.PropertySummarySerializer
+        if "summary" in self.request.query_params:
+            return serializers.PropertySummarySerializer
+        return self.serializer_class

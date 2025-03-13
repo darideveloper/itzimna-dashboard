@@ -188,12 +188,12 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()["results"][0]["name"], self.property_2.name)
 
-    def test_get_only_names(self):
+    def test_get_summary(self):
         """ get summary data with serializer PropertyNameSerializer """
 
         # Make request
         response = self.client.get(
-            self.endpoint + "?only-names=true",
+            self.endpoint + "?summary=true",
             HTTP_ACCEPT_LANGUAGE="es",
         )
 
