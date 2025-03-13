@@ -225,6 +225,8 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 property_data["updated_at"].split(".")[0],
                 datetime.split(".")[0]
             )
+            self.assertEqual(property_data["location"], property.location.get_name("es"))
+            self.assertEqual(property_data["company"], property.company.name)
 
     def test_get_details(self):
         """Get properties full data"""

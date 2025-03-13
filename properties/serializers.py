@@ -184,8 +184,29 @@ class PropertyDetailSerializer(PropertyListItemSerializer):
 
 class PropertySummarySerializer(serializers.ModelSerializer):
     """Return only the property's names"""
+    
+    location = serializers.SerializerMethodField()
+    company = serializers.CharField(source="company.name", read_only=True)
 
     class Meta:
         model = models.Property
         fields = ("id", "name", "slug", "updated_at", "company", "location")
         page_size = 1000
+        
+    def __get_language__(self) -> str:
+        """Retrieve language from the request context or default to 'es'
+
+        Returns:
+            str: Language code
+        """
+        request = self.context.get("request")
+        return request.headers.get("Accept-Language", "es") if request else "es"
+        
+    def get_location(self, obj) -> str:
+        """Retrieve location name in the correct language
+
+        Returns:
+            str: Location name in the correct language
+        """
+
+        return obj.location.get_name(self.__get_language__())
