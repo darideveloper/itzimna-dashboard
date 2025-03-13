@@ -1,3 +1,4 @@
+from rest_framework import serializers
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer
@@ -26,3 +27,17 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
             "message": "generated",
             "data": data
         }
+        
+        
+# BASE SERIALIZERS
+
+class BaseModelTranslationsSerializer(serializers.ModelSerializer):
+    
+    def __get_language__(self) -> str:
+        """Retrieve language from the request context or default to 'es'
+
+        Returns:
+            str: Language code
+        """
+        request = self.context.get("request")
+        return request.headers.get("Accept-Language", "es") if request else "es"

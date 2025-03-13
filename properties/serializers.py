@@ -3,8 +3,7 @@ from rest_framework import serializers
 from properties import models
 from utils.media import get_media_url
 from utils.whatsapp import get_whatsapp_link
-
-# class BaseModelTranslations()
+from core.serializers import BaseModelTranslationsSerializer
 
 
 class SellerSerializer(serializers.ModelSerializer):
@@ -29,7 +28,7 @@ class SellerSerializer(serializers.ModelSerializer):
             return ""
         
         
-class LocationSerializer(serializers.ModelSerializer):
+class LocationSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Location model"""
     
     name = serializers.SerializerMethodField()
@@ -37,15 +36,6 @@ class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Location
         fields = ('id', 'name')
-        
-    def __get_language__(self) -> str:
-        """Retrieve language from the request context or default to 'es'
-
-        Returns:
-            str: Language code
-        """
-        request = self.context.get("request")
-        return request.headers.get("Accept-Language", "es") if request else "es"
         
     def get_name(self, obj) -> str:
         """Retrieve details in the correct language
@@ -57,7 +47,7 @@ class LocationSerializer(serializers.ModelSerializer):
         return obj.get_name(self.__get_language__())
     
 
-class PropertyListItemSerializer(serializers.ModelSerializer):
+class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Property model"""
 
     # Calculates fields
@@ -82,15 +72,6 @@ class PropertyListItemSerializer(serializers.ModelSerializer):
             "updated_at",
             "featured",
         ]
-
-    def __get_language__(self) -> str:
-        """Retrieve language from the request context or default to 'es'
-
-        Returns:
-            str: Language code
-        """
-        request = self.context.get("request")
-        return request.headers.get("Accept-Language", "es") if request else "es"
 
     def get_location(self, obj) -> str:
         """Retrieve location name in the correct language
@@ -194,7 +175,7 @@ class PropertyDetailSerializer(PropertyListItemSerializer):
         return obj.get_description(self.__get_language__())
     
 
-class PropertySummarySerializer(serializers.ModelSerializer):
+class PropertySummarySerializer(BaseModelTranslationsSerializer):
     """Return only the property's names"""
     
     location = serializers.SerializerMethodField()
@@ -204,15 +185,6 @@ class PropertySummarySerializer(serializers.ModelSerializer):
         model = models.Property
         fields = ("id", "name", "slug", "updated_at", "company", "location")
         page_size = 1000
-        
-    def __get_language__(self) -> str:
-        """Retrieve language from the request context or default to 'es'
-
-        Returns:
-            str: Language code
-        """
-        request = self.context.get("request")
-        return request.headers.get("Accept-Language", "es") if request else "es"
         
     def get_location(self, obj) -> str:
         """Retrieve location name in the correct language
