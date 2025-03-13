@@ -1,5 +1,6 @@
 from rest_framework import status
 from core.test_base.test_views import TestPropertiesViewsBase
+
 from properties import models
 from utils.whatsapp import get_whatsapp_link
 
@@ -343,5 +344,69 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         ))[0]
         
         self.assertEqual(first_result["seller"]["whatsapp"], "")
+
+
+class LocationViewSetTestCase(TestPropertiesViewsBase):
+    
+    def setUp(self):
         
+        # Set endpoint
+        super().setUp(endpoint="/api/locations/")
+        
+        # Create other locations
+        locations_num = 20
+        for location_num in range(locations_num):
+            self.create_location(
+                f"Nueva Ubicación de prueba {location_num}",
+                f"New test location {location_num}"
+            )
+            
+    def test_get(self):
+        """ test enpoint list view response """
+        
+        for lang in self.langs:
+            
+            response = self.client.get(
+                self.endpoint,
+                HTTP_ACCEPT_LANGUAGE=lang,
+            )
+
+            # Check response
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Validate response lenght
+            json_data = response.json()
+            self.assertEqual(len(json_data), 21)
+            
+            # Validate each location
+            for location_json in json_data:
+                
+                location = models.Location.objects.get(
+                    id=location_json["id"]
+                )
+                                
+                self.assertEqual(
+                    location_json["name"],
+                    getattr(location.name, lang)
+                )
+                
+    def test_no_data(self):
+        """ Validate response where there is no locations """
+        
+        # Delete all locations
+        models.Location.objects.all().delete()
+        
+        # Get data
+        response = self.client.get(
+            self.endpoint,
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response lenght
+        json_data = response.json()
+        self.assertEqual(len(json_data), 0)
+
+    
         

@@ -27,6 +27,11 @@ router.register(
     leads_views.LeadView,
     basename='leads'
 )
+router.register(
+    r'locations',
+    properties_views.LocationViewSet,
+    basename='locations'
+)
 
 urlpatterns = [
     # Redirects

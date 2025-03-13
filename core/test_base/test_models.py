@@ -11,7 +11,8 @@ class TestPropertiesModelsBase(TestCase):
     """Validate model custom methods"""
 
     def create_translation(
-        self, key,
+        self,
+        key: str,
         es: str = "Traducción de prueba",
         en: str = "Test translation"
     ) -> translations_models.Translation:
@@ -48,9 +49,9 @@ class TestPropertiesModelsBase(TestCase):
         Returns:
             properties_models.Location: Location object created
         """
-
+        
         return properties_models.Location.objects.create(
-            name=self.create_translation("location_test", name_es, name_en),
+            name=self.create_translation(name_es, name_es, name_en),
             details=details,
         )
 

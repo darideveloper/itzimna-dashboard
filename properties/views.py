@@ -28,3 +28,10 @@ class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
         if "summary" in self.request.query_params:
             return serializers.PropertySummarySerializer
         return self.serializer_class
+    
+    
+class LocationViewSet(viewsets.ReadOnlyModelViewSet):
+    """ Api viewset for Location model """
+    queryset = models.Location.objects.all()
+    serializer_class = serializers.LocationSerializer
+    pagination_class = None

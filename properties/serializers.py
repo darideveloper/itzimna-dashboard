@@ -4,6 +4,8 @@ from properties import models
 from utils.media import get_media_url
 from utils.whatsapp import get_whatsapp_link
 
+# class BaseModelTranslations()
+
 
 class SellerSerializer(serializers.ModelSerializer):
     """Api serializer for Seller model"""
@@ -30,19 +32,29 @@ class SellerSerializer(serializers.ModelSerializer):
 class LocationSerializer(serializers.ModelSerializer):
     """Api serializer for Location model"""
     
-    details = serializers.SerializerMethodField()
+    name = serializers.SerializerMethodField()
 
     class Meta:
         model = models.Location
+        fields = ('id', 'name')
         
-    def get_details(self, obj) -> str:
+    def __get_language__(self) -> str:
+        """Retrieve language from the request context or default to 'es'
+
+        Returns:
+            str: Language code
+        """
+        request = self.context.get("request")
+        return request.headers.get("Accept-Language", "es") if request else "es"
+        
+    def get_name(self, obj) -> str:
         """Retrieve details in the correct language
 
         Returns:
             str: Details in the correct language
         """
 
-        return obj.details.get_description(self.__get_language__())
+        return obj.get_name(self.__get_language__())
     
 
 class PropertyListItemSerializer(serializers.ModelSerializer):
