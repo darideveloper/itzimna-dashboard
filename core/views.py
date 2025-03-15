@@ -18,7 +18,7 @@ class CustomTokenRefreshView(TokenRefreshView):
 
 
 class ValidateRefreshView(APIView):
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         
         # Auto response to manage auth with drf
         return Response(

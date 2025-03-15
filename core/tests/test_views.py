@@ -105,7 +105,7 @@ class CustomJWTViewTests(APITestCase):
         token = str(AccessToken.for_user(self.user))
         
         # Obtain token pair
-        response = self.client.post(
+        response = self.client.get(
             self.token_validate_url,
             HTTP_AUTHORIZATION=f"Bearer {token}"
         )
@@ -126,7 +126,7 @@ class CustomJWTViewTests(APITestCase):
         token = "faketoken123"
         
         # Obtain token pair
-        response = self.client.post(
+        response = self.client.get(
             self.token_validate_url,
             HTTP_AUTHORIZATION=f"Bearer {token}"
         )
