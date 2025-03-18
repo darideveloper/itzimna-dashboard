@@ -345,7 +345,142 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         
         self.assertEqual(first_result["seller"]["whatsapp"], "")
 
+    def test_filter_location(self):
+        """Test filter by location"""
+        
+        # Delete second property
+        self.property_2.delete()
 
+        # Make request
+        response = self.client.get(
+            self.endpoint + f"?ubicacion={self.location.id}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 1)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 1)
+
+        # Validate property
+        property = json_data["results"][0]
+        self.assertEqual(property["name"], self.property_1.name)
+        self.assertEqual(property["location"], self.location.get_name("es"))
+        
+    def test_filter_location_empty(self):
+        """Test filter by location with no properties"""
+
+        # Make request
+        location_2 = self.create_location("Location 2", "Location 2")
+        response = self.client.get(
+            self.endpoint + f"?ubicacion={location_2.id}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 0)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 0)
+        
+    def test_filter_size(self):
+        """Test filter by from and to size """
+        
+        size_from = 0
+        size_to = 200
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint + f"?metros-desde={size_from}&metros-hasta={size_to}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 2)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 2)
+        
+    def test_filter_size_empty(self):
+        """Test filter by from and to size with no properties"""
+        
+        size_from = 0
+        size_to = 1
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint + f"?metros-desde={size_from}&metros-hasta={size_to}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 0)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 0)
+        
+    def test_filter_price(self):
+        """Test filter by from and to price """
+        
+        price_from = 0
+        price_to = 200000
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint + f"?precio-desde={price_from}&precio-hasta={price_to}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 2)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 2)
+        
+    def test_filter_price_empty(self):
+        """Test filter by from and to price with no properties"""
+        
+        price_from = 0
+        price_to = 1
+        
+        # Make request
+        response = self.client.get(
+            self.endpoint + f"?precio-desde={price_from}&precio-hasta={price_to}",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # Validate response
+        json_data = response.json()
+        self.assertEqual(json_data["count"], 0)
+        self.assertIsNone(json_data["next"])
+        self.assertIsNone(json_data["previous"])
+        self.assertEqual(len(json_data["results"]), 0)
+        
+        
 class LocationViewSetTestCase(TestPropertiesViewsBase):
     
     def setUp(self):

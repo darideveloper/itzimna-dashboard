@@ -18,6 +18,21 @@ class PropertyViewSet(viewsets.ReadOnlyModelViewSet):
         if featured is not None:
             queryset = queryset.filter(featured=True)
             
+        # Filter by location
+        location = self.request.query_params.get('ubicacion', None)
+        if location is not None:
+            queryset = queryset.filter(location__id=location)
+            
+        size_from = self.request.query_params.get('metros-desde', None)
+        size_to = self.request.query_params.get('metros-hasta', None)
+        if size_from is not None and size_to is not None:
+            queryset = queryset.filter(meters__gte=size_from, meters__lte=size_to)
+            
+        price_from = self.request.query_params.get('precio-desde', None)
+        price_to = self.request.query_params.get('precio-hasta', None)
+        if price_from is not None and price_to is not None:
+            queryset = queryset.filter(price__gte=price_from, price__lte=price_to)
+            
         # return queryset
         return queryset
     
