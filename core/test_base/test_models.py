@@ -250,3 +250,24 @@ class TestPropertiesModelsBase(TestCase):
         property_image.save()
         
         return property_image
+    
+    def create_tag(
+        self,
+        name: str = "Tag test",
+        es: str = "Etiqueta de prueba",
+        en: str = "Test tag"
+    ) -> properties_models.Tag:
+        """ Create a tag object
+        
+        Args:
+            name (str): Tag name
+            es (str): Spanish tag name
+            en (str): English tag name
+            
+        Returns:
+            properties_models.Tag: Tag object created
+        """
+
+        return properties_models.Tag.objects.create(
+            name=self.create_translation(name, es, en),
+        )

@@ -7,7 +7,7 @@ from core.serializers import BaseModelTranslationsSerializer
 
 
 class SellerSerializer(serializers.ModelSerializer):
-    """Api serializer for Seller model"""
+    """Serializer for Seller model"""
     
     whatsapp = serializers.SerializerMethodField()
 
@@ -29,7 +29,7 @@ class SellerSerializer(serializers.ModelSerializer):
         
         
 class LocationSerializer(BaseModelTranslationsSerializer):
-    """Api serializer for Location model"""
+    """Serializer for Location model"""
     
     name = serializers.SerializerMethodField()
 
@@ -46,6 +46,25 @@ class LocationSerializer(BaseModelTranslationsSerializer):
 
         return obj.get_name(self.__get_language__())
     
+    
+class TagSerializer(BaseModelTranslationsSerializer):
+    """Serializer for Tag model"""
+    
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = models.Tag
+        fields = ('id', 'name')
+        
+    def get_name(self, obj) -> str:
+        """Retrieve details in the correct language
+
+        Returns:
+            str: Details in the correct language
+        """
+
+        return obj.get_name(self.__get_language__())
+
 
 class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Property model"""
@@ -55,6 +74,7 @@ class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     location = serializers.SerializerMethodField()
     seller = serializers.CharField(source="seller.get_full_name", read_only=True)
     category = serializers.SerializerMethodField()
+    tags = TagSerializer(many=True, read_only=True)
     short_description = serializers.SerializerMethodField()
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()

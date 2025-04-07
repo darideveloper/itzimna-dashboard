@@ -38,7 +38,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             properties = [self.property_1, self.property_2]
             for property in properties:
 
-                # Validate each property
+                # Validate each general property
                 result = list(
                     filter(lambda result: result["id"] == property.id, results)
                 )[0]
@@ -60,6 +60,15 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     getattr(property.short_description.description, lang),
                 )
                 self.assertIn("google.com/maps", result["google_maps_src"])
+                
+                # Validate tags
+                tags_models = property.tags.all()
+                self.assertEqual(len(result["tags"]), tags_models.count())
+                for tag_models in tags_models:
+                    tag_result = list(
+                        filter(lambda tag: tag["id"] == tag_models.id, result["tags"])
+                    )[0]
+                    self.assertEqual(tag_result["name"], getattr(tag_models.name, lang))
 
     def test_property_banner_with_single_image(self):
         """valdiate banner in response with single image in property"""
