@@ -167,3 +167,18 @@ input[type=checkbox], input[type=radio]
 @media screen and (max-width: 600px)
     footer.main-footer
         text-align: center !important
+
+// Bigger groups and permissions
+.form-group.field-groups, .form-group.field-user_permissions
+    > .row
+        flex-direction: column
+
+        > div
+            max-width: 100% !important
+
+.select2-selection__choice
+    background-color: $color-green !important
+    color: $color-white !important
+
+    > span
+        margin-left: 10px !important

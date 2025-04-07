@@ -26,5 +26,12 @@
         "fields": {
             "name": "descripciones cortas"
         }
+    },
+    {
+        "model": "translations.TranslationGroup",
+        "pk": 5,
+        "fields": {
+            "name": "etiquetas"
+        }
     }
 ]

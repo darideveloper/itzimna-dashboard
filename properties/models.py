@@ -81,6 +81,33 @@ class Category(models.Model):
             str: Category name in the correct language
         """
         return getattr(self.name, language)
+    
+    
+class Tag(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.OneToOneField(
+        Translation,
+        on_delete=models.CASCADE,
+        verbose_name="Nombre de la etiqueta",
+    )
+
+    class Meta:
+        verbose_name_plural = "Etiquetas"
+        verbose_name = "Etiqueta"
+
+    def __str__(self):
+        return str(self.name.key)
+
+    def get_name(self, language: str) -> str:
+        """Retrieve tag name in the correct language
+
+        Args:
+            language (str): Language to retrieve the name in
+
+        Returns:
+            str: tag name in the correct language
+        """
+        return getattr(self.name, language)
 
 
 class ShortDescription(models.Model):
@@ -159,6 +186,9 @@ class Property(models.Model):
     )
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, verbose_name="Categoría"
+    )
+    tags = models.ManyToManyField(
+        Tag, verbose_name="Etiquetas", blank=True, related_name="properties"
     )
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Precio")
     meters = models.DecimalField(

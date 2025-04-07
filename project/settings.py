@@ -253,6 +253,7 @@ JAZZMIN_SETTINGS = {
         "properties.Seller": "fas fa-user-tie",
         "properties.ShortDescription": "fas fa-align-left",
         "properties.PropertyImage": "fas fa-image",
+        "properties.Tag": "fas fa-tags",
         
         "translations.TranslationGroup": "fas fa-bookmark",
         "translations.Translation": "fas fa-language",
