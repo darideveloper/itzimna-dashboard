@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'properties',
     'translations',
     'leads',
+    'blog',
     
     # Template admin
     'jazzmin',
@@ -259,6 +260,8 @@ JAZZMIN_SETTINGS = {
         "translations.Translation": "fas fa-language",
         
         "leads.lead": "fas fa-envelope",
+        
+        "blog.Post": "fas fa-newspaper",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
