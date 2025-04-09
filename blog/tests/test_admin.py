@@ -3,7 +3,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 
 from core.test_base.test_admin import TestAdminSeleniumBase
-from core.test_base.test_models import TestPostModelBase
+from core.test_base.test_models import TestPostsModelBase
 
 
 class PostAdminTestCase(TestAdminSeleniumBase):
@@ -42,7 +42,7 @@ class PostAdminTestCase(TestAdminSeleniumBase):
             self.assertIsNone(elem, f"Element {elem_name} found (should not be found)")
 
 
-class ImageAdminTestCase(TestAdminSeleniumBase, TestPostModelBase):
+class ImageAdminTestCase(TestAdminSeleniumBase, TestPostsModelBase):
 
     def setUp(self):
 

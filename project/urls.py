@@ -13,6 +13,7 @@ from core.views import (
 )
 from properties import views as properties_views
 from leads import views as leads_views
+from blog import views as blog_views
 
 
 # Setup drf router
@@ -31,6 +32,11 @@ router.register(
     r'locations',
     properties_views.LocationViewSet,
     basename='locations'
+)
+router.register(
+    r'posts',
+    blog_views.PostViewSet,
+    basename='posts'
 )
 
 urlpatterns = [

@@ -258,7 +258,7 @@ class TestPropertiesModelsBase(TestCase):
         )
 
 
-class TestPostModelBase(TestCase):
+class TestPostsModelBase(TestCase):
     """Test PostgreSQL database"""
 
     def create_post(
