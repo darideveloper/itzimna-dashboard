@@ -73,10 +73,24 @@ class TestAdminSeleniumBase(TestAdminBase, LiveServerTestCase):
 
     def __setup_selenium__(self):
         """ Setup and open selenium browser """
-        
         chrome_options = Options()
+        
+        # Run in headless mode if enabled
         if settings.TEST_HEADLESS:
-            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--headless=new")
+            chrome_options.add_argument("--disable-gpu")
+
+        # Allow clipboard access
+        prefs = {
+            "profile.default_content_setting_values.clipboard": 1
+        }
+        chrome_options.add_experimental_option("prefs", prefs)
+
+        # Disable Chrome automation infobars and password save popups
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        chrome_options.add_experimental_option('useAutomationExtension', False)
+        chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+
         self.driver = webdriver.Chrome(options=chrome_options)
         self.driver.implicitly_wait(5)
     

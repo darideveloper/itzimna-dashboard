@@ -84,6 +84,30 @@ class AdminSetup {
     })
   }
 
+  setupCopyButtons() {
+    const copyButtons = document.querySelectorAll('.copy-btn')
+    copyButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const copyAttrib = "value-copy"
+        const copyValue = button.getAttribute(copyAttrib)
+        const originalText = button.textContent
+        button.textContent = "Copiado!"
+
+        // Copy value to clipboard
+        navigator.clipboard.writeText(copyValue).then(() => {
+          // Show message in button
+          button.textContent = "Copiado!"
+          setTimeout(() => {
+            button.textContent = originalText
+          }, 2000)
+        }).catch(err => {
+          console.error('Error copying text: ', err)
+        })
+      })
+    })
+    
+  }
+
   /**
    * Run the functions for the current page
    */
@@ -91,7 +115,7 @@ class AdminSetup {
     // Methods to run for each page
     const methods = {
       "propiedades": [this.loadMarkDown],
-      "imágenes": [this.renderImages],
+      "imágenes": [this.renderImages, this.setupCopyButtons],
       "entradas": [this.loadMarkDown],
     }
 
