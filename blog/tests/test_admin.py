@@ -1,10 +1,8 @@
-import os 
 from time import sleep
-
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.test_base.test_admin import TestAdminSeleniumBase
 from blog import models
+from utils.media import get_test_image
 
 
 class PostAdminTestCase(TestAdminSeleniumBase):
@@ -48,18 +46,10 @@ class ImageAdminTestCase(TestAdminSeleniumBase):
     def setUp(self):
         
         # Create image instance
-        current_path = os.path.dirname(os.path.abspath(__file__))
-        parent_path = os.path.dirname(current_path)
-        test_files_folder = os.path.join(parent_path, "test_files")
-        image_path = os.path.join(test_files_folder, "image.png")
         self.image = models.Image.objects.create(
             name="Test Image",
         )
-        image_file = SimpleUploadedFile(
-            name="test_image.jpg",
-            content=open(image_path, "rb").read(),
-            content_type="image/jpeg",
-        )
+        image_file = get_test_image()
         self.image.image = image_file
         self.image.save()
         self.image.refresh_from_db()
