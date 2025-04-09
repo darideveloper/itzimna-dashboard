@@ -37,3 +37,12 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Image(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255, verbose_name="Nombre")
+    image = models.ImageField(upload_to="blog/images", verbose_name="Imagen")
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name="Fecha de creación"
+    )

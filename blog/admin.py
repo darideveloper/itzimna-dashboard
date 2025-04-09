@@ -9,3 +9,11 @@ class PostAdmin(admin.ModelAdmin):
     list_filter = ("lang", "created_at")
     ordering = ("-created_at",)
     date_hierarchy = "created_at"
+    
+    
+@admin.register(models.Image)
+class ImageAdmin(admin.ModelAdmin):
+    list_display = ("name", "image")
+    search_fields = ("name",)
+    ordering = ("name",)
+    date_hierarchy = "created_at"

@@ -262,6 +262,7 @@ JAZZMIN_SETTINGS = {
         "leads.lead": "fas fa-envelope",
         
         "blog.Post": "fas fa-newspaper",
+        "blog.Image": "fas fa-image",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
