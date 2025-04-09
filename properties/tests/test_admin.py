@@ -1,6 +1,9 @@
-from utils.automation import get_selenium_elems
 
+from time import sleep
+
+from utils.automation import get_selenium_elems
 from core.test_base.test_admin import TestAdminSeleniumBase
+from core.test_base.test_models import TestPropertiesModelsBase
 
 
 class PropertyAdminTestCase(TestAdminSeleniumBase):
@@ -37,3 +40,47 @@ class PropertyAdminTestCase(TestAdminSeleniumBase):
         elems = get_selenium_elems(self.driver, self.markdown_selectors)
         for elem_name, elem in elems.items():
             self.assertIsNone(elem, f"Element {elem_name} found (should not be found)")
+            
+            
+class PropertyImageAdminTestCase(TestAdminSeleniumBase, TestPropertiesModelsBase):
+    
+    def setUp(self):
+        
+        # Create image instance
+        self.image = self.create_property_image()
+        
+        # Login
+        super().setUp()
+        
+        self.endpoint = "/admin/properties/propertyimage"
+        
+    def test_image_list_view(self):
+        """ Check if image list view is loaded """
+        
+        # Submit endpoint
+        self.set_page(self.endpoint)
+        sleep(2)
+        
+        # Check if image is displayed in list view
+        image_elem = self.get_selenium_elems(
+            {
+                "image": f"img[src*='{self.image.image.url}']",
+            }
+        )["image"]
+        self.assertTrue(image_elem, "Image not found in list view")
+        
+    def test_image_detail_view(self):
+        """ Check if image detail view is loaded """
+        
+        # Submit endpoint
+        self.set_page(f"{self.endpoint}/{self.image.id}/change/")
+        sleep(2)
+        
+        # Check if image is displayed in detail view
+        image_elem = self.get_selenium_elems(
+            {
+                "image": f"img[src*='{self.image.image.url}']",
+            }
+        )["image"]
+        self.assertTrue(image_elem, "Image not found in detail view")
+        
