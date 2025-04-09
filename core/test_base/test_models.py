@@ -5,6 +5,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 
 from properties import models as properties_models
 from translations import models as translations_models
+from utils.media import get_test_image
 
 
 class TestPropertiesModelsBase(TestCase):
@@ -227,17 +228,8 @@ class TestPropertiesModelsBase(TestCase):
 
         if not property:
             property = self.create_property()
-            
-        app_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        project_path = os.path.dirname(app_path)
-        media_path = os.path.join(project_path, 'media')
-        
-        image_path = os.path.join(media_path, 'property-images', image_name)
-        image_file = SimpleUploadedFile(
-            name=image_name,
-            content=open(image_path, 'rb').read(),
-            content_type='image/webp'
-        )
+
+        image_file = get_test_image(image_name)
 
         property_image = properties_models.PropertyImage.objects.create(
             property=property,
