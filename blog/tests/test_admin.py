@@ -3,12 +3,12 @@ from utils.automation import get_selenium_elems
 from core.test_base.test_admin import TestAdminSeleniumBase
 
 
-class PropertyAdminTestCase(TestAdminSeleniumBase):
+class PostAdminTestCase(TestAdminSeleniumBase):
     
     def setUp(self):
         
         # Submit endpoint
-        super().setUp("/admin/properties/property/add")
+        super().setUp("/admin/blog/post/add")
         
         self.markdown_selectors = {
             "tool_bar": '.editor-toolbar',
@@ -24,13 +24,13 @@ class PropertyAdminTestCase(TestAdminSeleniumBase):
         for elem_name, elem in elems.items():
             self.assertTrue(elem, f"Element {elem_name} not found")
         
-    def test_no_markdown_in_google_maps_src(self):
+    def test_no_markdown_in_description(self):
         """
         Check if the editor is loaded with reference elements
         """
         
         # Add wrapper class to each markdown element
-        wrapper_class = "field-google_maps_src"
+        wrapper_class = "field-description"
         for elem_name, elem in self.markdown_selectors.items():
             self.markdown_selectors[elem_name] = f".{wrapper_class} {elem}"
         

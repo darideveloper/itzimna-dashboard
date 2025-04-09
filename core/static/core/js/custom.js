@@ -49,18 +49,17 @@ class AdminSetup {
 
     // Get text areas
     const noMarkdownIds = [
-      "google_maps_src",
+      "google_maps_src", // Property google maps src field
+      "description", // Post description field
     ]
     let textAreasSelector = 'div > textarea'
-    textAreasSelector = noMarkdownIds.map(id => `${textAreasSelector}:not(#id_${id})`).join(", ")
-    console.log(textAreasSelector)
+    const notSelector = noMarkdownIds.map(id => `:not(#id_${id})`).join("")
+    textAreasSelector = `div > textarea${notSelector}`
     const textAreas = document.querySelectorAll(textAreasSelector)
 
     setTimeout(() => {
       textAreas.forEach(textArea => {
-
-
-        var simplemde = new SimpleMDE({
+        new SimpleMDE({
           element: textArea,
           toolbar: [
             "bold", "italic", "heading", "|",
@@ -93,6 +92,7 @@ class AdminSetup {
     const methods = {
       "propiedades": [this.loadMarkDown],
       "imágenes": [this.renderImages],
+      "entradas": [this.loadMarkDown],
     }
 
     // Run the methods for the current page
