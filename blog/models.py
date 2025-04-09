@@ -46,3 +46,10 @@ class Image(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de creación"
     )
+    
+    class Meta:
+        verbose_name_plural = "Imágenes"
+        verbose_name = "Imagen"
+        
+    def __str__(self):
+        return self.name

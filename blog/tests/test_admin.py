@@ -1,6 +1,10 @@
-from utils.automation import get_selenium_elems
+import os 
+from time import sleep
+
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 from core.test_base.test_admin import TestAdminSeleniumBase
+from blog import models
 
 
 class PostAdminTestCase(TestAdminSeleniumBase):
@@ -20,7 +24,7 @@ class PostAdminTestCase(TestAdminSeleniumBase):
     def test_markdown_editor_loaded(self):
         """ Check if markdown is not allowed in google maps src """
         
-        elems = get_selenium_elems(self.driver, self.markdown_selectors)
+        elems = self.get_selenium_elems(self.markdown_selectors)
         for elem_name, elem in elems.items():
             self.assertTrue(elem, f"Element {elem_name} not found")
         
@@ -34,6 +38,62 @@ class PostAdminTestCase(TestAdminSeleniumBase):
         for elem_name, elem in self.markdown_selectors.items():
             self.markdown_selectors[elem_name] = f".{wrapper_class} {elem}"
         
-        elems = get_selenium_elems(self.driver, self.markdown_selectors)
+        elems = self.get_selenium_elems(self.markdown_selectors)
         for elem_name, elem in elems.items():
             self.assertIsNone(elem, f"Element {elem_name} found (should not be found)")
+        
+            
+class ImageAdminTestCase(TestAdminSeleniumBase):
+    
+    def setUp(self):
+        
+        # Create image instance
+        current_path = os.path.dirname(os.path.abspath(__file__))
+        parent_path = os.path.dirname(current_path)
+        test_files_folder = os.path.join(parent_path, "test_files")
+        image_path = os.path.join(test_files_folder, "image.png")
+        self.image = models.Image.objects.create(
+            name="Test Image",
+        )
+        image_file = SimpleUploadedFile(
+            name="test_image.jpg",
+            content=open(image_path, "rb").read(),
+            content_type="image/jpeg",
+        )
+        self.image.image = image_file
+        self.image.save()
+        self.image.refresh_from_db()
+        
+        # Login
+        super().setUp()
+        
+    def test_image_list_view(self):
+        """ Check if image list view is loaded """
+        
+        # Submit endpoint
+        self.set_page("/admin/blog/image/")
+        sleep(2)
+        
+        # Check if image is displayed in list view
+        image_elem = self.get_selenium_elems(
+            {
+                "image": f"img[src*='{self.image.image.url}']",
+            }
+        )["image"]
+        self.assertTrue(image_elem, "Image not found in list view")
+        
+    def test_image_detail_view(self):
+        """ Check if image detail view is loaded """
+        
+        # Submit endpoint
+        self.set_page(f"/admin/blog/image/{self.image.id}/change/")
+        sleep(2)
+        
+        # Check if image is displayed in detail view
+        image_elem = self.get_selenium_elems(
+            {
+                "image": f"img[src*='{self.image.image.url}']",
+            }
+        )["image"]
+        self.assertTrue(image_elem, "Image not found in detail view")
+        
