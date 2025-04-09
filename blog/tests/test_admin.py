@@ -57,11 +57,13 @@ class ImageAdminTestCase(TestAdminSeleniumBase):
         # Login
         super().setUp()
         
+        self.endpoint = "/admin/blog/image"
+        
     def test_image_list_view(self):
         """ Check if image list view is loaded """
         
         # Submit endpoint
-        self.set_page("/admin/blog/image/")
+        self.set_page(self.endpoint)
         sleep(2)
         
         # Check if image is displayed in list view
@@ -76,7 +78,7 @@ class ImageAdminTestCase(TestAdminSeleniumBase):
         """ Check if image detail view is loaded """
         
         # Submit endpoint
-        self.set_page(f"/admin/blog/image/{self.image.id}/change/")
+        self.set_page(f"{self.endpoint}/{self.image.id}/change/")
         sleep(2)
         
         # Check if image is displayed in detail view
