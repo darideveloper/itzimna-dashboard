@@ -3,8 +3,7 @@ from time import sleep
 from selenium.webdriver.common.by import By
 
 from core.test_base.test_admin import TestAdminSeleniumBase
-from blog import models
-from utils.media import get_test_image
+from core.test_base.test_models import TestPostModelBase
 
 
 class PostAdminTestCase(TestAdminSeleniumBase):
@@ -43,12 +42,12 @@ class PostAdminTestCase(TestAdminSeleniumBase):
             self.assertIsNone(elem, f"Element {elem_name} found (should not be found)")
 
 
-class ImageAdminTestCase(TestAdminSeleniumBase):
+class ImageAdminTestCase(TestAdminSeleniumBase, TestPostModelBase):
 
     def setUp(self):
 
         # Create image instance
-        self.image = self.__create_image__()
+        self.image = self.create_image()
 
         # Login
         super().setUp()
@@ -59,14 +58,6 @@ class ImageAdminTestCase(TestAdminSeleniumBase):
             "copy_btn": ".copy-btn",
             "image": f"img[src*='{self.image.image.url}']",
         }
-        
-    def __create_image__(self, image_name: str = "test.webp"):
-        """Create a test image instance"""
-        image = models.Image.objects.create(name=image_name)
-        image_file = get_test_image()
-        image.image = image_file
-        image.save()
-        return image
 
     def test_image_list_view(self):
         """Check if image list view is loaded"""
@@ -95,7 +86,7 @@ class ImageAdminTestCase(TestAdminSeleniumBase):
     def test_copy_buttons_loaded(self):
         """validate copy buttons (2 of them) visible in page"""
         
-        self.__create_image__("test2.webp")
+        self.create_image(None, "test2.webp")
         
         # Submit endpoint
         self.set_page(self.endpoint)

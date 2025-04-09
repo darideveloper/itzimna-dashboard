@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from properties import models as properties_models
 from translations import models as translations_models
+from blog import models as blog_models
 from utils.media import get_test_image
 
 
@@ -9,10 +10,7 @@ class TestPropertiesModelsBase(TestCase):
     """Validate model custom methods"""
 
     def create_translation(
-        self,
-        key: str,
-        es: str = "Traducción de prueba",
-        en: str = "Test translation"
+        self, key: str, es: str = "Traducción de prueba", en: str = "Test translation"
     ) -> translations_models.Translation:
         """Create a translation object
 
@@ -35,19 +33,19 @@ class TestPropertiesModelsBase(TestCase):
         self,
         name_es: str = "Ubicación de prueba",
         name_en: str = "Test location",
-        details: str = ""
+        details: str = "",
     ) -> properties_models.Location:
-        """ Create a location object
-        
+        """Create a location object
+
         Args:
             name_es (str): Spanish location name
             name_en (str): English location name
             details (str): Location details
-            
+
         Returns:
             properties_models.Location: Location object created
         """
-        
+
         return properties_models.Location.objects.create(
             name=self.create_translation(name_es, name_es, name_en),
             details=details,
@@ -57,15 +55,15 @@ class TestPropertiesModelsBase(TestCase):
         self,
         name_es: str = "Categoria de prueba",
         name_en: str = "Test category",
-        details: str = ""
+        details: str = "",
     ) -> properties_models.Category:
-        """ Create a category object
-        
+        """Create a category object
+
         Args:
             name_es (str): Spanish category name
             name_en (str): English category name
             details (str): Category details
-            
+
         Returns:
             properties_models.Category: Category object created
         """
@@ -79,15 +77,15 @@ class TestPropertiesModelsBase(TestCase):
         self,
         first_name: str = "Test",
         last_name: str = "Seller",
-        phone: str = "123456789"
+        phone: str = "123456789",
     ) -> properties_models.Seller:
-        """ Create a seller object
-        
+        """Create a seller object
+
         Args:
             first_name (str): Seller first name
             last_name (str): Seller last name
             phone (str): Seller phone
-            
+
         Returns:
             properties_models.Seller: Seller object created
         """
@@ -98,15 +96,13 @@ class TestPropertiesModelsBase(TestCase):
             phone=phone,
             has_whatsapp=True,
         )
-        
-    def create_company(
-        self, name: str = "Company test"
-    ) -> properties_models.Company:
-        """ Create a company object
-        
+
+    def create_company(self, name: str = "Company test") -> properties_models.Company:
+        """Create a company object
+
         Args:
             name (str): Company name
-            
+
         Returns:
             properties_models.Company: Company object created
         """
@@ -119,15 +115,15 @@ class TestPropertiesModelsBase(TestCase):
         self,
         name: str = "short_description_test",
         es: str = "Descripción corta de prueba",
-        en: str = "Test short description"
+        en: str = "Test short description",
     ) -> properties_models.ShortDescription:
-        """ Create a short description object
-        
+        """Create a short description object
+
         Args:
             key (str): Short description key
             es (str): Spanish short description
             en (str): English short description
-            
+
         Returns:
             properties_models.ShortDescription: Short description object created
         """
@@ -150,10 +146,10 @@ class TestPropertiesModelsBase(TestCase):
         active: bool = True,
         description_es: str = "Descripción de la propiedad",
         description_en: str = "Property description",
-        google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m."
+        google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m.",
     ) -> properties_models.Property:
-        """ Create a property object
-        
+        """Create a property object
+
         Args:
             name (str): Property name
             company (properties_models.Company): Company object
@@ -165,7 +161,7 @@ class TestPropertiesModelsBase(TestCase):
             active (bool): Active property
             description_es (str): Spanish description
             description_en (str): English description
-            
+
         Returns:
             properties_models.Property: Property object created
         """
@@ -181,7 +177,7 @@ class TestPropertiesModelsBase(TestCase):
 
         if not seller:
             seller = self.create_seller()
-            
+
         if not short_description:
             short_description = self.create_short_description(
                 name=f"short_description {name}"
@@ -210,15 +206,15 @@ class TestPropertiesModelsBase(TestCase):
         alt_text_en: str = "Alt text",
         show_gallery: bool = True,
     ) -> properties_models.PropertyImage:
-        """ Create a property image object
-        
+        """Create a property image object
+
         Args:
             property (properties_models.Property): Property object
             image_name (str): Image source
             alt_text_es (str): Spanish alt text
             alt_text_en (str): English alt text
             show_gallery (bool): Show in gallery
-            
+
         Returns:
             properties_models.PropertyImage: Property image object created
         """
@@ -237,26 +233,68 @@ class TestPropertiesModelsBase(TestCase):
         )
         property_image.image = image_file
         property_image.save()
-        
+
         return property_image
-    
+
     def create_tag(
         self,
         name: str = "Tag test",
         es: str = "Etiqueta de prueba",
-        en: str = "Test tag"
+        en: str = "Test tag",
     ) -> properties_models.Tag:
-        """ Create a tag object
-        
+        """Create a tag object
+
         Args:
             name (str): Tag name
             es (str): Spanish tag name
             en (str): English tag name
-            
+
         Returns:
             properties_models.Tag: Tag object created
         """
 
         return properties_models.Tag.objects.create(
             name=self.create_translation(name, es, en),
+        )
+
+
+class TestPostModelBase(TestCase):
+    """Test PostgreSQL database"""
+
+    def create_post(
+        self,
+        title: str = "Post test",
+        lang: str = "es",
+        description: str = "Test description",
+        keywords: str = "test, keywords",
+        author: str = "Itimna Team",
+        content: str = "#Test \n**conten**t",
+    ) -> blog_models.Post:
+        """Create a post object"""
+
+        return blog_models.Post.objects.create(
+            title=title,
+            lang=lang,
+            description=description,
+            keywords=keywords,
+            author=author,
+            content=content,
+        )
+        
+    def create_image(
+        self,
+        post: blog_models.Post = None,
+        name: str = "Image test",
+        image_name: str = "test.webp",
+    ) -> blog_models.Image:
+        """Create a image object"""
+        
+        if not post:
+            post = self.create_post()
+
+        image_file = get_test_image(image_name)
+
+        return blog_models.Image.objects.create(
+            name=name,
+            image=image_file,
         )
