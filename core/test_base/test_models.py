@@ -1,7 +1,4 @@
-import os
-
 from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from properties import models as properties_models
 from translations import models as translations_models
