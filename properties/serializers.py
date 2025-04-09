@@ -69,7 +69,7 @@ class TagSerializer(BaseModelTranslationsSerializer):
 class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Property model"""
 
-    # Calculates fields
+    # Fields
     company = serializers.CharField(source="company.name", read_only=True)
     location = serializers.SerializerMethodField()
     seller = serializers.CharField(source="seller.get_full_name", read_only=True)

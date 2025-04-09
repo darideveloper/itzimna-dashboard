@@ -60,7 +60,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     getattr(property.short_description.description, lang),
                 )
                 self.assertIn("google.com/maps", result["google_maps_src"])
-                
+
                 # Validate tags
                 tags_models = property.tags.all()
                 self.assertEqual(len(result["tags"]), tags_models.count())
@@ -199,7 +199,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(response.json()["results"][0]["name"], self.property_2.name)
 
     def test_get_summary(self):
-        """ get summary data with serializer PropertyNameSerializer """
+        """get summary data with serializer PropertyNameSerializer"""
 
         # Make request
         response = self.client.get(
@@ -221,26 +221,27 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         properties = [self.property_2, self.property_1]
         for property in properties:
             property_index = properties.index(property)
-            
+
             # Format date time
             datetime = property.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
-            
+
             # Get property data from api
             property_data = json_data["results"][property_index]
-            
+
             self.assertEqual(property_data["id"], property.id)
             self.assertEqual(property_data["name"], property.name)
             self.assertEqual(property_data["slug"], property.slug)
             self.assertEqual(
-                property_data["updated_at"].split(".")[0],
-                datetime.split(".")[0]
+                property_data["updated_at"].split(".")[0], datetime.split(".")[0]
             )
-            self.assertEqual(property_data["location"], property.location.get_name("es"))
+            self.assertEqual(
+                property_data["location"], property.location.get_name("es")
+            )
             self.assertEqual(property_data["company"], property.company.name)
 
     def test_get_details(self):
         """Get properties full data"""
-        
+
         # Add images to property
         property_images = []
         image_names = ["test.webp", "test2.webp"]
@@ -294,19 +295,19 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 self.assertEqual(result["featured"], property.featured)
                 self.assertEqual(
                     result["created_at"].split(".")[0],
-                    property.created_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+                    property.created_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S"),
                 )
                 self.assertEqual(
                     result["updated_at"].split(".")[0],
-                    property.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S")
+                    property.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S"),
                 )
-                
+
                 # Validate property description
                 self.assertEqual(
                     result["description"],
                     property.get_description(lang),
                 )
-                
+
                 # Validate property images
                 property_images = models.PropertyImage.objects.filter(property=property)
                 self.assertEqual(len(result["images"]), property_images.count())
@@ -319,7 +320,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                         image_result["url"],
                     )
                     self.assertEqual(image_result["alt"], image.get_alt_text(lang))
-                    
+
                 # Validate seller data
                 seller = property.seller
                 self.assertEqual(result["seller"]["id"], seller.id)
@@ -329,18 +330,88 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                 self.assertEqual(result["seller"]["phone"], seller.phone)
                 self.assertEqual(result["seller"]["has_whatsapp"], seller.has_whatsapp)
                 self.assertEqual(
-                    result["seller"]["whatsapp"],
-                    get_whatsapp_link(seller.phone)
+                    result["seller"]["whatsapp"], get_whatsapp_link(seller.phone)
                 )
-                
+
+    def test_get_details_single(self):
+        """Test authenticated user get single property request"""
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{self.property_1.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate property data
+        self.assertEqual(json_data["id"], self.property_1.id)
+        self.assertEqual(json_data["name"], self.property_1.name)
+        self.assertEqual(json_data["location"], self.property_1.location.get_name("es"))
+        self.assertEqual(json_data["category"], self.property_1.category.name.es)
+        self.assertEqual(json_data["price"], self.property_1.get_price_str())
+        self.assertEqual(json_data["meters"], f"{self.property_1.meters}.00")
+        self.assertEqual(
+            json_data["short_description"],
+            getattr(self.property_1.short_description.description, "es"),
+        )
+        self.assertEqual(json_data["featured"], self.property_1.featured)
+        self.assertEqual(
+            json_data["created_at"].split(".")[0],
+            self.property_1.created_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S"),
+        )
+        self.assertEqual(
+            json_data["updated_at"].split(".")[0],
+            self.property_1.updated_at.astimezone().strftime("%Y-%m-%dT%H:%M:%S"),
+        )
+        self.assertEqual(
+            json_data["description"],
+            self.property_1.get_description("es"),
+        )
+
+        # Validate property images
+        property_images = models.PropertyImage.objects.filter(property=self.property_1)
+        self.assertEqual(len(json_data["images"]), property_images.count())
+        for image in property_images:
+            image_result = list(
+                filter(lambda img: img["id"] == image.id, json_data["images"])
+            )[0]
+            self.assertIn(
+                f"/media/{image.image.name}",
+                image_result["url"],
+            )
+            self.assertEqual(image_result["alt"], image.get_alt_text("es"))
+
+        # Validate seller data
+        self.assertEqual(json_data["seller"]["id"], self.property_1.seller.id)
+        self.assertEqual(
+            json_data["seller"]["first_name"], self.property_1.seller.first_name
+        )
+        self.assertEqual(
+            json_data["seller"]["last_name"], self.property_1.seller.last_name
+        )
+        self.assertEqual(json_data["seller"]["email"], self.property_1.seller.email)
+        self.assertEqual(json_data["seller"]["phone"], self.property_1.seller.phone)
+        self.assertEqual(
+            json_data["seller"]["has_whatsapp"], self.property_1.seller.has_whatsapp
+        )
+        self.assertEqual(
+            json_data["seller"]["whatsapp"],
+            get_whatsapp_link(self.property_1.seller.phone),
+        )
+
     def test_get_details_seller_no_whatsapp(self):
-        """ valdiate seller's whatsapp in property response with no whatsapp"""
-        
+        """valdiate seller's whatsapp in property response with no whatsapp"""
+
         # Update seller data
         first_property = self.property_1
         first_property.seller.has_whatsapp = False
         first_property.seller.save()
-        
+
         # Get data from api
         response = self.client.get(
             self.endpoint + "?details=true",
@@ -348,15 +419,15 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         )
         json_data = response.json()
         results = json_data["results"]
-        first_result = list(filter(
-            lambda result: result["id"] == first_property.id, results
-        ))[0]
-        
+        first_result = list(
+            filter(lambda result: result["id"] == first_property.id, results)
+        )[0]
+
         self.assertEqual(first_result["seller"]["whatsapp"], "")
 
     def test_filter_location(self):
         """Test filter by location"""
-        
+
         # Delete second property
         self.property_2.delete()
 
@@ -380,7 +451,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         property = json_data["results"][0]
         self.assertEqual(property["name"], self.property_1.name)
         self.assertEqual(property["location"], self.location.get_name("es"))
-        
+
     def test_filter_location_empty(self):
         """Test filter by location with no properties"""
 
@@ -400,116 +471,116 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertIsNone(json_data["next"])
         self.assertIsNone(json_data["previous"])
         self.assertEqual(len(json_data["results"]), 0)
-        
+
     def test_filter_size(self):
-        """Test filter by from and to size """
-        
+        """Test filter by from and to size"""
+
         size_from = 0
         size_to = 200
-        
+
         # Make request
         response = self.client.get(
             self.endpoint + f"?metros-desde={size_from}&metros-hasta={size_to}",
             HTTP_ACCEPT_LANGUAGE="es",
         )
-        
+
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Validate response
         json_data = response.json()
         self.assertEqual(json_data["count"], 2)
         self.assertIsNone(json_data["next"])
         self.assertIsNone(json_data["previous"])
         self.assertEqual(len(json_data["results"]), 2)
-        
+
     def test_filter_size_empty(self):
         """Test filter by from and to size with no properties"""
-        
+
         size_from = 0
         size_to = 1
-        
+
         # Make request
         response = self.client.get(
             self.endpoint + f"?metros-desde={size_from}&metros-hasta={size_to}",
             HTTP_ACCEPT_LANGUAGE="es",
         )
-        
+
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Validate response
         json_data = response.json()
         self.assertEqual(json_data["count"], 0)
         self.assertIsNone(json_data["next"])
         self.assertIsNone(json_data["previous"])
         self.assertEqual(len(json_data["results"]), 0)
-        
+
     def test_filter_price(self):
-        """Test filter by from and to price """
-        
+        """Test filter by from and to price"""
+
         price_from = 0
         price_to = 200000
-        
+
         # Make request
         response = self.client.get(
             self.endpoint + f"?precio-desde={price_from}&precio-hasta={price_to}",
             HTTP_ACCEPT_LANGUAGE="es",
         )
-        
+
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Validate response
         json_data = response.json()
         self.assertEqual(json_data["count"], 2)
         self.assertIsNone(json_data["next"])
         self.assertIsNone(json_data["previous"])
         self.assertEqual(len(json_data["results"]), 2)
-        
+
     def test_filter_price_empty(self):
         """Test filter by from and to price with no properties"""
-        
+
         price_from = 0
         price_to = 1
-        
+
         # Make request
         response = self.client.get(
             self.endpoint + f"?precio-desde={price_from}&precio-hasta={price_to}",
             HTTP_ACCEPT_LANGUAGE="es",
         )
-        
+
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         # Validate response
         json_data = response.json()
         self.assertEqual(json_data["count"], 0)
         self.assertIsNone(json_data["next"])
         self.assertIsNone(json_data["previous"])
         self.assertEqual(len(json_data["results"]), 0)
-        
-        
+
+
 class LocationViewSetTestCase(TestPropertiesViewsBase):
-    
+
     def setUp(self):
-        
+
         # Set endpoint
         super().setUp(endpoint="/api/locations/")
-        
+
         # Create other locations
         locations_num = 20
         for location_num in range(locations_num):
             self.create_location(
                 f"Nueva Ubicación de prueba {location_num}",
-                f"New test location {location_num}"
+                f"New test location {location_num}",
             )
-            
+
     def test_get(self):
-        """ test enpoint list view response """
-        
+        """test enpoint list view response"""
+
         for lang in self.langs:
-            
+
             response = self.client.get(
                 self.endpoint,
                 HTTP_ACCEPT_LANGUAGE=lang,
@@ -521,25 +592,20 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
             # Validate response lenght
             json_data = response.json()
             self.assertEqual(len(json_data), 21)
-            
+
             # Validate each location
             for location_json in json_data:
-                
-                location = models.Location.objects.get(
-                    id=location_json["id"]
-                )
-                                
-                self.assertEqual(
-                    location_json["name"],
-                    getattr(location.name, lang)
-                )
-                
+
+                location = models.Location.objects.get(id=location_json["id"])
+
+                self.assertEqual(location_json["name"], getattr(location.name, lang))
+
     def test_no_data(self):
-        """ Validate response where there is no locations """
-        
+        """Validate response where there is no locations"""
+
         # Delete all locations
         models.Location.objects.all().delete()
-        
+
         # Get data
         response = self.client.get(
             self.endpoint,
@@ -551,6 +617,3 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
         # Validate response lenght
         json_data = response.json()
         self.assertEqual(len(json_data), 0)
-
-    
-        
