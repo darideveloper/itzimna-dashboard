@@ -11,6 +11,7 @@ class PostListItemSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "lang",
+            "banner_image_url",
             "description",
             "author",
             "created_at",

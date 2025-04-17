@@ -86,6 +86,7 @@ class AdminSetup {
 
   setupCopyButtons() {
     const copyButtons = document.querySelectorAll('.copy-btn')
+    console.log(copyButtons)
     copyButtons.forEach(button => {
       button.addEventListener('click', () => {
         const copyAttrib = "value-copy"

@@ -40,6 +40,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
             # Check summary post data
             self.assertEqual(result["title"], post.title)
             self.assertEqual(result["lang"], post.lang)
+            self.assertEqual(result["banner_image_url"], post.banner_image_url)
             self.assertEqual(result["description"], post.description)
             self.assertEqual(result["author"], post.author)
             
@@ -75,6 +76,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
             # Check summary post data
             self.assertEqual(result["title"], post.title)
             self.assertEqual(result["lang"], post.lang)
+            self.assertEqual(result["banner_image_url"], post.banner_image_url)
             self.assertEqual(result["description"], post.description)
             self.assertEqual(result["keywords"], post.keywords)
             self.assertEqual(result["author"], post.author)
@@ -99,6 +101,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
         # Check summary post data
         self.assertEqual(json_data["title"], self.post_1.title)
         self.assertEqual(json_data["lang"], self.post_1.lang)
+        self.assertEqual(json_data["banner_image_url"], self.post_1.banner_image_url)
         self.assertEqual(json_data["description"], self.post_1.description)
         self.assertEqual(json_data["keywords"], self.post_1.keywords)
         self.assertEqual(json_data["author"], self.post_1.author)

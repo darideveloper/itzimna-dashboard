@@ -12,6 +12,13 @@ class Post(models.Model):
     lang = models.CharField(
         max_length=2, choices=LANGS, default="es", verbose_name="Idioma"
     )
+    banner_image_url = models.CharField(
+        max_length=255,
+        verbose_name="Banner URL",
+        help_text="URL de la imagen del banner",
+        blank=True,
+        null=True,
+    )
     description = models.TextField(
         verbose_name="Descripción corta",
     )
