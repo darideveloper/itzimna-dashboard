@@ -81,8 +81,8 @@ class Category(models.Model):
             str: Category name in the correct language
         """
         return getattr(self.name, language)
-    
-    
+
+
 class Tag(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.OneToOneField(
@@ -144,7 +144,11 @@ class Seller(models.Model):
     first_name = models.CharField(max_length=255, verbose_name="Nombre del vendedor")
     last_name = models.CharField(max_length=255, verbose_name="Apellido del vendedor")
     phone = models.CharField(
-        unique=True, max_length=255, verbose_name="Teléfono del vendedor"
+        unique=True,
+        max_length=255,
+        verbose_name="Teléfono del vendedor",
+        null=True,
+        blank=True,
     )
     has_whatsapp = models.BooleanField(default=False, verbose_name="Tiene WhatsApp")
     email = models.EmailField(
@@ -214,7 +218,7 @@ class Property(models.Model):
         null=True,
         blank=True,
         verbose_name="src de Google Maps",
-        help_text="Puedes insertar el iframe completo"
+        help_text="Puedes insertar el iframe completo",
     )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")
@@ -231,29 +235,29 @@ class Property(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.location}"
-    
+
     def save(self, *args, **kwargs):
-        """ Custom save method """
-        
+        """Custom save method"""
+
         # Generate slug
         self.slug = slugify(self.name)
-        
+
         # get src from google maps iframe
         if self.google_maps_src:
-        
+
             if "src=" in self.google_maps_src:
                 src_index = self.google_maps_src.index("src=")
                 src = self.google_maps_src[src_index:]
                 src = src.split('"')[1]
                 self.google_maps_src = src
-                
+
             # Validate if the links its from google maps
             elif "google.com/maps" not in self.google_maps_src:
                 self.google_maps_src = None
                 raise ValueError(
                     "El Src de Google Maps debe ser un iframe de Google Maps o Src"
                 )
-        
+
         # Call parent save method
         super().save(*args, **kwargs)
 
