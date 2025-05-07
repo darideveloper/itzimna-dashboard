@@ -97,18 +97,55 @@ class TestPropertiesModelsBase(TestCase):
             has_whatsapp=True,
         )
 
-    def create_company(self, name: str = "Company test") -> properties_models.Company:
+    def create_company(
+        self,
+        name: str = "Company test",
+        logo_name: str = "logo.webp",
+        banner_name: str = "banner.webp",
+        location: properties_models.Location = None,
+        details_es: str = "Detalles de prueba",
+        details_en: str = "Test details",
+        google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m.",
+        phone: str = "123456789",
+        email: str = "test@gmail.com",
+        social_media: str = "https://www.instagram.com/test/",
+        show_contact_info: bool = True,
+    ) -> properties_models.Company:
         """Create a company object
 
         Args:
             name (str): Company name
+            logo_name (str): Logo image name
+            banner_name (str): Banner image name
+            location (properties_models.Location): Location object
+            details_es (str): Spanish details
+            details_en (str): English details
+            google_maps_src (str): Google Maps source
+            phone (str): Company phone
+            email (str): Company email
+            social_media (str): Company social media
+            show_contact_info (bool): Show contact info (default: True)
 
         Returns:
             properties_models.Company: Company object created
         """
+        
+        # Create location if not provided
+        if not location:
+            location = self.create_location()
 
         return properties_models.Company.objects.create(
             name=name,
+            logo=get_test_image(logo_name),
+            banner=get_test_image(banner_name),
+            location=location,
+            details_es=details_es,
+            details_en=details_en,
+            google_maps_src=google_maps_src,
+            phone=phone,
+            email=email,
+            social_media=social_media,
+            show_contact_info=show_contact_info,
         )
 
     def create_short_description(

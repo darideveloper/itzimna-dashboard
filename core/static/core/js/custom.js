@@ -8,11 +8,6 @@ class AdminSetup {
     // Get current page
     this.currentPage = document.querySelector('h1').textContent.toLowerCase().trim()
     console.log(this.currentPage)
-    
-    // Globals css selectors
-    this.selectors = {
-      "image": '.field-image a'
-    }
 
     // Run methods in each page
     this.autorun()
@@ -76,9 +71,11 @@ class AdminSetup {
 
   /**
    * Render regular image images
+   * 
+   * @param {string} selector_images - The css selector to find the images
    */
-  renderImages() {
-    const images = document.querySelectorAll(this.selectors.image)
+  renderImages(selector_images) {
+    const images = document.querySelectorAll(selector_images)
     images.forEach(imageWrapper => {
       this.#renderBaseImage(imageWrapper, "rendered-image")
     })
@@ -116,8 +113,9 @@ class AdminSetup {
     // Methods to run for each page
     const methods = {
       "propiedades": [this.loadMarkDown],
-      "imágenes": [this.renderImages, this.setupCopyButtons],
+      "imágenes": [() => this.renderImages('.field-image a'), this.setupCopyButtons],
       "entradas": [this.loadMarkDown],
+      "empresas": [this.loadMarkDown, () => this.renderImages('.field-logo a'), () => this.renderImages('.field-banner a')],
     }
 
     // Run the methods for the current page

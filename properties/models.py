@@ -2,11 +2,21 @@ from django.db import models
 from translations.models import Translation
 from slugify import slugify
 
+from utils.google_maps import get_maps_src
+
 
 class Company(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(
         max_length=255, unique=True, verbose_name="Nombre de la empresa"
+    )
+    slug = models.SlugField(
+        max_length=255,
+        verbose_name="Slug",
+        unique=True,
+        null=True,
+        blank=True,
+        editable=False,
     )
     logo = models.ImageField(
         upload_to="company-photos/",
@@ -71,6 +81,18 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        """Custom save method"""
+
+        # Generate slug
+        self.slug = slugify(self.name)
+        
+        # get src from google maps iframe
+        if self.google_maps_src:
+            self.google_maps_src = get_maps_src(self.google_maps_src)
+        
+        super().save(*args, **kwargs)
 
 
 class Location(models.Model):
@@ -294,19 +316,7 @@ class Property(models.Model):
 
         # get src from google maps iframe
         if self.google_maps_src:
-
-            if "src=" in self.google_maps_src:
-                src_index = self.google_maps_src.index("src=")
-                src = self.google_maps_src[src_index:]
-                src = src.split('"')[1]
-                self.google_maps_src = src
-
-            # Validate if the links its from google maps
-            elif "google.com/maps" not in self.google_maps_src:
-                self.google_maps_src = None
-                raise ValueError(
-                    "El Src de Google Maps debe ser un iframe de Google Maps o Src"
-                )
+            self.google_maps_src = get_maps_src(self.google_maps_src)
 
         # Call parent save method
         super().save(*args, **kwargs)
