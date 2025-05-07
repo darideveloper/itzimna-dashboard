@@ -6,9 +6,63 @@ from utils.google_maps import get_maps_src
 
 
 class Company(models.Model):
+    
+    # Options
+    PROPERTY_TYPE_CHOICES = [
+        # Residential
+        ("House", "Casa"),
+        ("Townhouse", "Casa adosada"),
+        ("Condominium", "Condominio"),
+        ("Apartment", "Departamento"),
+        ("Duplex / Triplex / Fourplex", "Dúplex / Tríplex / Cuádruplex"),
+        ("Villa", "Villa"),
+        ("Penthouse", "Penthouse"),
+        ("Studio", "Estudio"),
+        ("Loft", "Loft"),
+        ("Mobile / Manufactured Home", "Casa móvil / prefabricada"),
+        ("Tiny Home", "Mini casa"),
+        ("Cottage / Cabin", "Cabaña"),
+
+        # Commercial
+        ("Office Space", "Oficina"),
+        ("Retail Storefront / Shop", "Tienda / Local comercial"),
+        ("Shopping Center / Mall Unit", "Local en centro comercial"),
+        ("Warehouse", "Bodega / Almacén"),
+        ("Industrial Building", "Nave industrial"),
+        ("Hotel / Motel", "Hotel / Motel"),
+        ("Restaurant / Bar", "Restaurante / Bar"),
+        ("Coworking Space", "Espacio de coworking"),
+
+        # Land
+        ("Residential Lot", "Terreno residencial"),
+        ("Commercial Lot", "Terreno comercial"),
+        ("Agricultural Land", "Terreno agrícola"),
+        ("Industrial Land", "Terreno industrial"),
+        ("Ranch / Farm", "Rancho / Granja"),
+        ("Forest / Timberland", "Bosque / Terreno forestal"),
+
+        # Mixed-Use
+        ("Mixed-Use Property", "Propiedad de uso mixto"),
+
+        # Luxury / Special Use
+        ("Luxury Estate", "Residencia de lujo"),
+        ("Beachfront Property", "Propiedad frente a la playa"),
+        ("Golf Course Property", "Propiedad en campo de golf"),
+        ("Mountain Cabin", "Cabaña en la montaña"),
+        ("Historic Building", "Edificio histórico"),
+        ("Vacation Home / Resort Property", "Casa de vacaciones / Propiedad turística"),
+    ]
+
     id = models.AutoField(primary_key=True)
     name = models.CharField(
         max_length=255, unique=True, verbose_name="Nombre de la empresa"
+    )
+    type = models.CharField(
+        max_length=50,
+        choices=PROPERTY_TYPE_CHOICES,
+        default="House",
+        verbose_name="Tipo de propiedad",
+        help_text="Selecciona el tipo de propiedad que ofrece la empresa",
     )
     slug = models.SlugField(
         max_length=255,

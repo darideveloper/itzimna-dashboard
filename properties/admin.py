@@ -9,6 +9,7 @@ class CompanyAdmin(admin.ModelAdmin):
         "logo",
         "location",
         "show_contact_info",
+        "type",
     )
     search_fields = ("name", "details_es", "details_en")
 

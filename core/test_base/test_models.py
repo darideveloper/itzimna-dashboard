@@ -102,6 +102,7 @@ class TestPropertiesModelsBase(TestCase):
     def create_company(
         self,
         name: str = "Company test",
+        type: str = "House",
         logo_name: str = "logo.webp",
         banner_name: str = "banner.webp",
         location: properties_models.Location = None,
@@ -117,6 +118,7 @@ class TestPropertiesModelsBase(TestCase):
 
         Args:
             name (str): Company name
+            type (str): Properties type
             logo_name (str): Logo image name
             banner_name (str): Banner image name
             location (properties_models.Location): Location object
@@ -138,6 +140,7 @@ class TestPropertiesModelsBase(TestCase):
 
         return properties_models.Company.objects.create(
             name=name,
+            type=type,
             logo=get_test_image(logo_name),
             banner=get_test_image(banner_name),
             location=location,

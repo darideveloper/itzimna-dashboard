@@ -591,7 +591,7 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
 
             # Validate response lenght
             json_data = response.json()
-            self.assertEqual(len(json_data), 21)
+            self.assertEqual(len(json_data), 22)
 
             # Validate each location
             for location_json in json_data:
