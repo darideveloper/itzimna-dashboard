@@ -6,9 +6,11 @@ from properties import models
 class CompanyAdmin(admin.ModelAdmin):
     list_display = (
         "name",
-        "details",
+        "logo",
+        "location",
+        "show_contact_info",
     )
-    search_fields = ("name", "details")
+    search_fields = ("name", "details_es", "details_en")
 
 
 @admin.register(models.Location)

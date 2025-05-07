@@ -8,11 +8,61 @@ class Company(models.Model):
     name = models.CharField(
         max_length=255, unique=True, verbose_name="Nombre de la empresa"
     )
-    details = models.TextField(
-        null=True, blank=True, verbose_name="Detalles adicionales"
-    )
     logo = models.ImageField(
-        upload_to="logos/", null=True, blank=True, verbose_name="Logo (opcional)"
+        upload_to="company-photos/",
+        verbose_name="Logo de la empresa",
+    )
+    banner = models.ImageField(
+        upload_to="company-banners/",
+        null=True,
+        blank=True,
+        verbose_name="Banner de la empresa",
+    )
+    location = models.ForeignKey(
+        "Location",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Ubicación de la empresa",
+    )
+    details_es = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Detalles en español",
+    )
+    details_en = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Detalles en inglés",
+    )
+    google_maps_src = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="src de Google Maps",
+        help_text="Puedes insertar el iframe completo",
+    )
+    phone = models.CharField(
+        max_length=255,
+        verbose_name="Teléfono de la empresa",
+        null=True,
+        blank=True,
+    )
+    email = models.EmailField(
+        max_length=255,
+        verbose_name="Correo electrónico de la empresa",
+        null=True,
+        blank=True,
+    )
+    social_media = models.URLField(
+        max_length=255,
+        verbose_name="Rede sociale de la empresa",
+        null=True,
+        blank=True,
+    )
+    show_contact_info = models.BooleanField(
+        default=True,
+        verbose_name="Mostrar información de contacto",
+        help_text="Indica si se mostrará la información de contacto de la empresa",
     )
 
     class Meta:
