@@ -46,10 +46,12 @@ class TestPropertiesModelsBase(TestCase):
             properties_models.Location: Location object created
         """
 
-        return properties_models.Location.objects.create(
+        location, _ = properties_models.Location.objects.get_or_create(
             name=self.create_translation(name_es, name_es, name_en),
             details=details,
         )
+        
+        return location
 
     def create_category(
         self,
@@ -132,7 +134,7 @@ class TestPropertiesModelsBase(TestCase):
         
         # Create location if not provided
         if not location:
-            location = self.create_location()
+            location = self.create_location(f"ubicación {name}", f"location {name}")
 
         return properties_models.Company.objects.create(
             name=name,

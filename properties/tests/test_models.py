@@ -96,26 +96,26 @@ class PropertyTestCase(TestPropertiesModelsBase):
             self.property.short_description.get_description("en"),
             self.property.short_description.description.en,
         )
-        
+
     def test_save_generate_slug(self):
         """Validate generating a slug for the property"""
 
         self.property.name = "this is á   test name -- **"
         self.property.save()
         self.assertEqual(self.property.slug, "this-is-a-test-name")
-        
+
     def test_save_google_maps_no_change_src(self):
-        """ Validate that the google maps src is not changed if it is already correct """
-        
+        """Validate that the google maps src is not changed if it is already correct"""
+
         src = "https://www.google.com/maps/embed?pb=!1m18!12121gysart6126521h..."
         self.property.google_maps_src = src
         self.property.save()
-        
+
         self.assertEqual(self.property.google_maps_src, src)
-        
+
     def test_save_google_maps_change_src(self):
-        """ Validate that the google maps src is changed if it is not correct """
-        
+        """Validate that the google maps src is changed if it is not correct"""
+
         src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d118464"
         iframe = f"""
             <iframe
@@ -131,20 +131,77 @@ class PropertyTestCase(TestPropertiesModelsBase):
         """
         self.property.google_maps_src = iframe
         self.property.save()
-        
+
         self.assertEqual(self.property.google_maps_src, src)
-        
+
     def test_save_google_maps_invalid_src(self):
-        """ Validate that the google maps src is not changed if it is not
-        a google maps link """
-        
+        """Validate that the google maps src is not changed if it is not
+        a google maps link"""
+
         src = "https://www.no-google.no-com/no-maps/embed?pb=!1m18!1m12!1m3!1d118464"
 
         self.property.google_maps_src = src
-        
+
         with self.assertRaises(ValueError):
             self.property.save()
-            
+
+        self.property.refresh_from_db()
         self.assertNotEqual(self.property.google_maps_src, src)
-        
-        
+
+
+class CompanyTestCase(TestPropertiesModelsBase):
+
+    def setUp(self):
+        # Create the company instance
+        self.company = self.create_company()
+
+    def test_save_generate_slug(self):
+        """Validate generating a slug for the property"""
+
+        self.company.name = "this is á   test name -- **"
+        self.company.save()
+        self.assertEqual(self.company.slug, "this-is-a-test-name")
+
+    def test_save_google_maps_no_change_src(self):
+        """Validate that the google maps src is not changed if it is already correct"""
+
+        src = "https://www.google.com/maps/embed?pb=!1m18!12121gysart6126521h..."
+        self.company.google_maps_src = src
+        self.company.save()
+
+        self.assertEqual(self.company.google_maps_src, src)
+
+    def test_save_google_maps_change_src(self):
+        """Validate that the google maps src is changed if it is not correct"""
+
+        src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d118464"
+        iframe = f"""
+            <iframe
+                src="{src}"
+                width="600"
+                height="450"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+            >
+            </iframe>
+        """
+        self.company.google_maps_src = iframe
+        self.company.save()
+
+        self.assertEqual(self.company.google_maps_src, src)
+
+    def test_save_google_maps_invalid_src(self):
+        """Validate that the google maps src is not changed if it is not
+        a google maps link"""
+
+        src = "https://www.no-google.no-com/no-maps/embed?pb=!1m18!1m12!1m3!1d118464"
+
+        self.company.google_maps_src = src
+
+        with self.assertRaises(ValueError):
+            self.company.save()
+
+        self.company.refresh_from_db()
+        self.assertNotEqual(self.company.google_maps_src, src)
