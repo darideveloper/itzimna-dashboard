@@ -66,7 +66,7 @@ class TagSerializer(BaseModelTranslationsSerializer):
         return obj.get_name(self.__get_language__())
 
 
-class PropertyDetailSerializer(BaseModelTranslationsSerializer):
+class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Property model"""
 
     # Fields
@@ -79,9 +79,6 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
     meters = serializers.DecimalField(max_digits=10, decimal_places=2)
-    description = serializers.SerializerMethodField()
-    images = serializers.SerializerMethodField()
-    seller = SellerSerializer()
 
     class Meta:
         model = models.Property
@@ -91,6 +88,9 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
             "description_es",
             "description_en",
             "active",
+            "created_at",
+            "updated_at",
+            "featured",
         ]
 
     def get_location(self, obj) -> str:
@@ -99,9 +99,6 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
         Returns:
             str: Location name in the correct language
         """
-        
-        if obj.location is None:
-            return ""
 
         return obj.location.get_name(self.__get_language__())
 
@@ -159,6 +156,16 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
 
         return obj.get_description(self.__get_language__())
     
+
+class PropertyDetailSerializer(PropertyListItemSerializer):
+    description = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    seller = SellerSerializer()
+    
+    class Meta:
+        model = models.Property
+        exclude = ["active", "description_es", "description_en"]
+
     def get_images(self, obj) -> list:
         """Retrieve all images for the property
 
@@ -177,6 +184,15 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
                 "alt": image_alt
             })
         return images
+
+    def get_description(self, obj) -> str:
+        """Retrieve description in the correct language
+
+        Returns:
+            str: Description in the correct language
+        """
+
+        return obj.get_description(self.__get_language__())
     
 
 class PropertySummarySerializer(BaseModelTranslationsSerializer):
