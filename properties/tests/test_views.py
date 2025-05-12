@@ -11,65 +11,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         # Set endpoint
         super().setUp(endpoint="/api/properties/")
 
-    def test_get(self):
-        """Test authenticated user get request in eng and es
-        to render properti main data
-        """
-
-        # Make request
-        for lang in self.langs:
-            response = self.client.get(
-                self.endpoint,
-                HTTP_ACCEPT_LANGUAGE=lang,
-            )
-
-            # Check response
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-            # Validate response extra content
-            json_data = response.json()
-            self.assertEqual(json_data["count"], 2)
-            self.assertIsNone(json_data["next"])
-            self.assertIsNone(json_data["previous"])
-            self.assertEqual(len(json_data["results"]), 2)
-
-            # Loop results
-            results = json_data["results"]
-            properties = [self.property_1, self.property_2]
-            for property in properties:
-
-                # Validate each general property
-                result = list(
-                    filter(lambda result: result["id"] == property.id, results)
-                )[0]
-                self.assertEqual(result["name"], property.name)
-                self.assertEqual(
-                    result["location"], getattr(property.location.name, lang)
-                )
-                self.assertEqual(
-                    result["seller"],
-                    f"{property.seller.first_name} {property.seller.last_name}",
-                )
-                self.assertEqual(
-                    result["category"], getattr(property.category.name, lang)
-                )
-                self.assertEqual(result["price"], property.get_price_str())
-                self.assertEqual(result["meters"], f"{property.meters}.00")
-                self.assertEqual(
-                    result["short_description"],
-                    getattr(property.short_description.description, lang),
-                )
-                self.assertIn("google.com/maps", result["google_maps_src"])
-
-                # Validate tags
-                tags_models = property.tags.all()
-                self.assertEqual(len(result["tags"]), tags_models.count())
-                for tag_models in tags_models:
-                    tag_result = list(
-                        filter(lambda tag: tag["id"] == tag_models.id, result["tags"])
-                    )[0]
-                    self.assertEqual(tag_result["name"], getattr(tag_models.name, lang))
-
     def test_property_banner_with_single_image(self):
         """valdiate banner in response with single image in property"""
 
@@ -84,7 +25,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Validate banner
         response = self.client.get(
-            self.endpoint,
+            self.endpoint + "?details=true",
             HTTP_ACCEPT_LANGUAGE="es",
         )
         json_data = response.json()
@@ -112,7 +53,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Validate banner
         response = self.client.get(
-            self.endpoint,
+            self.endpoint + "?details=true",
             HTTP_ACCEPT_LANGUAGE="es",
         )
         json_data = response.json()

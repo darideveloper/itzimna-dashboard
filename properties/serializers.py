@@ -66,7 +66,7 @@ class TagSerializer(BaseModelTranslationsSerializer):
         return obj.get_name(self.__get_language__())
 
 
-class PropertyListItemSerializer(BaseModelTranslationsSerializer):
+class PropertyDetailSerializer(BaseModelTranslationsSerializer):
     """Api serializer for Property model"""
 
     # Fields
@@ -79,6 +79,9 @@ class PropertyListItemSerializer(BaseModelTranslationsSerializer):
     banner = serializers.SerializerMethodField()
     price = serializers.SerializerMethodField()
     meters = serializers.DecimalField(max_digits=10, decimal_places=2)
+    description = serializers.SerializerMethodField()
+    images = serializers.SerializerMethodField()
+    seller = SellerSerializer()
 
     class Meta:
         model = models.Property
@@ -88,9 +91,6 @@ class PropertyListItemSerializer(BaseModelTranslationsSerializer):
             "description_es",
             "description_en",
             "active",
-            "created_at",
-            "updated_at",
-            "featured",
         ]
 
     def get_location(self, obj) -> str:
@@ -156,16 +156,6 @@ class PropertyListItemSerializer(BaseModelTranslationsSerializer):
 
         return obj.get_description(self.__get_language__())
     
-
-class PropertyDetailSerializer(PropertyListItemSerializer):
-    description = serializers.SerializerMethodField()
-    images = serializers.SerializerMethodField()
-    seller = SellerSerializer()
-    
-    class Meta:
-        model = models.Property
-        exclude = ["active", "description_es", "description_en"]
-
     def get_images(self, obj) -> list:
         """Retrieve all images for the property
 
@@ -184,15 +174,6 @@ class PropertyDetailSerializer(PropertyListItemSerializer):
                 "alt": image_alt
             })
         return images
-
-    def get_description(self, obj) -> str:
-        """Retrieve description in the correct language
-
-        Returns:
-            str: Description in the correct language
-        """
-
-        return obj.get_description(self.__get_language__())
     
 
 class PropertySummarySerializer(BaseModelTranslationsSerializer):
@@ -214,3 +195,37 @@ class PropertySummarySerializer(BaseModelTranslationsSerializer):
         """
 
         return obj.location.get_name(self.__get_language__())
+    
+    
+# class CompanyListItemSerializer(BaseModelTranslationsSerializer):
+#     """Serializer for Company model"""
+    
+#     # properties = PropertySummarySerializer(many=True, read_only=True)
+#     location = serializers.SerializerMethodField()
+    
+#     class Meta:
+#         model = models.Company
+#         fields = [
+#             "name",
+#             "type",
+#             "slug",
+#             "logo",
+#             "banner",
+#             "type",
+#         ]
+        
+#     def get_location(self, obj) -> str:
+#         """Retrieve location name in the correct language
+
+#         Returns:
+#             str: Location name in the correct language
+#         """
+
+#         return obj.location.get_name(self.__get_language__())
+        
+#     # def to_representation(self, instance):
+#     #     """Limit the properties field to 3 items"""
+#     #     representation = super().to_representation(instance)
+#     #     if 'properties' in representation:
+#     #         representation['properties'] = representation['properties'][:3]
+#     #     return representation
