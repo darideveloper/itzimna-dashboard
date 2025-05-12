@@ -89,15 +89,15 @@ class Company(models.Model):
         blank=True,
         verbose_name="Ubicación de la empresa",
     )
-    details_es = models.TextField(
+    description_es = models.TextField(
         null=True,
         blank=True,
-        verbose_name="Detalles en español",
+        verbose_name="Descripción en español",
     )
-    details_en = models.TextField(
+    description_en = models.TextField(
         null=True,
         blank=True,
-        verbose_name="Detalles en inglés",
+        verbose_name="Descripción en inglés",
     )
     google_maps_src = models.TextField(
         null=True,
@@ -147,6 +147,18 @@ class Company(models.Model):
             self.google_maps_src = get_maps_src(self.google_maps_src)
         
         super().save(*args, **kwargs)
+        
+    def get_description(self, language: str) -> str:
+        """Retrieve description in the correct language
+
+        Args:
+            language (str): Language to retrieve the description in
+
+        Returns:
+            str: Description in the correct language
+        """
+
+        return getattr(self, f"description_{language}")
 
 
 class Location(models.Model):

@@ -38,6 +38,11 @@ router.register(
     blog_views.PostViewSet,
     basename='posts'
 )
+router.register(
+    r'companies',
+    properties_views.CompanyViewSet,
+    basename='companies'
+)
 
 urlpatterns = [
     # Redirects

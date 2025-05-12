@@ -50,3 +50,14 @@ class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     
     
+class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
+    """ Api viewset for Company model """
+    queryset = models.Company.objects.all()
+    serializer_class = serializers.CompanySummarySerializer
+
+    def get_serializer_class(self, *args, **kwargs):
+        """ Return serializer class """
+        if "details" in self.request.query_params:
+            return serializers.CompanyDetailSerializer
+        return self.serializer_class
+    

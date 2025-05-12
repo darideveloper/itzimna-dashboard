@@ -99,6 +99,9 @@ class PropertyDetailSerializer(BaseModelTranslationsSerializer):
         Returns:
             str: Location name in the correct language
         """
+        
+        if obj.location is None:
+            return ""
 
         return obj.location.get_name(self.__get_language__())
 
@@ -195,37 +198,77 @@ class PropertySummarySerializer(BaseModelTranslationsSerializer):
         """
 
         return obj.location.get_name(self.__get_language__())
-    
-    
-# class CompanyListItemSerializer(BaseModelTranslationsSerializer):
-#     """Serializer for Company model"""
-    
-#     # properties = PropertySummarySerializer(many=True, read_only=True)
-#     location = serializers.SerializerMethodField()
-    
-#     class Meta:
-#         model = models.Company
-#         fields = [
-#             "name",
-#             "type",
-#             "slug",
-#             "logo",
-#             "banner",
-#             "type",
-#         ]
-        
-#     def get_location(self, obj) -> str:
-#         """Retrieve location name in the correct language
 
-#         Returns:
-#             str: Location name in the correct language
-#         """
 
-#         return obj.location.get_name(self.__get_language__())
+class CompanyDetailSerializer(BaseModelTranslationsSerializer):
+    """Serializer for Company model"""
+    
+    properties = PropertySummarySerializer(many=True, read_only=True)
+    location = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = models.Company
+        exclude = [
+            "description_es",
+            "description_en",
+        ]
         
-#     # def to_representation(self, instance):
-#     #     """Limit the properties field to 3 items"""
-#     #     representation = super().to_representation(instance)
-#     #     if 'properties' in representation:
-#     #         representation['properties'] = representation['properties'][:3]
-#     #     return representation
+    def get_location(self, obj) -> str:
+        """Retrieve location name in the correct language
+
+        Returns:
+            str: Location name in the correct language
+        """
+
+        if obj.location is None:
+            return ""
+        return obj.location.get_name(self.__get_language__())
+    
+    def get_description(self, obj) -> str:
+        """Retrieve description in the correct language
+
+        Returns:
+            str: Description in the correct language
+        """
+        
+        if obj.description_es is None or obj.description_en is None:
+            return ""
+        return obj.get_description(self.__get_language__())
+    
+    
+class CompanySummarySerializer(BaseModelTranslationsSerializer):
+    """Serializer for Company model"""
+    
+    # properties = PropertySummarySerializer(many=True, read_only=True)
+    location = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = models.Company
+        fields = [
+            "id",
+            "name",
+            "type",
+            "slug",
+            "logo",
+            "banner",
+            "location",
+        ]
+        
+    def get_location(self, obj) -> str:
+        """Retrieve location name in the correct language
+
+        Returns:
+            str: Location name in the correct language
+        """
+
+        if obj.location is None:
+            return ""
+        return obj.location.get_name(self.__get_language__())
+        
+    # def to_representation(self, instance):
+    #     """Limit the properties field to 3 items"""
+    #     representation = super().to_representation(instance)
+    #     if 'properties' in representation:
+    #         representation['properties'] = representation['properties'][:3]
+    #     return representation

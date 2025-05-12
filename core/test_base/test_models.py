@@ -106,8 +106,8 @@ class TestPropertiesModelsBase(TestCase):
         logo_name: str = "logo.webp",
         banner_name: str = "banner.webp",
         location: properties_models.Location = None,
-        details_es: str = "Detalles de prueba",
-        details_en: str = "Test details",
+        description_es: str = "Descripción de prueba",
+        description_en: str = "Test description",
         google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m.",
         phone: str = "123456789",
         email: str = "test@gmail.com",
@@ -122,8 +122,8 @@ class TestPropertiesModelsBase(TestCase):
             logo_name (str): Logo image name
             banner_name (str): Banner image name
             location (properties_models.Location): Location object
-            details_es (str): Spanish details
-            details_en (str): English details
+            description_es (str): Spanish description
+            description_en (str): English description
             google_maps_src (str): Google Maps source
             phone (str): Company phone
             email (str): Company email
@@ -144,8 +144,8 @@ class TestPropertiesModelsBase(TestCase):
             logo=get_test_image(logo_name),
             banner=get_test_image(banner_name),
             location=location,
-            details_es=details_es,
-            details_en=details_en,
+            description_es=description_es,
+            description_en=description_en,
             google_maps_src=google_maps_src,
             phone=phone,
             email=email,

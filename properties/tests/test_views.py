@@ -558,3 +558,145 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
         # Validate response lenght
         json_data = response.json()
         self.assertEqual(len(json_data), 0)
+
+
+class CompanyViewSetTestCase(TestPropertiesViewsBase):
+
+    def setUp(self):
+        # Set endpoint
+        super().setUp(endpoint="/api/companies/")
+
+        # Create many companies
+        for lang in self.langs:
+            companies_num = 10
+            for company_num in range(companies_num):
+                self.create_company(
+                    f"Compañía de prueba {company_num} {lang}",
+                    f"Test company {company_num} {lang}",
+                    location=self.create_location(
+                        f"Ubicación de prueba {company_num} {lang}",
+                        f"Test location {company_num} {lang}",
+                    ),
+                )
+
+    def test_get_summary(self):
+        """test enpoint list view response"""
+
+        for lang in self.langs:
+
+            response = self.client.get(
+                self.endpoint + "?summary=true&page-size=9999",
+                HTTP_ACCEPT_LANGUAGE=lang,
+            )
+
+            # Check response
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Validate response lenght
+            json_data = response.json()
+            results = json_data["results"]
+            self.assertGreaterEqual(len(results), 10)
+
+            # Validate each company
+            for company_json in results:
+
+                company = models.Company.objects.get(id=company_json["id"])
+
+                self.assertEqual(company_json["name"], company.name)
+                self.assertEqual(company_json["type"], company.type)
+                self.assertEqual(company_json["slug"], company.slug)
+                self.assertIn(company.logo.url, company_json["logo"])
+                self.assertIn(company.banner.url, company_json["banner"])
+                self.assertEqual(
+                    company_json["location"], company.location.get_name(lang)
+                )
+
+    def test_get_summary_only_required_data(self):
+        """test enpoint list view response with a company only with required data"""
+
+        # Delete all companies
+        models.Company.objects.all().delete()
+
+        # Create company only with required data
+        company = self.create_company("test single company required data")
+        company.banner = None
+        company.location = None
+        company.save()
+
+        # Get data from api
+        response = self.client.get(
+            self.endpoint + "?summary=true&page-size=9999",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+
+        # Validate company data
+        company_json = results[0]
+        self.assertEqual(company_json["name"], company.name)
+        self.assertEqual(company_json["type"], company.type)
+        self.assertEqual(company_json["slug"], company.slug)
+        self.assertIn(company.logo.url, company_json["logo"])
+        self.assertIsNone(company_json["banner"])
+        self.assertEqual(company_json["location"], "")
+
+    def test_get_details(self):
+        """Get company full data"""
+
+        # Make request
+        for lang in self.langs:
+            response = self.client.get(
+                self.endpoint + "?details=true&page-size=9999",
+                HTTP_ACCEPT_LANGUAGE=lang,
+            )
+
+            # Check response
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Validate response extra content
+            json_data = response.json()
+            results = json_data["results"]
+            self.assertGreaterEqual(len(results), 10)
+
+            # Validate each company
+            for company_json in results:
+
+                company = models.Company.objects.get(id=company_json["id"])
+
+                self.assertEqual(company_json["name"], company.name)
+                self.assertEqual(company_json["type"], company.type)
+                self.assertEqual(company_json["slug"], company.slug)
+                self.assertIn(company.logo.url, company_json["logo"])
+                self.assertIn(company.banner.url, company_json["banner"])
+                self.assertEqual(
+                    company_json["location"], company.location.get_name(lang)
+                )
+                self.assertEqual(
+                    company_json["description"],
+                    company.get_description(lang),
+                )
+                self.assertEqual(
+                    company_json["google_maps_src"], company.google_maps_src
+                )
+                self.assertEqual(company_json["phone"], company.phone)
+                self.assertEqual(company_json["email"], company.email)
+                self.assertEqual(company_json["social_media"], company.social_media)
+                self.assertEqual(
+                    company_json["show_contact_info"], company.show_contact_info
+                )
+
+    def test_page_size_1(self):
+        """Test if the page size is set to 1"""
+
+        self.endpoint += "?page-size=1"
+
+        # Make request
+        response = self.client.get(
+            self.endpoint,
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.json()["results"]), 1)
