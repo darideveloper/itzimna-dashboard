@@ -745,6 +745,91 @@ class CompanyViewSetTestCase(TestPropertiesViewsBase):
                     company_json["show_contact_info"], company.show_contact_info
                 )
 
+    def test_get_details_only_required_data(self):
+        """Get company full data with only required data"""
+
+        # Delete all companies
+        models.Company.objects.all().delete()
+
+        # Create company only with required data
+        company = self.create_company("test single company required data")
+        company.banner = None
+        company.location = None
+        company.description_es = None
+        company.description_en = None
+        company.google_maps_src = None
+        company.phone = None
+        company.email = None
+        company.social_media = None
+        company.save()
+
+        # Make request
+        response = self.client.get(
+            self.endpoint + "?details=true&page-size=9999",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+
+        # Validate each company
+        company_json = results[0]
+        self.assertEqual(company_json["name"], company.name)
+        self.assertEqual(company_json["type"], company.type)
+        self.assertEqual(company_json["slug"], company.slug)
+        self.assertIn(company.logo.url, company_json["logo"])
+        self.assertIsNone(company_json["banner"])
+        self.assertEqual(company_json["location"], "")
+        self.assertEqual(company_json["description"], "")
+        self.assertEqual(company_json["google_maps_src"], None)
+        self.assertEqual(company_json["phone"], None)
+        self.assertEqual(company_json["email"], None)
+        self.assertEqual(company_json["social_media"], None)
+        self.assertEqual(company_json["show_contact_info"], True)
+        
+    def test_get_details_single(self):
+        """Get company full data for a single company"""
+        
+        company = self.create_company("Company single test")
+        
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{company.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate company data
+        self.assertEqual(json_data["name"], company.name)
+        self.assertEqual(json_data["type"], company.type)
+        self.assertEqual(json_data["slug"], company.slug)
+        self.assertIn(company.logo.url, json_data["logo"])
+        self.assertIn(company.banner.url, json_data["banner"])
+        self.assertEqual(
+            json_data["location"], company.location.get_name("es")
+        )
+        self.assertEqual(
+            json_data["description"],
+            company.get_description("es"),
+        )
+        self.assertEqual(json_data["google_maps_src"], company.google_maps_src)
+        self.assertEqual(json_data["phone"], company.phone)
+        self.assertEqual(json_data["email"], company.email)
+        self.assertEqual(json_data["social_media"], company.social_media)
+        self.assertEqual(
+            json_data["show_contact_info"], company.show_contact_info
+        )
+
     def test_page_size_1(self):
         """Test if the page size is set to 1"""
 

@@ -222,6 +222,7 @@ class CompanyDetailSerializer(BaseModelTranslationsSerializer):
     properties = PropertySummarySerializer(many=True, read_only=True)
     location = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+    # related_properties = PropertySummarySerializer(many=True, read_only=True)
     
     class Meta:
         model = models.Company
@@ -251,6 +252,15 @@ class CompanyDetailSerializer(BaseModelTranslationsSerializer):
         if obj.description_es is None or obj.description_en is None:
             return ""
         return obj.get_description(self.__get_language__())
+        
+    # def to_representation(self, instance):
+    #     """Limit the properties field to 3 items"""
+    #     representation = super().to_representation(instance)
+    #     if 'properties' in representation:
+    #         properties_len = len(representation['properties'])
+    #         if properties_len > 3:
+    #             representation['properties'] = representation['properties'][:3]
+    #     return representation
     
     
 class CompanySummarySerializer(BaseModelTranslationsSerializer):
@@ -281,10 +291,3 @@ class CompanySummarySerializer(BaseModelTranslationsSerializer):
         if obj.location is None:
             return ""
         return obj.location.get_name(self.__get_language__())
-        
-    # def to_representation(self, instance):
-    #     """Limit the properties field to 3 items"""
-    #     representation = super().to_representation(instance)
-    #     if 'properties' in representation:
-    #         representation['properties'] = representation['properties'][:3]
-    #     return representation

@@ -124,7 +124,7 @@ class Company(models.Model):
         blank=True,
     )
     show_contact_info = models.BooleanField(
-        default=True,
+        default=False,
         verbose_name="Mostrar información de contacto",
         help_text="Indica si se mostrará la información de contacto de la empresa",
     )
