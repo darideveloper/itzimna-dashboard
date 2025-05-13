@@ -28,8 +28,8 @@ class Lead(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado")
     
     class Meta:
-        verbose_name_plural = "Leads de Propiedades"
-        verbose_name = "Lead de Propiedad"
+        verbose_name_plural = "Leads"
+        verbose_name = "Lead"
         
     def __str__(self):
         return f"{self.name} - {self.email}"

@@ -12,11 +12,13 @@ class LeadAdmin(admin.ModelAdmin):
         "name",
         "message",
         "property",
-        "created_at",
+        "company",
+        "done",
+        "updated_at",
     ]
     search_fields = ["name", "email", "message"]
     list_per_page = 10
-    list_filter = ["created_at", "property", "updated_at", "property__name"]
+    list_filter = ["property", "company", "created_at", "updated_at"]
     readonly_fields = ["created_at", "updated_at"]
 
     # Custom fields
