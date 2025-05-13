@@ -16,13 +16,20 @@ class Lead(models.Model):
         blank=True,
         verbose_name="Propiedad"
     )
+    company = models.ForeignKey(
+        property_models.Company,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Empresa"
+    )
     done = models.BooleanField(default=False, verbose_name="Finalizado")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Creado")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Actualizado")
     
     class Meta:
-        verbose_name_plural = "Leads"
-        verbose_name = "Lead"
+        verbose_name_plural = "Leads de Propiedades"
+        verbose_name = "Lead de Propiedad"
         
     def __str__(self):
         return f"{self.name} - {self.email}"
