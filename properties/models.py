@@ -6,7 +6,7 @@ from utils.google_maps import get_maps_src
 
 
 class Company(models.Model):
-    
+
     # Options
     PROPERTY_TYPE_CHOICES = [
         # Residential
@@ -22,7 +22,6 @@ class Company(models.Model):
         ("mobile_home", "Casa móvil / prefabricada"),
         ("tiny_home", "Mini casa"),
         ("cabin", "Cabaña"),
-
         # Commercial
         ("office", "Oficina"),
         ("retail", "Tienda / Local comercial"),
@@ -32,7 +31,6 @@ class Company(models.Model):
         ("hotel", "Hotel / Motel"),
         ("restaurant", "Restaurante / Bar"),
         ("coworking", "Espacio de coworking"),
-
         # Land
         ("residential_lot", "Terreno residencial"),
         ("commercial_lot", "Terreno comercial"),
@@ -40,10 +38,8 @@ class Company(models.Model):
         ("industrial_land", "Terreno industrial"),
         ("ranch", "Rancho / Granja"),
         ("forest", "Bosque / Terreno forestal"),
-
         # Mixed-Use
         ("mixed_use", "Propiedad de uso mixto"),
-
         # Luxury / Special Use
         ("luxury", "Residencia de lujo"),
         ("beachfront", "Propiedad frente a la playa"),
@@ -135,19 +131,19 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
-    
+
     def save(self, *args, **kwargs):
         """Custom save method"""
 
         # Generate slug
         self.slug = slugify(self.name)
-        
+
         # get src from google maps iframe
         if self.google_maps_src:
             self.google_maps_src = get_maps_src(self.google_maps_src)
-        
+
         super().save(*args, **kwargs)
-        
+
     def get_description(self, language: str) -> str:
         """Retrieve description in the correct language
 
@@ -318,7 +314,10 @@ class Property(models.Model):
         editable=False,
     )
     company = models.ForeignKey(
-        Company, on_delete=models.CASCADE, verbose_name="Empresa"
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name="Empresa",
+        related_name="related_properties",
     )
     location = models.ForeignKey(
         Location, on_delete=models.CASCADE, verbose_name="Ubicación"

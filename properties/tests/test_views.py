@@ -791,12 +791,12 @@ class CompanyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(company_json["email"], None)
         self.assertEqual(company_json["social_media"], None)
         self.assertEqual(company_json["show_contact_info"], True)
-        
+
     def test_get_details_single(self):
         """Get company full data for a single company"""
-        
+
         company = self.create_company("Company single test")
-        
+
         # Make request
         response = self.client.get(
             f"{self.endpoint}{company.id}/?details=true",
@@ -815,9 +815,7 @@ class CompanyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(json_data["slug"], company.slug)
         self.assertIn(company.logo.url, json_data["logo"])
         self.assertIn(company.banner.url, json_data["banner"])
-        self.assertEqual(
-            json_data["location"], company.location.get_name("es")
-        )
+        self.assertEqual(json_data["location"], company.location.get_name("es"))
         self.assertEqual(
             json_data["description"],
             company.get_description("es"),
@@ -826,9 +824,61 @@ class CompanyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(json_data["phone"], company.phone)
         self.assertEqual(json_data["email"], company.email)
         self.assertEqual(json_data["social_media"], company.social_media)
-        self.assertEqual(
-            json_data["show_contact_info"], company.show_contact_info
+        self.assertEqual(json_data["show_contact_info"], company.show_contact_info)
+
+    def test_get_details_related_single_property(self):
+        """Get company full data for a single company with a related property"""
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+
+        # Create property and company
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+        company = self.create_company("Company single property test", location=location)
+        property = self.create_property(
+            name="Property single test a",
+            company=company,
+            location=location,
+            category=category,
+            seller=seller,
         )
+        property.save()
+        banner = self.create_property_image(property=property)
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{company.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate company data
+        self.assertEqual(len(json_data["related_properties"]), 1)
+
+        property_json = json_data["related_properties"][0]
+        self.assertEqual(property_json["id"], property.id)
+        self.assertEqual(property_json["name"], property.name)
+        self.assertEqual(property_json["location"], property.location.get_name("es"))
+        self.assertEqual(property_json["seller"], property.seller.get_full_name())
+        self.assertEqual(property_json["category"], property.category.name.es)
+        self.assertEqual(property_json["tags"], [])
+        self.assertEqual(
+            property_json["short_description"],
+            getattr(property.short_description.description, "es"),
+        )
+        self.assertIn(banner.image.url, property_json["banner"]["url"])
+        self.assertEqual(property_json["banner"]["alt"], banner.get_alt_text("es"))
+        self.assertEqual(property_json["price"], property.get_price_str())
+        self.assertEqual(property_json["meters"], f"{property.meters}.00")
+        self.assertEqual(property_json["google_maps_src"], property.google_maps_src)
+        self.assertEqual(property_json["tags"], [])
 
     def test_page_size_1(self):
         """Test if the page size is set to 1"""
