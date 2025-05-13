@@ -10,7 +10,7 @@ class LeadAdminTestCase(TestAdminBase):
         super().setUp()
         
         # Save endpoint
-        self.endpoint = "/admin/leads/leads-properties/"
+        self.endpoint = "/admin/leads/lead/"
         
         # Create lead+
         self.lead = models.Lead.objects.create(
