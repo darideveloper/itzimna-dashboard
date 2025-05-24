@@ -77,8 +77,8 @@ class PropertyAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
         "price",
-        "category__name",
-        "location__name",
+        "description_es",
+        "description_en",
         "company__name",
         "seller__first_name",
         "seller__last_name",
