@@ -22,3 +22,14 @@ class BestDevelopmentsImage(models.Model):
     class Meta:
         verbose_name = "Imagen de Mejores Desarrollos"
         verbose_name_plural = "Imágenes de Mejores Desarrollos"
+
+    def get_alt_text(self, language: str) -> str:
+        """Retrieve alt text in the specified language.
+
+        Args:
+            language (str): Language code (e.g., 'en', 'es').
+
+        Returns:
+            str: Alt text in the specified language.
+        """
+        return getattr(self.alt_text, language) if self.alt_text else ""

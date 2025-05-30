@@ -14,19 +14,17 @@ from core.views import (
 from properties import views as properties_views
 from leads import views as leads_views
 from blog import views as blog_views
+from content import views as content_views
 
 
 # Setup drf router
 router = routers.DefaultRouter()
+
+# Properties endpoints
 router.register(
     r'properties',
     properties_views.PropertyViewSet,
     basename='properties'
-)
-router.register(
-    r'leads',
-    leads_views.LeadView,
-    basename='leads'
 )
 router.register(
     r'locations',
@@ -34,14 +32,30 @@ router.register(
     basename='locations'
 )
 router.register(
+    r'companies',
+    properties_views.CompanyViewSet,
+    basename='companies'
+)
+
+# Leads endpoints
+router.register(
+    r'leads',
+    leads_views.LeadView,
+    basename='leads'
+)
+
+# Blog endpoints
+router.register(
     r'posts',
     blog_views.PostViewSet,
     basename='posts'
 )
+
+# Content endpoints
 router.register(
-    r'companies',
-    properties_views.CompanyViewSet,
-    basename='companies'
+    r'best-developments-images',
+    content_views.BestDevelopmentsImageViewSet,
+    basename='best-developments-images'
 )
 
 urlpatterns = [

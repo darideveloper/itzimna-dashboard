@@ -3,6 +3,8 @@ from django.test import TestCase
 from properties import models as properties_models
 from translations import models as translations_models
 from blog import models as blog_models
+from content import models as content_models
+
 from utils.media import get_test_image
 
 
@@ -50,7 +52,7 @@ class TestPropertiesModelsBase(TestCase):
             name=self.create_translation(name_es, name_es, name_en),
             details=details,
         )
-        
+
         return location
 
     def create_category(
@@ -133,7 +135,7 @@ class TestPropertiesModelsBase(TestCase):
         Returns:
             properties_models.Company: Company object created
         """
-        
+
         # Create location if not provided
         if not location:
             location = self.create_location(f"ubicación {name}", f"location {name}")
@@ -301,7 +303,7 @@ class TestPropertiesModelsBase(TestCase):
 
 
 class TestPostsModelBase(TestCase):
-    """Test PostgreSQL database"""
+    """Test blog models"""
 
     def create_post(
         self,
@@ -322,7 +324,7 @@ class TestPostsModelBase(TestCase):
             author=author,
             content=content,
         )
-        
+
     def create_image(
         self,
         post: blog_models.Post = None,
@@ -330,7 +332,7 @@ class TestPostsModelBase(TestCase):
         image_name: str = "test.webp",
     ) -> blog_models.Image:
         """Create a image object"""
-        
+
         if not post:
             post = self.create_post()
 
@@ -339,4 +341,28 @@ class TestPostsModelBase(TestCase):
         return blog_models.Image.objects.create(
             name=name,
             image=image_file,
+        )
+
+
+class TestContentModelBase(TestCase):
+    """Test content models"""
+
+    def create_best_developments_image(
+        self,
+        image_name: str = "best_development_image.webp",
+        alt_text_es: str = "Imagen de mejor desarrollo",
+        alt_text_en: str = "Best development image",
+        translation_key_posfix: str = "",
+    ) -> content_models.BestDevelopmentsImage:
+        """Create a BestDevelopmentsImage object"""
+
+        image_file = get_test_image(image_name)
+
+        return content_models.BestDevelopmentsImage.objects.create(
+            image=image_file,
+            alt_text=translations_models.Translation.objects.create(
+                key=f"best_development_image_{image_name}_{translation_key_posfix}",
+                es=alt_text_es,
+                en=alt_text_en,
+            ),
         )

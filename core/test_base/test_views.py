@@ -5,7 +5,11 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import status
 
-from core.test_base.test_models import TestPropertiesModelsBase, TestPostsModelBase
+from core.test_base.test_models import (
+    TestPropertiesModelsBase,
+    TestPostsModelBase,
+    TestContentModelBase,
+)
 from core.test_base.test_admin import TestAdminBase
 
 
@@ -128,7 +132,7 @@ class TestPropertiesViewsBase(TestApiViewsMethods, TestPropertiesModelsBase):
 
 
 class TestPostsViewsBase(TestApiViewsMethods, TestPostsModelBase):
-    
+
     def setUp(self, endpoint="/api/"):
         """Initialize test data"""
 
@@ -145,6 +149,26 @@ class TestPostsViewsBase(TestApiViewsMethods, TestPostsModelBase):
 
         # Update restricted methods
         self.restricted_get = False
+
+        # Send enpoint to parent
+        super().setUp()
+        self.endpoint = endpoint
+
+
+class TestContentViewsBase(TestApiViewsMethods, TestContentModelBase):
+    """Base class for testing content views"""
+
+    def setUp(self, endpoint="/api/"):
+        """Initialize test data"""
+
+        # Create initial data
+        self.best_developments_image = self.create_best_developments_image()
+
+        # Update restricted methods
+        self.restricted_get = False
+        
+        # Global data
+        self.langs = ["es", "en"]
 
         # Send enpoint to parent
         super().setUp()
