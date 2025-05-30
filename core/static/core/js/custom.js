@@ -116,6 +116,7 @@ class AdminSetup {
       "imágenes": [() => this.renderImages('.field-image a'), this.setupCopyButtons],
       "entradas": [this.loadMarkDown],
       "empresas": [this.loadMarkDown, () => this.renderImages('.field-logo a'), () => this.renderImages('.field-banner a')],
+      "imágenes de mejores desarrollos": [() => this.renderImages('.field-image a')],
     }
 
     // Run the methods for the current page
