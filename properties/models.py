@@ -124,6 +124,11 @@ class Company(models.Model):
         verbose_name="Mostrar información de contacto",
         help_text="Indica si se mostrará la información de contacto de la empresa",
     )
+    promo_active = models.BooleanField(
+        default=False,
+        verbose_name="Promoción activa",
+        help_text="Indica si la empresa tiene una promoción activa",
+    )
 
     class Meta:
         verbose_name_plural = "Empresas"
