@@ -11,7 +11,7 @@ class CompanyAdmin(admin.ModelAdmin):
         "show_contact_info",
         "type",
     )
-    search_fields = ("name", "details_es", "details_en")
+    search_fields = ("name", "description_es", "description_en")
 
 
 @admin.register(models.Location)
@@ -20,7 +20,7 @@ class LocationAdmin(admin.ModelAdmin):
         "name",
         "details",
     )
-    search_fields = ("name", "details")
+    search_fields = ("name__es", "name__en", "details")
 
 
 @admin.register(models.Category)
@@ -29,21 +29,19 @@ class CategoryAdmin(admin.ModelAdmin):
         "name",
         "details",
     )
-    search_fields = ("name", "details")
-    
-    
+    search_fields = ("name__es", "name__en", "details")
+
+
 @admin.register(models.Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = (
-        "name",
-    )
-    search_fields = ("name",)
+    list_display = ("name",)
+    search_fields = ("name__es", "name__en")
 
 
 @admin.register(models.ShortDescription)
 class ShortDescriptionAdmin(admin.ModelAdmin):
     list_display = ("description",)
-    search_fields = ("description",)
+    search_fields = ("description__es", "description__en")
 
 
 @admin.register(models.Seller)
@@ -149,10 +147,7 @@ class PropertyImageAdmin(admin.ModelAdmin):
         "property",
         "image",
     )
-    search_fields = (
-        "property__name",
-        "caption",
-    )
+    search_fields = ("property__name", "alt_text__es", "alt_text__en")
     list_filter = (
         "property",
         "created_at",
