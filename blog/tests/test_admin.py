@@ -2,11 +2,25 @@ from time import sleep
 
 from selenium.webdriver.common.by import By
 
-from core.test_base.test_admin import TestAdminSeleniumBase
+from core.test_base.test_admin import TestAdminSeleniumBase, TestAdminBase
 from core.test_base.test_models import TestPostsModelBase
 
 
-class PostAdminTestCase(TestAdminSeleniumBase):
+class PostAdminTestCase(TestAdminBase):
+
+    def setUp(self):
+
+        # Submit endpoint
+        super().setUp()
+        self.endpoint = "/admin/blog/post/"
+
+    def test_search_bar(self):
+        """Validate search bar working"""
+
+        self.submit_search_bar(self.endpoint)
+
+
+class PostAdminTestCaseSelenium(TestAdminSeleniumBase):
 
     def setUp(self):
 
@@ -42,7 +56,21 @@ class PostAdminTestCase(TestAdminSeleniumBase):
             self.assertIsNone(elem, f"Element {elem_name} found (should not be found)")
 
 
-class ImageAdminTestCase(TestAdminSeleniumBase, TestPostsModelBase):
+class ImageAdminTestCase(TestAdminBase):
+
+    def setUp(self):
+
+        # Submit endpoint
+        super().setUp()
+        self.endpoint = "/admin/blog/image/"
+
+    def test_search_bar(self):
+        """Validate search bar working"""
+
+        self.submit_search_bar(self.endpoint)
+
+
+class ImageAdminTestCaseSelenium(TestAdminSeleniumBase, TestPostsModelBase):
 
     def setUp(self):
 
@@ -85,13 +113,13 @@ class ImageAdminTestCase(TestAdminSeleniumBase, TestPostsModelBase):
 
     def test_copy_buttons_loaded(self):
         """validate copy buttons (2 of them) visible in page"""
-        
+
         self.create_image(None, "test2.webp")
-        
+
         # Submit endpoint
         self.set_page(self.endpoint)
         sleep(2)
-        
+
         # Get buttons
         buttons = self.driver.find_elements(By.CSS_SELECTOR, ".copy-btn")
         self.assertEqual(len(buttons), 2, "Copy button missing")
