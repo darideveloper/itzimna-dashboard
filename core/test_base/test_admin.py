@@ -45,6 +45,28 @@ class TestAdminBase(TestCase):
         )
         
         return user.username, password, user
+    
+    def submit_search_bar(self, endpoint: str, search_text: str = "test"):
+        """ Validate search bar in admin page
+        
+        Args:
+            endpoint (str): Endpoint to test inside /admin/
+            search_text (str): Text to search. Defaults to "test".
+        """
+        
+        # Fix endpoint prefix if needed
+        if not endpoint.startswith("/admin/"):
+            endpoint = f"/admin/{endpoint.lstrip('/')}"
+        
+        # Get response
+        response = self.client.get(f"{endpoint}", {"q": search_text})
+        print(f"Testing search bar in {endpoint} with text '{search_text}'")
+        
+        # Check if the response is valid
+        self.assertEqual(response.status_code, 200)
+        
+        # Check if the search text is in the response content
+        self.assertContains(response, search_text)
 
 
 class TestAdminSeleniumBase(TestAdminBase, LiveServerTestCase):
