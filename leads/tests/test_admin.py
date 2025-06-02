@@ -20,6 +20,11 @@ class LeadAdminTestCase(TestAdminBase):
             phone="+1(123)456-7890",
         )
         
+    def test_search_bar(self):
+        """Validate search bar working"""
+
+        self.submit_search_bar(self.endpoint)
+        
     def test_list_view_custom_fields(self):
         """ Valdiate custom fields (whatsapp_link) in list view """
         
