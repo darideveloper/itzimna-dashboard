@@ -59,7 +59,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["short_description"],
                     getattr(property.short_description.description, lang),
                 )
-                self.assertIn("google.com/maps", result["google_maps_src"])
 
                 # Validate tags
                 tags_models = property.tags.all()
@@ -424,6 +423,466 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         )[0]
 
         self.assertEqual(first_result["seller"]["whatsapp"], "")
+
+    def test_get_details_related_properties_company(self):
+        """Validate related properties in details, based in company
+        Expect 6 properties from the same company
+        """
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+
+        properties_related_ids = []
+        properties_no_related_ids = []
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+
+        company_a = self.create_company(
+            "Company single property test A", location=location
+        )
+        company_b = self.create_company(
+            "Company single property test B", location=location
+        )
+
+        # Create a set of properties with the same company
+        for id in range(7):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_a,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            properties_related_ids.append(property.id)
+
+        # Create second set of properties with the same company
+        for id in range(7, 13):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_b,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            properties_no_related_ids.append(property.id)
+
+        # Make request
+        first_property = models.Property.objects.first()
+        response = self.client.get(
+            f"{self.endpoint}{first_property.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties
+        self.assertEqual(len(json_data["related_properties"]), 6)
+        for related_property in json_data["related_properties"]:
+            # Validate id of each property
+            self.assertIn(related_property["id"], properties_related_ids)
+            self.assertNotIn(related_property["id"], properties_no_related_ids)
+
+    def test_get_details_related_properties_company_less_six(self):
+        """Validate related properties in details, based in company
+        with less than six properties from same company
+        Expect all properties from the same company
+        """
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+
+        properties_related_ids = []
+        properties_no_related_ids = []
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+
+        company_a = self.create_company(
+            "Company single property test A", location=location
+        )
+        company_b = self.create_company(
+            "Company single property test B", location=location
+        )
+
+        # Create a set of properties with the same company
+        for id in range(2):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_a,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            properties_related_ids.append(property.id)
+
+        # Create second set of properties with the same company
+        for id in range(7, 13):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_b,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            properties_no_related_ids.append(property.id)
+
+        # Make request
+        first_property = models.Property.objects.first()
+        response = self.client.get(
+            f"{self.endpoint}{first_property.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties
+        self.assertEqual(len(json_data["related_properties"]), 1)
+        for related_property in json_data["related_properties"]:
+            # Validate id of each property
+            self.assertIn(related_property["id"], properties_related_ids)
+            self.assertNotIn(related_property["id"], properties_no_related_ids)
+
+    def test_get_details_related_properties_tag(self):
+        """Validate related properties in details, based in tags
+        Expect 6 properties with the same tag
+        """
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+        models.Tag.objects.all().delete()
+
+        properties_related_ids = []
+        properties_no_related_ids = []
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+
+        # Create a set of properties with the same tags
+        tag_a = self.create_tag("Tag single property test A", "A")
+        tag_b = self.create_tag("Tag single property test B", "B")
+
+        for id in range(7):
+            company = self.create_company(
+                f"Company single property test {id}", location=location
+            )
+            property = self.create_property(
+                name=f"Property single test {id}",
+                company=company,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_a)
+            property.save()
+            properties_related_ids.append(property.id)
+
+        for id in range(7, 13):
+            company = self.create_company(
+                f"Company single property test {id}", location=location
+            )
+            property = self.create_property(
+                name=f"Property single test {id}",
+                company=company,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_b)
+            property.save()
+            properties_no_related_ids.append(property.id)
+
+        # Make request
+        first_property = models.Property.objects.first()
+        print(first_property.tags.all())
+        response = self.client.get(
+            f"{self.endpoint}{first_property.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties
+        self.assertEqual(len(json_data["related_properties"]), 6)
+        print(json_data["related_properties"])
+        for related_property in json_data["related_properties"]:
+            # Validate id of each property
+            self.assertIn(related_property["id"], properties_related_ids)
+            self.assertNotIn(related_property["id"], properties_no_related_ids)
+
+    def test_get_details_related_properties_comapany_and_tag(self):
+        """Validate related properties in details, based in company and tags
+        Expect 2 properties from the same company and 4 properties with the same tag
+        """
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+        models.Tag.objects.all().delete()
+
+        properties_related_ids = []
+        properties_no_related_ids = []
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+
+        # base companies and tags
+        company_a = self.create_company(
+            "Company single property test A", location=location
+        )
+        company_b = self.create_company(
+            "Company single property test B", location=location
+        )
+        company_c = self.create_company(
+            "Company single property test C", location=location
+        )
+        tag_a = self.create_tag("Tag single property test A")
+        tag_b = self.create_tag("Tag single property test B")
+        tag_c = self.create_tag("Tag single property test C")
+
+        # Create 3 properties with tag_a and company_a
+        for id in range(3):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_a,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_a)
+            property.save()
+            properties_related_ids.append(property.id)
+
+        # Create 4 properties with tag_b and company_b
+        for id in range(3, 7):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_b,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_b)
+            property.save()
+            properties_related_ids.append(property.id)
+
+        # Create 2 properties with tag_c and company_c
+        for id in range(7, 9):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_c,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_c)
+            property.save()
+            properties_no_related_ids.append(property.id)
+
+        # Change first property to company_b
+        first_property = models.Property.objects.first()
+        first_property.company = company_b
+        first_property.save()
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{first_property.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties (tag_a and company_b)
+        self.assertEqual(len(json_data["related_properties"]), 6)
+        for related_property in json_data["related_properties"]:
+            # Validate id of each property
+            self.assertIn(related_property["id"], properties_related_ids)
+            self.assertNotIn(related_property["id"], properties_no_related_ids)
+
+    def test_get_details_related_properties_no_data(self):
+        """Validate related properties in details, with no related properties"""
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+        models.Tag.objects.all().delete()
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+
+        # base companies and tags
+        company_a = self.create_company(
+            "Company single property test A", location=location
+        )
+        company_b = self.create_company(
+            "Company single property test B", location=location
+        )
+        company_c = self.create_company(
+            "Company single property test C", location=location
+        )
+        tag_a = self.create_tag("Tag single property test A")
+        tag_b = self.create_tag("Tag single property test B")
+        tag_c = self.create_tag("Tag single property test C")
+
+        # Create 3 properties with tag_a and company_a
+        for id in range(3):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_a,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_a)
+            property.save()
+
+        # Create 4 properties with tag_b and company_b
+        for id in range(3, 7):
+            property = self.create_property(
+                name=f"Property test {id}",
+                company=company_b,
+                location=location,
+                category=category,
+                seller=seller,
+            )
+            property.tags.add(tag_b)
+            property.save()
+
+        # Change first property to company_c and tag_c
+        first_property = models.Property.objects.first()
+        first_property.company = company_c
+        first_property.tags.remove(tag_a)
+        first_property.tags.add(tag_c)
+        first_property.save()
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{first_property.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties (tag_a and company_b)
+        self.assertEqual(len(json_data["related_properties"]), 0)
+
+    def test_get_details_related_properties_inner_data(self):
+        """Validate specific details of related properties"""
+
+        # Delete all properties
+        models.Property.objects.all().delete()
+
+        location = models.Location.objects.all().first()
+        category = models.Category.objects.all().first()
+        seller = models.Seller.objects.all().first()
+        tag_a = self.create_tag("Tag single property test A")
+        tag_b = self.create_tag("Tag single property test B")
+
+        company_a = self.create_company(
+            "Company single property test A", location=location
+        )
+
+        # Create 2 properties with the same company
+        short_description_1 = self.create_short_description(
+            "Short description 1", "Short description 1"
+        )
+        property_1 = self.create_property(
+            name="Property test 1",
+            company=company_a,
+            location=location,
+            category=category,
+            seller=seller,
+            short_description=short_description_1,
+            price=100000,
+            meters=100,
+            active=True,
+            description_en="Description in English 1",
+            description_es="Descripción en Español 1",
+        )
+        property_1.tags.add(tag_a)
+        property_1.save()
+
+        short_description_2 = self.create_short_description(
+            "Short description 2", "Short description 2"
+        )
+        property_2 = self.create_property(
+            name="Property test 2",
+            company=company_a,
+            location=location,
+            category=category,
+            seller=seller,
+            short_description=short_description_2,
+            price=200000,
+            meters=200,
+            active=True,
+            description_en="Description in English 2",
+            description_es="Descripción en Español 2",
+        )
+        property_2.tags.add(tag_b)
+        property_2.save()
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{property_1.id}/?details=true",
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Validate related properties
+        self.assertEqual(len(json_data["related_properties"]), 1)
+
+        # Validate related property data
+        related_property = json_data["related_properties"][0]
+        self.assertEqual(related_property["id"], property_2.id)
+        self.assertEqual(related_property["name"], property_2.name)
+        self.assertEqual(
+            related_property["location"], property_2.location.get_name("es")
+        )
+        self.assertEqual(
+            related_property["category"], property_2.category.get_name("es")
+        )
+        self.assertEqual(related_property["seller"], property_2.seller.get_full_name())
+        self.assertEqual(
+            related_property["short_description"],
+            property_2.short_description.description.es,
+        )
+        self.assertEqual(related_property["price"], property_2.get_price_str())
+        self.assertEqual(related_property["meters"], f"{property_2.meters}.00")
+        self.assertEqual(related_property["tags"][0]["id"], tag_b.id)
+        
+        # Validate missing fields
+        self.assertNotIn("description", related_property)
+        self.assertNotIn("created_at", related_property)
+        self.assertNotIn("updated_at", related_property)
+        self.assertNotIn("google_maps_src", related_property)
 
     def test_filter_location(self):
         """Test filter by location"""

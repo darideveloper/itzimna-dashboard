@@ -16,3 +16,5 @@ info.txt
 /media
 .env*
 .vscode
+*/.DS_Store 
+.DS_Store 
