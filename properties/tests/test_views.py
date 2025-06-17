@@ -503,9 +503,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Create a set of properties with the same company
         for id in range(10):
-            company = self.create_company(
-                f"Company test {id}", location=location
-            )
+            company = self.create_company(f"Company test {id}", location=location)
             self.create_property(
                 name=f"Property test {id}",
                 company=company,
@@ -765,7 +763,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Validate related properties (tag_a and company_b)
         self.assertEqual(len(json_data["related_properties"]), 6)
-        
+
         # validate that tag and company are different
         for related_property in json_data["related_properties"]:
             self.assertNotIn(related_property["company"], [first_property.company])
@@ -859,7 +857,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(related_property["price"], property_2.get_price_str())
         self.assertEqual(related_property["meters"], f"{property_2.meters}.00")
         self.assertEqual(related_property["tags"][0]["id"], tag_b.id)
-        
+
         # Validate missing fields
         self.assertNotIn("description", related_property)
         self.assertNotIn("created_at", related_property)
@@ -1032,7 +1030,7 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
 
             # Validate response lenght
             json_data = response.json()
-            self.assertEqual(len(json_data), 22)
+            self.assertEqual(len(json_data), 1)
 
             # Validate each location
             for location_json in json_data:
@@ -1041,7 +1039,86 @@ class LocationViewSetTestCase(TestPropertiesViewsBase):
 
                 self.assertEqual(location_json["name"], getattr(location.name, lang))
 
-    def test_no_data(self):
+    def test_get_only_with_properties(self):
+        """Test get locations only with properties"""
+
+        # Delete all locations
+        models.Location.objects.all().delete()
+
+        # Create location 2 locations
+        location_a = self.create_location(
+            "Test Location with properties", "Test Location with properties"
+        )
+        self.create_location(
+            "Test Location without properties", "Test Location without properties"
+        )
+
+        for index in range(5):
+            self.create_property(
+                name=f"Test Property {index}",
+                location=location_a,
+                company=self.company,
+                category=self.category,
+                seller=self.seller,
+                short_description=self.create_short_description(
+                    f"Short description locations {index}",
+                    f"Short description locations {index}",
+                ),
+            )
+
+        response = self.client.get(
+            self.endpoint,
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response lenght
+        json_data = response.json()
+
+        # Validate location with properties
+        self.assertEqual(len(json_data), 1)
+        self.assertEqual(json_data[0]["id"], location_a.id)
+
+    def test_get_order_by_name(self):
+        """Test get locations ordered by name"""
+
+        # Delete all locations and properties
+        models.Location.objects.all().delete()
+        models.Property.objects.all().delete()
+
+        # Create locations and properties with different names
+        for index in range(5):
+            location = self.create_location(
+                f"Location {index}",
+                f"Location {index}",
+            )
+            self.create_property(
+                name=f"Property {index}",
+                location=location,
+                company=self.company,
+                category=self.category,
+                seller=self.seller,
+            )
+
+        # Make request
+        response = self.client.get(
+            self.endpoint + "?ordering=name",
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response lenght
+        json_data = response.json()
+        self.assertEqual(len(json_data), 5)
+
+        # Validate order
+        locations = models.Location.objects.all().order_by("name__en")
+        for index, location_json in enumerate(json_data):
+            self.assertEqual(location_json["id"], locations[index].id)
+
+    def test_get_no_data(self):
         """Validate response where there is no locations"""
 
         # Delete all locations

@@ -51,7 +51,14 @@ class LocationViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.LocationSerializer
     pagination_class = None
     
-    
+    def get_queryset(self):
+        """ filter locations only with properties """
+        queryset = super().get_queryset()
+        queryset_filtered = queryset.filter(property__active=True).distinct()
+        queryset_sorted = queryset_filtered.order_by('name__en')
+        return queryset_sorted
+
+
 class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
     """ Api viewset for Company model """
     queryset = models.Company.objects.all()
