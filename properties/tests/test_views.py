@@ -491,47 +491,28 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
     def test_get_details_related_properties_company_less_six(self):
         """Validate related properties in details, based in company
         with less than six properties from same company
-        Expect all properties from the same company
+        Expect to provide 6 resuluts from different companies
         """
 
         # Delete all properties
         models.Property.objects.all().delete()
 
-        properties_related_ids = []
-        properties_no_related_ids = []
-
         location = models.Location.objects.all().first()
         category = models.Category.objects.all().first()
         seller = models.Seller.objects.all().first()
 
-        company_a = self.create_company(
-            "Company single property test A", location=location
-        )
-        company_b = self.create_company(
-            "Company single property test B", location=location
-        )
-
         # Create a set of properties with the same company
-        for id in range(2):
-            property = self.create_property(
+        for id in range(10):
+            company = self.create_company(
+                f"Company test {id}", location=location
+            )
+            self.create_property(
                 name=f"Property test {id}",
-                company=company_a,
+                company=company,
                 location=location,
                 category=category,
                 seller=seller,
             )
-            properties_related_ids.append(property.id)
-
-        # Create second set of properties with the same company
-        for id in range(7, 13):
-            property = self.create_property(
-                name=f"Property test {id}",
-                company=company_b,
-                location=location,
-                category=category,
-                seller=seller,
-            )
-            properties_no_related_ids.append(property.id)
 
         # Make request
         first_property = models.Property.objects.first()
@@ -547,11 +528,7 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         json_data = response.json()
 
         # Validate related properties
-        self.assertEqual(len(json_data["related_properties"]), 1)
-        for related_property in json_data["related_properties"]:
-            # Validate id of each property
-            self.assertIn(related_property["id"], properties_related_ids)
-            self.assertNotIn(related_property["id"], properties_no_related_ids)
+        self.assertEqual(len(json_data["related_properties"]), 6)
 
     def test_get_details_related_properties_tag(self):
         """Validate related properties in details, based in tags
@@ -605,7 +582,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Make request
         first_property = models.Property.objects.first()
-        print(first_property.tags.all())
         response = self.client.get(
             f"{self.endpoint}{first_property.id}/?details=true",
             HTTP_ACCEPT_LANGUAGE="es",
@@ -619,7 +595,6 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
 
         # Validate related properties
         self.assertEqual(len(json_data["related_properties"]), 6)
-        print(json_data["related_properties"])
         for related_property in json_data["related_properties"]:
             # Validate id of each property
             self.assertIn(related_property["id"], properties_related_ids)
@@ -719,7 +694,9 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             self.assertNotIn(related_property["id"], properties_no_related_ids)
 
     def test_get_details_related_properties_no_data(self):
-        """Validate related properties in details, with no related properties"""
+        """Validate related properties in details, with no related properties
+        Expect 6 no related properties in response
+        """
 
         # Delete all properties
         models.Property.objects.all().delete()
@@ -787,7 +764,12 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
         json_data = response.json()
 
         # Validate related properties (tag_a and company_b)
-        self.assertEqual(len(json_data["related_properties"]), 0)
+        self.assertEqual(len(json_data["related_properties"]), 6)
+        
+        # validate that tag and company are different
+        for related_property in json_data["related_properties"]:
+            self.assertNotIn(related_property["company"], [first_property.company])
+            self.assertNotIn(related_property["tags"], [first_property.tags.all()])
 
     def test_get_details_related_properties_inner_data(self):
         """Validate specific details of related properties"""

@@ -203,18 +203,29 @@ class PropertyDetailSerializer(PropertyListItemSerializer):
         tags = obj.tags.all()
         company = obj.company
         properties = models.Property.objects.filter(active=True).order_by("-updated_at")
-        related_properties_tags = properties.filter(
-            tags__in=tags
-        ).exclude(id=obj.id).distinct()[:6]
+        related_properties_tags = (
+            properties.filter(tags__in=tags).exclude(id=obj.id).distinct()[:6]
+        )
         related_properties_company = properties.filter(
             company=company, active=True
         ).exclude(id=obj.id)
-        
+
         # get last 6 properties from the same company and with the same tags
         related_properties = (
             related_properties_tags | related_properties_company
         ).distinct()[:6]
-        
+
+        # Complete with random properties if not enough related properties found
+        if related_properties.count() < 6:
+            random_properties = (
+                properties.exclude(
+                    id__in=related_properties.values_list("id", flat=True)
+                )
+                .exclude(id=obj.id)
+                .distinct()[: 6 - related_properties.count()]
+            )
+            related_properties = related_properties | random_properties
+
         # Serialize the related properties
         if not related_properties:
             return []
