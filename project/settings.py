@@ -170,7 +170,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Jazzmin (layout template) settings
 JAZZMIN_SETTINGS = {
     # Text
-    "site_title": "Itzimna Dahsboard",
+    "site_title": "Itzimna Dashboard",
     "site_header": "Admin",
     "site_brand": "Itzimna Dashboard",
     "welcome_sign": "Bienvenido a Itzimna Dashboard",
