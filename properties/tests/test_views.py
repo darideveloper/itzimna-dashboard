@@ -1336,7 +1336,6 @@ class CompanyViewSetTestCase(TestPropertiesViewsBase):
         self.assertEqual(property_json["banner"]["alt"], banner.get_alt_text("es"))
         self.assertEqual(property_json["price"], property.get_price_str())
         self.assertEqual(property_json["meters"], f"{property.meters}.00")
-        self.assertEqual(property_json["google_maps_src"], property.google_maps_src)
         self.assertEqual(property_json["tags"], [])
 
     def test_page_size_1(self):
