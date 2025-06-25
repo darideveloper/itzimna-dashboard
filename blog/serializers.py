@@ -24,9 +24,25 @@ class PostListItemSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(PostListItemSerializer):
     """ Api serializer for Post model with full fields """
     
+    related_post = serializers.SerializerMethodField()
+    
     class Meta:
         model = models.Post
         fields = "__all__"
+        
+    def get_related_post(self, obj) -> dict:
+        """Retrieve related post as dict"""
+        
+        if not obj.related_post:
+            return {
+                "id": None,
+                "title": None,
+            }
+        
+        return {
+            "id": obj.related_post.id,
+            "title": obj.related_post.title,
+        }
         
 
 class PostSearchSerializer(BaseSearchSerializer):

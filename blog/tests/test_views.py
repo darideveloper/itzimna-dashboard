@@ -14,10 +14,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
         """
 
         # Make request
-        response = self.client.get(
-            self.endpoint,
-            {"summary": True}
-        )
+        response = self.client.get(self.endpoint, {"summary": True})
 
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -33,7 +30,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
         results = json_data["results"]
         posts = [self.post_1, self.post_2]
         for post in posts:
-            
+
             # Filter post data
             result = list(filter(lambda result: result["id"] == post.id, results))[0]
 
@@ -43,17 +40,14 @@ class PostViewSetTestCase(TestPostsViewsBase):
             self.assertEqual(result["banner_image_url"], post.banner_image_url)
             self.assertEqual(result["description"], post.description)
             self.assertEqual(result["author"], post.author)
-            
+
     def test_get_details(self):
         """Test authenticated user get request in eng and es
         to render properti main data
         """
 
         # Make request
-        response = self.client.get(
-            self.endpoint,
-            {"details": True}
-        )
+        response = self.client.get(self.endpoint, {"details": True})
 
         # Check response
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -69,7 +63,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
         results = json_data["results"]
         posts = [self.post_1, self.post_2]
         for post in posts:
-            
+
             # Filter post data
             result = list(filter(lambda result: result["id"] == post.id, results))[0]
 
@@ -81,15 +75,13 @@ class PostViewSetTestCase(TestPostsViewsBase):
             self.assertEqual(result["keywords"], post.keywords)
             self.assertEqual(result["author"], post.author)
             self.assertEqual(result["content"], post.content)
-    
+
     def test_get_details_single(self):
-        """Test authenticated user get single post request
-        """
+        """Test authenticated user get single post request"""
 
         # Make request
         response = self.client.get(
-            f"{self.endpoint}{self.post_1.id}/",
-            {"details": True}
+            f"{self.endpoint}{self.post_1.id}/", {"details": True}
         )
 
         # Check response
@@ -106,12 +98,62 @@ class PostViewSetTestCase(TestPostsViewsBase):
         self.assertEqual(json_data["keywords"], self.post_1.keywords)
         self.assertEqual(json_data["author"], self.post_1.author)
         self.assertEqual(json_data["content"], self.post_1.content)
-      
+
+    def test_get_details_related_post(self):
+        """validate related post in post details"""
+
+        # Create second post
+        post_2 = self.create_post(
+            title="Test Post 2",
+            lang="es",
+            description="Test Description 2",
+            content="Test Content 2",
+        )
+
+        # Relate first post to second post
+        self.post_1.related_post = post_2
+        self.post_1.save()
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{self.post_1.id}/",
+            {"details": True},
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Check related post
+        self.assertEqual(json_data["related_post"]["id"], post_2.id)
+        self.assertEqual(json_data["related_post"]["title"], post_2.title)
+        
+    def test_get_details_no_related_post(self):
+        """validate no related post in post details"""
+
+        # Make request
+        response = self.client.get(
+            f"{self.endpoint}{self.post_1.id}/",
+            {"details": True},
+        )
+
+        # Check response
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Validate response extra content
+        json_data = response.json()
+
+        # Check related post
+        self.assertIsNone(json_data["related_post"]["id"])
+        self.assertIsNone(json_data["related_post"]["title"])
+
     def test_get_langs(self):
-        """ Tess get posts in each language """
-        
+        """Tess get posts in each language"""
+
         langs = ["en", "es"]
-        
+
         for lang in langs:
             # Make request
             response = self.client.get(
@@ -139,7 +181,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
             # Check summary post data
             self.assertEqual(result["title"], post.title)
             self.assertEqual(result["lang"], post.lang)
-            
+
     def test_page_size_1(self):
         """Test if the page size is set to 1"""
 
