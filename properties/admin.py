@@ -40,7 +40,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(models.ShortDescription)
 class ShortDescriptionAdmin(admin.ModelAdmin):
-    list_display = ("description",)
+    list_display = ("description", "__str__",)
     search_fields = ("description__es", "description__en")
 
 

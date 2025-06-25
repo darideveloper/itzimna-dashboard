@@ -263,7 +263,7 @@ class ShortDescription(models.Model):
         verbose_name = "Descripción corta"
 
     def __str__(self):
-        return self.description.key
+        return f"es: {self.description.es} en: {self.description.en}"
 
     def get_description(self, language: str) -> str:
         """Retrieve short description in the correct language
