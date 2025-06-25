@@ -58,9 +58,9 @@ a
 
     &:hover, &:focus, &:active
         &:hover, &:focus, &:active
-        background-color: $color-black !important
-        border-color: $color-black !important
-        color: $color-white !important
+            background-color: $color-black !important
+            border-color: $color-black !important
+            color: $color-white !important
 
 .btn-primary, .btn-danger
     background-color: $color-green
@@ -135,7 +135,7 @@ input[type=checkbox], input[type=radio]
         justify-content: center !important
 
     // Actions components
-    .actions 
+    .actions
         button
             margin-left: 0 !important
 
@@ -145,7 +145,7 @@ input[type=checkbox], input[type=radio]
         > span
             margin-left: 0 !important
             display: block !important
-        
+
     // Specific inputs
     input[type="number"]
         width: 80px !important
@@ -153,7 +153,6 @@ input[type=checkbox], input[type=radio]
 // Fix jazzmin sibar overflow 
 .sidebar
     overflow: hidden !important
-
 
 // Margin in results number
 .small.quiet
@@ -182,3 +181,7 @@ input[type=checkbox], input[type=radio]
 
     > span
         margin-left: 10px !important
+
+// Fix related field drop down width 
+.select2.select2-container
+    width: 100% !important

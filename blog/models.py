@@ -30,6 +30,13 @@ class Post(models.Model):
     author = models.CharField(
         max_length=255, verbose_name="Autor", default="Itimna Team"
     )
+    related_post = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Entrada relacionada",
+    )
     content = models.TextField(verbose_name="Contenido")
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de creación"
@@ -43,7 +50,7 @@ class Post(models.Model):
         verbose_name = "Entrada"
 
     def __str__(self):
-        return self.title
+        return f"{self.id} - {self.title} - {self.content[:35]}..."
 
 
 class Image(models.Model):
@@ -53,10 +60,10 @@ class Image(models.Model):
     created_at = models.DateTimeField(
         auto_now_add=True, verbose_name="Fecha de creación"
     )
-    
+
     class Meta:
         verbose_name_plural = "Imágenes"
         verbose_name = "Imagen"
-        
+
     def __str__(self):
         return self.name
