@@ -41,3 +41,20 @@ class BaseModelTranslationsSerializer(serializers.ModelSerializer):
         """
         request = self.context.get("request")
         return request.headers.get("Accept-Language", "es") if request else "es"
+
+
+class BaseSearchSerializer(BaseModelTranslationsSerializer):
+    """Base serializer for search endpoints"""
+    
+    class Meta:
+        # dynamic model from chiild class
+        model = None
+        fields = (
+            "id",
+            "title",
+            "image",
+            "description",
+            "extra",
+            "date",
+            "type",
+        )

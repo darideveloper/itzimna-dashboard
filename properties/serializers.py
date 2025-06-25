@@ -3,7 +3,7 @@ from rest_framework import serializers
 from properties import models
 from utils.media import get_media_url
 from utils.whatsapp import get_whatsapp_link
-from core.serializers import BaseModelTranslationsSerializer
+from core.serializers import BaseModelTranslationsSerializer, BaseSearchSerializer
 
 
 class SellerSerializer(serializers.ModelSerializer):
@@ -253,6 +253,50 @@ class PropertySummarySerializer(BaseModelTranslationsSerializer):
         """
 
         return obj.location.get_name(self.__get_language__())
+
+
+class PropertySearchSerializer(BaseSearchSerializer):
+    """Api serializer for Property model in search endpoint"""
+
+    image = serializers.SerializerMethodField()
+    title = serializers.CharField(source="name")
+    description = serializers.SerializerMethodField()
+    extra = serializers.SerializerMethodField()
+    date = serializers.DateTimeField(source="updated_at")
+    type = serializers.CharField(default="property")
+
+    # overwrite model
+    class Meta(BaseSearchSerializer.Meta):
+        model = models.Property
+
+    def get_image(self, obj) -> str:
+        """Retrieve first property image found
+
+        Returns:
+            str: Image url
+        """
+
+        property_images = models.PropertyImage.objects.filter(property=obj)
+        if property_images.exists():
+            return get_media_url(property_images[0].image)
+        return ""
+
+    def get_description(self, obj) -> str:
+        """Retrieve description in the correct language
+
+        Returns:
+            str: Description in the correct language
+        """
+
+        return obj.get_short_description(self.__get_language__())
+
+    def get_extra(self, obj) -> dict:
+        """Retrieve extra fields (price and meters) as dict"""
+
+        return {
+            "price": obj.get_price_str(),
+            "meters": obj.meters,
+        }
 
 
 class CompanyDetailSerializer(BaseModelTranslationsSerializer):

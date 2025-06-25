@@ -57,6 +57,11 @@ router.register(
     content_views.BestDevelopmentsImageViewSet,
     basename='best-developments-images'
 )
+router.register(
+    r'search',
+    content_views.SearchViewSet,
+    basename='search'
+)
 
 urlpatterns = [
     # Redirects
