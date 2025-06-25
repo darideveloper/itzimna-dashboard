@@ -248,7 +248,7 @@ class SearchViewSetTestCase(
 
             json_data = response.json()
             results = json_data["results"]
-            
+
             # Validate only reqturn post in "es" query
             if lang == "es":
                 self.assertEqual(len(results), 2)
@@ -268,31 +268,175 @@ class SearchViewSetTestCase(
 
             # Validate property lang description
             self.assertEqual(
-                result_properties[0]["description"], property.get_short_description(lang)
+                result_properties[0]["description"],
+                property.get_short_description(lang),
             )
 
     def test_get_filter_query_post_title(self):
         """Validate filtering by query"""
-        
+
         # Update first post title
         first_post = blog_models.Post.objects.order_by("id").first()
         first_post.title = "Test post title example "
         first_post.save()
-        
+
         # Query with query
         response = self.client.get(self.endpoint, {"q": "title"})
         self.assertEqual(response.status_code, 200)
-        
+
         # Validate first post is in results
         json_data = response.json()
         results = json_data["results"]
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], first_post.id)
 
+    def test_get_filter_query_post_description(self):
+        """Validate filtering by query in post description"""
+
+        # Update first post description
+        first_post = blog_models.Post.objects.order_by("id").first()
+        first_post.description = "Test post description example"
+        first_post.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint, {"q": "description example"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first post is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], first_post.id)
+
+    def test_get_filter_query_post_content(self):
+        """Validate filtering by query in post content"""
+
+        # Update first post content
+        first_post = blog_models.Post.objects.order_by("id").first()
+        first_post.content = "Test post content example"
+        first_post.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint, {"q": "post content"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first post is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], first_post.id)
+
+    def test_get_filter_query_property_name(self):
+        """Validate filtering by query in property name"""
+
+        # Update first property name
+        first_property = properties_models.Property.objects.order_by("id").first()
+        first_property.name = "Test property name example"
+        first_property.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint, {"q": "property name"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first property is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], first_property.id)
+
+    def test_get_filter_query_property_short_description(self):
+        """Validate filtering by query in property short description"""
+
+        # Update first property short description
+        first_property = properties_models.Property.objects.order_by("id").first()
+        first_property.short_description = self.create_short_description(
+            name="Test property short description",
+            es="Test property short description example",
+            en="Test property short description example",
+        )
+        first_property.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint, {"q": "property short description"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first property is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], first_property.id)
+
+    def test_get_filter_query_property_description(self):
+        """Validate filtering by query in property description"""
+
+        # Update first property description
+        first_property = properties_models.Property.objects.order_by("id").first()
+        first_property.description_es = "Test property description example"
+        first_property.description_en = "Test property description example"
+        first_property.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint, {"q": "property description example"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first property is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], first_property.id)
+
+    def test_get_filter_property_active(self):
+        """Validate only return active properties"""
+
+        # Update first property active
+        first_property = properties_models.Property.objects.order_by("id").first()
+        first_property.active = False
+        first_property.save()
+
+        # Query with query
+        response = self.client.get(self.endpoint)
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first property is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 7)
+
+        results_properties_ids = [
+            result["id"] for result in results if result["type"] == "property"
+        ]
+        self.assertNotIn(first_property.id, results_properties_ids)
+
     def test_get_filter_query_no_results(self):
         """Validate no results when no posts or properties are found"""
-        pass
+
+        # query with no results
+        response = self.client.get(self.endpoint, {"q": "no results"})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate no results
+        json_data = response.json()
+        self.assertEqual(len(json_data["results"]), 0)
 
     def test_get_filter_query_pagination(self):
-        """Validate pagination filter working"""
-        pass
+        """Validate pagination working when filtering by query"""
+
+        # Create more properties
+        for index in range(4, 8):
+            self.create_property(
+                name=f"property {index}",
+                company=self.company,
+                location=self.location,
+                category=self.category,
+                seller=self.seller,
+                short_description=self.short_description,
+            )
+            self.create_post(title=f"post {index}")
+
+        # query "test"
+        response = self.client.get(self.endpoint, {"q": "test", "page": 2})
+        self.assertEqual(response.status_code, 200)
+
+        # Validate pagination
+        json_data = response.json()
+        self.assertEqual(len(json_data["results"]), 8)

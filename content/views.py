@@ -33,11 +33,12 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             lang=lang,
         )
         properties = properties_models.Property.objects.filter(
-            name__icontains=query,
-            # short_description__description__icontains=query,
-            # description_es__icontains=query,
-            # description_en__icontains=query,
-            # active=True,
+            Q(name__icontains=query) |
+            Q(short_description__description__en__icontains=query) |
+            Q(short_description__description__es__icontains=query) |
+            Q(description_es__icontains=query) |
+            Q(description_en__icontains=query),
+            active=True,
         )
 
         # Serialize them with request context
