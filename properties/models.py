@@ -410,6 +410,14 @@ class Property(models.Model):
             str: Price as a 1,000.00 string
         """
         return f"{self.price:,.2f}"
+    
+    def get_short_description(self, language: str) -> str:
+        """Retrieve short description in the correct language
+        
+        Args:
+            language (str): Language to retrieve the short description in
+        """
+        return self.short_description.get_description(language)
 
 
 class PropertyImage(models.Model):

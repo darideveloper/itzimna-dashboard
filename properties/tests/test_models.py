@@ -89,14 +89,14 @@ class PropertyTestCase(TestPropertiesModelsBase):
         """Validate retrieving the short description of the property in each language"""
 
         self.assertEqual(
-            self.property.short_description.get_description("es"),
+            self.property.get_short_description("es"),
             self.property.short_description.description.es,
         )
         self.assertEqual(
-            self.property.short_description.get_description("en"),
+            self.property.get_short_description("en"),
             self.property.short_description.description.en,
         )
-
+        
     def test_save_generate_slug(self):
         """Validate generating a slug for the property"""
 
