@@ -28,7 +28,7 @@ class Post(models.Model):
         help_text="Separadas por comas",
     )
     author = models.CharField(
-        max_length=255, verbose_name="Autor", default="Itimna Team"
+        max_length=255, verbose_name="Autor", default="Itzimna Team"
     )
     related_post = models.ForeignKey(
         "self",
