@@ -2,9 +2,8 @@ from time import sleep
 
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
-from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import status
-
+from rest_framework.authtoken.models import Token
 from core.test_base.test_models import (
     TestPropertiesModelsBase,
     TestPostsModelBase,
@@ -33,13 +32,18 @@ class TestApiViewsMethods(APITestCase, TestAdminBase):
         """
 
         # Create user and login
-        user = User.objects.create_superuser(
-            username="admin",
+        username = "admin"
+        password = "test pass"
+        User.objects.create_superuser(
+            username=username,
             email="test@gmail.com",
-            password="test pass",
+            password=password,
         )
-        self.token = str(AccessToken.for_user(user))
-        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {self.token}")
+        # get drf auth token
+        self.token = Token.objects.get_or_create(
+            user=User.objects.get(username=username)
+        )[0]
+        self.client.credentials(HTTP_AUTHORIZATION=f"Token {self.token}")
 
         # Save data
         self.endpoint = endpoint
@@ -166,7 +170,7 @@ class TestContentViewsBase(TestApiViewsMethods, TestContentModelBase):
 
         # Update restricted methods
         self.restricted_get = False
-        
+
         # Global data
         self.langs = ["es", "en"]
 

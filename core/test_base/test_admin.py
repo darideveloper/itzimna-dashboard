@@ -60,7 +60,6 @@ class TestAdminBase(TestCase):
         
         # Get response
         response = self.client.get(f"{endpoint}", {"q": search_text})
-        print(f"Testing search bar in {endpoint} with text '{search_text}'")
         
         # Check if the response is valid
         self.assertEqual(response.status_code, 200)
