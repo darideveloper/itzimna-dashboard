@@ -266,6 +266,7 @@ JAZZMIN_SETTINGS = {
         "blog.Image": "fas fa-image",
         
         "content.BestDevelopmentsImage": "fas fa-image",
+        "content.SearchLinks": "fas fa-search",
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",

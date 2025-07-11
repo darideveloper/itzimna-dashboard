@@ -6,3 +6,9 @@ from content import models
 class BestDevelopmentsImageAdmin(admin.ModelAdmin):
     list_display = ["id", "image", "alt_text"]
     search_fields = ["alt_text__es", "alt_text__en"]
+
+
+@admin.register(models.SearchLinks)
+class SearchLinksAdmin(admin.ModelAdmin):
+    list_display = ["id", "title", "description", "url"]
+    search_fields = ["title__es", "title__en", "description__es", "description__en"]

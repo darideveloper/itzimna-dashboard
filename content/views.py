@@ -2,12 +2,13 @@ from django.db.models import Q
 
 from rest_framework import viewsets
 
-from content import serializers
 from content import models as content_models
 from blog import models as blog_models
 from properties import models as properties_models
+from content import serializers
 from blog.serializers import PostSearchSerializer
 from properties.serializers import PropertySearchSerializer
+from content.serializers import SearchLinksSearchSerializer
 
 
 class BestDevelopmentsImageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -40,6 +41,12 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             Q(description_en__icontains=query),
             active=True,
         )
+        # search_links = content_models.SearchLinks.objects.filter(
+        #     Q(title__es__icontains=query) |
+        #     Q(title__en__icontains=query) |
+        #     Q(description__es__icontains=query) |
+        #     Q(description__en__icontains=query),
+        # )
 
         # Serialize them with request context
         post_data = [
@@ -50,9 +57,13 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             PropertySearchSerializer(prop, context={"request": request}).data
             for prop in properties
         ]
+        # search_link_data = [
+        #     SearchLinksSearchSerializer(link, context={"request": request}).data
+        #     for link in search_links
+        # ]
 
         # Merge and optionally sort
-        merged = post_data + property_data
+        merged = post_data + property_data  # + search_link_data
 
         # sort by date field
         merged.sort(key=lambda result: result.get("date"), reverse=True)
