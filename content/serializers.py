@@ -23,28 +23,37 @@ class BestDevelopmentsImageSerializer(BaseModelTranslationsSerializer):
         return obj.get_alt_text(self.__get_language__()) if obj.alt_text else ""
 
 
-class SearchLinksSerializer(BaseModelTranslationsSerializer):
-    """Serializer for SearchLinks model"""
-
-    class Meta:
-        model = models.SearchLinks
-        fields = "__all__"
-        
-        
 class SearchLinksSearchSerializer(BaseSearchSerializer):
-    """ Api serializer for Post model in search endpoint """
-    
+    """Api serializer for Post model in search endpoint"""
+
     # Calculated fields
-    image = serializers.URLField(source="image_url")
     extra = serializers.SerializerMethodField()
     date = serializers.DateTimeField(source="updated_at")
     type = serializers.CharField(default="link")
-    
+    title = serializers.SerializerMethodField()
+    description = serializers.SerializerMethodField()
+
     # overwrite model
     class Meta(BaseSearchSerializer.Meta):
         model = models.SearchLinks
-        
+
+    def get_title(self, obj) -> str:
+        """Retrieve title in the correct language
+
+        Returns:
+            str: Title in the correct language
+        """
+        return obj.get_title(self.__get_language__()) if obj.title else ""
+
+    def get_description(self, obj) -> str:
+        """Retrieve description in the correct language
+
+        Returns:
+            str: Description in the correct language
+        """
+        return obj.get_description(self.__get_language__()) if obj.description else ""
+
     def get_extra(self, obj) -> dict:
         """Retrieve extra fields (author) as dict"""
-        
+
         return {}

@@ -41,12 +41,12 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             Q(description_en__icontains=query),
             active=True,
         )
-        # search_links = content_models.SearchLinks.objects.filter(
-        #     Q(title__es__icontains=query) |
-        #     Q(title__en__icontains=query) |
-        #     Q(description__es__icontains=query) |
-        #     Q(description__en__icontains=query),
-        # )
+        search_links = content_models.SearchLinks.objects.filter(
+            Q(title__es__icontains=query) |
+            Q(title__en__icontains=query) |
+            Q(description__es__icontains=query) |
+            Q(description__en__icontains=query),
+        )
 
         # Serialize them with request context
         post_data = [
@@ -57,13 +57,13 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             PropertySearchSerializer(prop, context={"request": request}).data
             for prop in properties
         ]
-        # search_link_data = [
-        #     SearchLinksSearchSerializer(link, context={"request": request}).data
-        #     for link in search_links
-        # ]
+        search_link_data = [
+            SearchLinksSearchSerializer(link, context={"request": request}).data
+            for link in search_links
+        ]
 
         # Merge and optionally sort
-        merged = post_data + property_data  # + search_link_data
+        merged = post_data + property_data + search_link_data
 
         # sort by date field
         merged.sort(key=lambda result: result.get("date"), reverse=True)

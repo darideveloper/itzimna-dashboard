@@ -344,6 +344,54 @@ class TestPostsModelBase(TestCase):
         )
 
 
+class TestSearchLinksModelBase(TestCase):
+    """Test search links models"""
+    
+    def create_translation(
+        self, key: str, es: str = "Traducción de prueba", en: str = "Test translation"
+    ) -> translations_models.Translation:
+        """Create a translation object
+
+        Args:
+            key (str): Translation key
+            es (str): Spanish translation
+            en (str): English translation
+
+        Returns:
+            Translation: Translation object created
+        """
+
+        return translations_models.Translation.objects.create(
+            key=key,
+            es=es,
+            en=en,
+        )
+
+    def create_search_link(
+        self,
+        title: translations_models.Translation = None,
+        description: translations_models.Translation = None,
+        url: str = "https://www.google.com",
+        image_name: str = "test.webp",
+    ) -> content_models.SearchLinks:
+        """Create a search link object"""
+        
+        if not title:
+            title = self.create_translation(f"search link {image_name}")
+            
+        if not description:
+            description = self.create_translation(f"search link {image_name}")
+
+        image_file = get_test_image(image_name)
+
+        return content_models.SearchLinks.objects.create(
+            title=title,
+            description=description,
+            url=url,
+            image=image_file,
+        )
+
+
 class TestContentModelBase(TestCase):
     """Test content models"""
 

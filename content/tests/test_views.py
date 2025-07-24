@@ -1,7 +1,11 @@
 from content import models
 
 from core.test_base.test_views import TestContentViewsBase
-from core.test_base.test_models import TestPropertiesModelsBase, TestPostsModelBase
+from core.test_base.test_models import (
+    TestPropertiesModelsBase,
+    TestPostsModelBase,
+    TestSearchLinksModelBase,
+)
 
 from blog import models as blog_models
 from properties import models as properties_models
@@ -71,7 +75,10 @@ class BestDevelopmentsImageTestCase(TestContentViewsBase):
 
 
 class SearchViewSetTestCase(
-    TestContentViewsBase, TestPropertiesModelsBase, TestPostsModelBase
+    TestContentViewsBase,
+    TestPropertiesModelsBase,
+    TestPostsModelBase,
+    TestSearchLinksModelBase,
 ):
     """Testing search viewset"""
 
@@ -95,28 +102,43 @@ class SearchViewSetTestCase(
                 short_description=self.short_description,
             )
             self.create_post()
+            self.create_search_link(
+                title=self.create_translation(
+                    key=f"search link {index}",
+                    es=f"enlace de búsqueda {index}",
+                    en=f"search link {index}",
+                ),
+                description=self.create_translation(
+                    key=f"search link description {index}",
+                    es=f"descripción de enlace de búsqueda {index}",
+                    en=f"search link description {index}",
+                ),
+            )
 
-    def test_get_post_property(self):
-        """Validate post and property in results"""
+    def test_get_post_and_property_and_link(self):
+        """Validate post, property and custom link in results"""
 
         random_post_id = blog_models.Post.objects.order_by("?").first().id
         random_property_id = properties_models.Property.objects.order_by("?").first().id
+        random_link_id = models.SearchLinks.objects.order_by("?").first().id
 
-        response = self.client.get(self.endpoint)
+        response = self.client.get(self.endpoint + "?page-size=100")
         self.assertEqual(response.status_code, 200)
 
         json_data = response.json()
         results = json_data["results"]
-        self.assertEqual(len(results), 8)
+        self.assertEqual(len(results), 12)
 
         # validate that ids are in results
         ids_posts = [result["id"] for result in results if result["type"] == "post"]
         ids_properties = [
             result["id"] for result in results if result["type"] == "property"
         ]
+        ids_links = [result["id"] for result in results if result["type"] == "link"]
 
         self.assertIn(random_post_id, ids_posts)
         self.assertIn(random_property_id, ids_properties)
+        self.assertIn(random_link_id, ids_links)
 
     def test_get_post_data(self):
         """Validate post detail data"""
@@ -168,12 +190,36 @@ class SearchViewSetTestCase(
         )
         self.assertEqual(first_result["extra"]["meters"], random_property.meters)
 
+    def test_get_link_data(self):
+        """Validate link detail data"""
+
+        # update link and query
+        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link.save()
+
+        response = self.client.get(self.endpoint, HTTP_ACCEPT_LANGUAGE="es")
+        self.assertEqual(response.status_code, 200)
+
+        json_data = response.json()
+        results = json_data["results"]
+        first_result = results[0]
+
+        # Validate link data
+        self.assertEqual(first_result["id"], random_link.id)
+        self.assertEqual(first_result["title"], random_link.get_title("es"))
+        self.assertIn(
+            random_link.image.url,
+            first_result["image"],
+        )
+        self.assertEqual(first_result["description"], random_link.get_description("es"))
+
     def test_get_no_results(self):
         """Validate no results when no posts or properties are found"""
 
         # Delete post and property
         properties_models.Property.objects.all().delete()
         blog_models.Post.objects.all().delete()
+        models.SearchLinks.objects.all().delete()
 
         response = self.client.get(self.endpoint)
         self.assertEqual(response.status_code, 200)
@@ -211,6 +257,8 @@ class SearchViewSetTestCase(
             )
             self.create_post(title=f"post {index}")
 
+        models.SearchLinks.objects.all().delete()
+
         first_post = blog_models.Post.objects.order_by("id").first()
         first_property = properties_models.Property.objects.order_by("id").first()
 
@@ -230,6 +278,7 @@ class SearchViewSetTestCase(
         # Delete all posts and properties
         blog_models.Post.objects.all().delete()
         properties_models.Property.objects.all().delete()
+        models.SearchLinks.objects.all().delete()
 
         # Create 4 posts and 4 properties
         post = self.create_post(title="post lang")
@@ -388,6 +437,10 @@ class SearchViewSetTestCase(
     def test_get_filter_property_active(self):
         """Validate only return active properties"""
 
+        # Delete post and links
+        blog_models.Post.objects.all().delete()
+        models.SearchLinks.objects.all().delete()
+
         # Update first property active
         first_property = properties_models.Property.objects.order_by("id").first()
         first_property.active = False
@@ -400,12 +453,66 @@ class SearchViewSetTestCase(
         # Validate first property is in results
         json_data = response.json()
         results = json_data["results"]
-        self.assertEqual(len(results), 7)
+        self.assertEqual(len(results), 3)
 
         results_properties_ids = [
             result["id"] for result in results if result["type"] == "property"
         ]
         self.assertNotIn(first_property.id, results_properties_ids)
+
+    def test_get_filter_query_link_title(self):
+        """Validate filtering by query in link title"""
+
+        # update link title
+        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link.title = self.create_translation(
+            key="search link title",
+            es="Test título de enlace de búsqueda",
+            en="Test title of search link",
+        )
+        random_link.save()
+
+        # query with query
+        response = self.client.get(
+            self.endpoint,
+            {"q": "título de enlace de búsqueda"},
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first link is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], random_link.id)
+        self.assertEqual(results[0]["title"], random_link.get_title("es"))
+
+    def test_get_filter_query_link_description(self):
+        """Validate filtering by query in link description"""
+
+        # update link description
+        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link.description = self.create_translation(
+            key="search link description",
+            es="Test descripción nueva de enlace de búsqueda",
+            en="Test new link description",
+        )
+        random_link.save()
+
+        # query with query
+        response = self.client.get(
+            self.endpoint,
+            {"q": "descripción nueva de enlace de búsqueda"},
+            HTTP_ACCEPT_LANGUAGE="es",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Validate first link is in results
+        json_data = response.json()
+        results = json_data["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], random_link.id)
+        self.assertEqual(results[0]["description"], random_link.get_description("es"))
 
     def test_get_filter_query_no_results(self):
         """Validate no results when no posts or properties are found"""

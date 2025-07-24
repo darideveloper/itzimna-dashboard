@@ -41,11 +41,9 @@ class SearchLinks(models.Model):
     """
 
     id = models.AutoField(primary_key=True)
-    title = models.ForeignKey(
+    title = models.OneToOneField(
         translation_models.Translation,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        on_delete=models.CASCADE,
         verbose_name="Título",
         related_name="search_links_title",
     )
@@ -63,7 +61,8 @@ class SearchLinks(models.Model):
         help_text="Url completa (https://www.google.com)",
     )
     created_at = models.DateTimeField(
-        auto_now_add=True, verbose_name="Fecha de creación",
+        auto_now_add=True,
+        verbose_name="Fecha de creación",
     )
     updated_at = models.DateTimeField(
         auto_now=True, verbose_name="Fecha de actualización"
@@ -75,3 +74,25 @@ class SearchLinks(models.Model):
     class Meta:
         verbose_name = "Enlace de Búsqueda"
         verbose_name_plural = "Enlaces de Búsqueda"
+
+    def get_title(self, language: str) -> str:
+        """Retrieve title in the specified language.
+
+        Args:
+            language (str): Language code (e.g., 'en', 'es').
+
+        Returns:
+            str: Title in the specified language.
+        """
+        return getattr(self.title, language) if self.title else ""
+
+    def get_description(self, language: str) -> str:
+        """Retrieve description in the specified language.
+
+        Args:
+            language (str): Language code (e.g., 'en', 'es').
+
+        Returns:
+            str: Description in the specified language.
+        """
+        return getattr(self.description, language) if self.description else ""
