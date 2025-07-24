@@ -41,11 +41,13 @@ class SearchLinks(models.Model):
     """
 
     id = models.AutoField(primary_key=True)
-    title = models.OneToOneField(
+    title = models.ForeignKey(
         translation_models.Translation,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         verbose_name="Título",
         related_name="search_links_title",
+        null=True,
+        blank=True,
     )
     image = models.ImageField(upload_to="search_links_images/", verbose_name="Imagen")
     description = models.ForeignKey(
