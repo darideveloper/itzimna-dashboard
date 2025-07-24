@@ -8,7 +8,7 @@ class BestDevelopmentsImageAdmin(admin.ModelAdmin):
     search_fields = ["alt_text__es", "alt_text__en"]
 
 
-@admin.register(models.SearchLinks)
-class SearchLinksAdmin(admin.ModelAdmin):
+@admin.register(models.SearchLink)
+class SearchLinkAdmin(admin.ModelAdmin):
     list_display = ["id", "title", "description", "url"]
     search_fields = ["title__es", "title__en", "description__es", "description__en"]

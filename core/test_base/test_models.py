@@ -344,7 +344,7 @@ class TestPostsModelBase(TestCase):
         )
 
 
-class TestSearchLinksModelBase(TestCase):
+class TestSearchLinkModelBase(TestCase):
     """Test search links models"""
     
     def create_translation(
@@ -373,7 +373,7 @@ class TestSearchLinksModelBase(TestCase):
         description: translations_models.Translation = None,
         url: str = "https://www.google.com",
         image_name: str = "test.webp",
-    ) -> content_models.SearchLinks:
+    ) -> content_models.SearchLink:
         """Create a search link object"""
         
         if not title:
@@ -384,7 +384,7 @@ class TestSearchLinksModelBase(TestCase):
 
         image_file = get_test_image(image_name)
 
-        return content_models.SearchLinks.objects.create(
+        return content_models.SearchLink.objects.create(
             title=title,
             description=description,
             url=url,

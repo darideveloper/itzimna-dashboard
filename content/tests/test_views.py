@@ -4,7 +4,7 @@ from core.test_base.test_views import TestContentViewsBase
 from core.test_base.test_models import (
     TestPropertiesModelsBase,
     TestPostsModelBase,
-    TestSearchLinksModelBase,
+    TestSearchLinkModelBase,
 )
 
 from blog import models as blog_models
@@ -78,7 +78,7 @@ class SearchViewSetTestCase(
     TestContentViewsBase,
     TestPropertiesModelsBase,
     TestPostsModelBase,
-    TestSearchLinksModelBase,
+    TestSearchLinkModelBase,
 ):
     """Testing search viewset"""
 
@@ -120,7 +120,7 @@ class SearchViewSetTestCase(
 
         random_post_id = blog_models.Post.objects.order_by("?").first().id
         random_property_id = properties_models.Property.objects.order_by("?").first().id
-        random_link_id = models.SearchLinks.objects.order_by("?").first().id
+        random_link_id = models.SearchLink.objects.order_by("?").first().id
 
         response = self.client.get(self.endpoint + "?page-size=100")
         self.assertEqual(response.status_code, 200)
@@ -194,7 +194,7 @@ class SearchViewSetTestCase(
         """Validate link detail data"""
 
         # update link and query
-        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link = models.SearchLink.objects.order_by("?").first()
         random_link.save()
 
         response = self.client.get(self.endpoint, HTTP_ACCEPT_LANGUAGE="es")
@@ -219,7 +219,7 @@ class SearchViewSetTestCase(
         # Delete post and property
         properties_models.Property.objects.all().delete()
         blog_models.Post.objects.all().delete()
-        models.SearchLinks.objects.all().delete()
+        models.SearchLink.objects.all().delete()
 
         response = self.client.get(self.endpoint)
         self.assertEqual(response.status_code, 200)
@@ -257,7 +257,7 @@ class SearchViewSetTestCase(
             )
             self.create_post(title=f"post {index}")
 
-        models.SearchLinks.objects.all().delete()
+        models.SearchLink.objects.all().delete()
 
         first_post = blog_models.Post.objects.order_by("id").first()
         first_property = properties_models.Property.objects.order_by("id").first()
@@ -278,7 +278,7 @@ class SearchViewSetTestCase(
         # Delete all posts and properties
         blog_models.Post.objects.all().delete()
         properties_models.Property.objects.all().delete()
-        models.SearchLinks.objects.all().delete()
+        models.SearchLink.objects.all().delete()
 
         # Create 4 posts and 4 properties
         post = self.create_post(title="post lang")
@@ -439,7 +439,7 @@ class SearchViewSetTestCase(
 
         # Delete post and links
         blog_models.Post.objects.all().delete()
-        models.SearchLinks.objects.all().delete()
+        models.SearchLink.objects.all().delete()
 
         # Update first property active
         first_property = properties_models.Property.objects.order_by("id").first()
@@ -464,7 +464,7 @@ class SearchViewSetTestCase(
         """Validate filtering by query in link title"""
 
         # update link title
-        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link = models.SearchLink.objects.order_by("?").first()
         random_link.title = self.create_translation(
             key="search link title",
             es="Test título de enlace de búsqueda",
@@ -491,7 +491,7 @@ class SearchViewSetTestCase(
         """Validate filtering by query in link description"""
 
         # update link description
-        random_link = models.SearchLinks.objects.order_by("?").first()
+        random_link = models.SearchLink.objects.order_by("?").first()
         random_link.description = self.create_translation(
             key="search link description",
             es="Test descripción nueva de enlace de búsqueda",

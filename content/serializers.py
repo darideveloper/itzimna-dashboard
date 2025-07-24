@@ -23,7 +23,7 @@ class BestDevelopmentsImageSerializer(BaseModelTranslationsSerializer):
         return obj.get_alt_text(self.__get_language__()) if obj.alt_text else ""
 
 
-class SearchLinksSearchSerializer(BaseSearchSerializer):
+class SearchLinkSearchSerializer(BaseSearchSerializer):
     """Api serializer for Post model in search endpoint"""
 
     # Calculated fields
@@ -35,7 +35,7 @@ class SearchLinksSearchSerializer(BaseSearchSerializer):
 
     # overwrite model
     class Meta(BaseSearchSerializer.Meta):
-        model = models.SearchLinks
+        model = models.SearchLink
 
     def get_title(self, obj) -> str:
         """Retrieve title in the correct language

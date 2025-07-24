@@ -35,7 +35,7 @@ class BestDevelopmentsImage(models.Model):
         return getattr(self.alt_text, language) if self.alt_text else ""
 
 
-class SearchLinks(models.Model):
+class SearchLink(models.Model):
     """
     Model to store additional search links for the SearchViewSet
     """

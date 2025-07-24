@@ -8,7 +8,7 @@ from properties import models as properties_models
 from content import serializers
 from blog.serializers import PostSearchSerializer
 from properties.serializers import PropertySearchSerializer
-from content.serializers import SearchLinksSearchSerializer
+from content.serializers import SearchLinkSearchSerializer
 
 
 class BestDevelopmentsImageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -41,7 +41,7 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             Q(description_en__icontains=query),
             active=True,
         )
-        search_links = content_models.SearchLinks.objects.filter(
+        search_links = content_models.SearchLink.objects.filter(
             Q(title__es__icontains=query) |
             Q(title__en__icontains=query) |
             Q(description__es__icontains=query) |
@@ -58,7 +58,7 @@ class SearchViewSet(viewsets.ReadOnlyModelViewSet):
             for prop in properties
         ]
         search_link_data = [
-            SearchLinksSearchSerializer(link, context={"request": request}).data
+            SearchLinkSearchSerializer(link, context={"request": request}).data
             for link in search_links
         ]
 
