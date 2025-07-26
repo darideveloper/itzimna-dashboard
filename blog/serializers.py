@@ -41,7 +41,7 @@ class PostDetailSerializer(PostListItemSerializer):
         
         return {
             "id": obj.related_post.id,
-            "title": obj.related_post.title,
+            "title": obj.related_post.slug,
         }
         
 

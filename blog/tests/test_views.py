@@ -128,7 +128,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Check related post
         self.assertEqual(json_data["related_post"]["id"], post_2.id)
-        self.assertEqual(json_data["related_post"]["title"], post_2.title)
+        self.assertEqual(json_data["related_post"]["title"], post_2.slug)
         
     def test_get_details_no_related_post(self):
         """validate no related post in post details"""
@@ -146,8 +146,8 @@ class PostViewSetTestCase(TestPostsViewsBase):
         json_data = response.json()
 
         # Check related post
-        self.assertIsNone(json_data["related_post"]["id"])
-        self.assertIsNone(json_data["related_post"]["title"])
+        self.assertEqual(json_data["related_post"]["id"], None)
+        self.assertEqual(json_data["related_post"]["title"], None)
 
     def test_get_langs(self):
         """Tess get posts in each language"""

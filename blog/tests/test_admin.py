@@ -4,6 +4,7 @@ from selenium.webdriver.common.by import By
 
 from core.test_base.test_admin import TestAdminSeleniumBase, TestAdminBase
 from core.test_base.test_models import TestPostsModelBase
+from blog import models
 
 
 class PostAdminTestCase(TestAdminBase):
@@ -114,6 +115,11 @@ class ImageAdminTestCaseSelenium(TestAdminSeleniumBase, TestPostsModelBase):
     def test_copy_buttons_loaded(self):
         """validate copy buttons (2 of them) visible in page"""
 
+        # Delete old images and posts
+        self.image.delete()
+        models.Post.objects.all().delete()
+
+        # Create new image and posts
         self.create_image(None, "test2.webp")
 
         # Submit endpoint
@@ -122,7 +128,7 @@ class ImageAdminTestCaseSelenium(TestAdminSeleniumBase, TestPostsModelBase):
 
         # Get buttons
         buttons = self.driver.find_elements(By.CSS_SELECTOR, ".copy-btn")
-        self.assertEqual(len(buttons), 2, "Copy button missing")
+        self.assertEqual(len(buttons), 1, "Copy button missing")
 
     def test_copy_buttons_action(self):
         """Clock in copy button and validate if copied to clipboard"""

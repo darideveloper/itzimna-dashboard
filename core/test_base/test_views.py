@@ -142,12 +142,12 @@ class TestPostsViewsBase(TestApiViewsMethods, TestPostsModelBase):
 
         # Create initial data
         self.post_1 = self.create_post(
-            title="Test post 1",
+            title="Test post 1 default ",
             lang="es",
         )
         sleep(0.1)
         self.post_2 = self.create_post(
-            title="Test post 2",
+            title="Test post 2 default",
             lang="en",
         )
 
