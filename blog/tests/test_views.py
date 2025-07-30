@@ -36,6 +36,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
             # Check summary post data
             self.assertEqual(result["title"], post.title)
+            self.assertEqual(result["slug"], post.slug)
             self.assertEqual(result["lang"], post.lang)
             self.assertEqual(result["banner_image_url"], post.banner_image_url)
             self.assertEqual(result["description"], post.description)
@@ -69,6 +70,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
             # Check summary post data
             self.assertEqual(result["title"], post.title)
+            self.assertEqual(result["slug"], post.slug)
             self.assertEqual(result["lang"], post.lang)
             self.assertEqual(result["banner_image_url"], post.banner_image_url)
             self.assertEqual(result["description"], post.description)
@@ -92,6 +94,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Check summary post data
         self.assertEqual(json_data["title"], self.post_1.title)
+        self.assertEqual(json_data["slug"], self.post_1.slug)
         self.assertEqual(json_data["lang"], self.post_1.lang)
         self.assertEqual(json_data["banner_image_url"], self.post_1.banner_image_url)
         self.assertEqual(json_data["description"], self.post_1.description)
@@ -128,8 +131,9 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Check related post
         self.assertEqual(json_data["related_post"]["id"], post_2.id)
-        self.assertEqual(json_data["related_post"]["title"], post_2.slug)
-        
+        self.assertEqual(json_data["related_post"]["title"], post_2.title)
+        self.assertEqual(json_data["related_post"]["slug"], post_2.slug)
+
     def test_get_details_no_related_post(self):
         """validate no related post in post details"""
 
@@ -148,6 +152,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
         # Check related post
         self.assertEqual(json_data["related_post"]["id"], None)
         self.assertEqual(json_data["related_post"]["title"], None)
+        self.assertEqual(json_data["related_post"]["slug"], None)
 
     def test_get_langs(self):
         """Tess get posts in each language"""
@@ -180,6 +185,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
             # Check summary post data
             self.assertEqual(result["title"], post.title)
+            self.assertEqual(result["slug"], post.slug)
             self.assertEqual(result["lang"], post.lang)
 
     def test_page_size_1(self):

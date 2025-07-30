@@ -12,6 +12,7 @@ class PostListItemSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
+            "slug",
             "lang",
             "banner_image_url",
             "description",
@@ -37,11 +38,13 @@ class PostDetailSerializer(PostListItemSerializer):
             return {
                 "id": None,
                 "title": None,
+                "slug": None,
             }
         
         return {
             "id": obj.related_post.id,
-            "title": obj.related_post.slug,
+            "title": obj.related_post.title,
+            "slug": obj.related_post.slug,
         }
         
 
