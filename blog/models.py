@@ -60,7 +60,16 @@ class Post(models.Model):
 
         # Override slug if not set
         if not self.slug:
-            self.slug = slugify(self.title)
+            slug = slugify(self.title)
+            
+            # Validate slug is unique
+            extra_slug = 1
+            while Post.objects.filter(slug=slug).exists():
+                slug = f"{slug}-{extra_slug}"
+                extra_slug += 1
+            
+            self.slug = slug
+            
         super().save(*args, **kwargs)
 
 
