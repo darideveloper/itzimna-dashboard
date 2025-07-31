@@ -113,10 +113,18 @@ class PropertyAdmin(admin.ModelAdmin):
                     "featured",
                     "short_description",
                     "google_maps_src",
-                    "review_name",
-                    "review_rating",
                     "description_es",
                     "description_en",
+                ),
+            },
+        ),
+        (
+            "Reviews",
+            {
+                "fields": (
+                    "review_name",
+                    "review_rating",
+                    "review_count",
                 ),
             },
         ),

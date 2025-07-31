@@ -374,6 +374,12 @@ class Property(models.Model):
         null=True,
         blank=True,
     )
+    review_count = models.IntegerField(
+        verbose_name="Cantidad de reviews",
+        help_text="Cantidad de reviews que tiene en la propiedad. Ejemplo: 10",
+        null=True,
+        blank=True,
+    )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")
     created_at = models.DateTimeField(
