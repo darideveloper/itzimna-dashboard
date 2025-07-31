@@ -46,6 +46,8 @@ class BaseModelTranslationsSerializer(serializers.ModelSerializer):
 class BaseSearchSerializer(BaseModelTranslationsSerializer):
     """Base serializer for search endpoints"""
     
+    slug = serializers.SerializerMethodField()
+    
     class Meta:
         # dynamic model from chiild class
         model = None
@@ -57,4 +59,13 @@ class BaseSearchSerializer(BaseModelTranslationsSerializer):
             "extra",
             "date",
             "type",
+            "slug",
         )
+        
+    def get_slug(self, obj) -> str:
+        """Retrieve slug in the correct language
+
+        Returns:
+            str: Slug in the correct language
+        """
+        return obj.slug

@@ -160,6 +160,7 @@ class SearchViewSetTestCase(
         self.assertEqual(first_result["image"], random_post.banner_image_url)
         self.assertEqual(first_result["description"], random_post.description)
         self.assertEqual(first_result["extra"]["author"], random_post.author)
+        self.assertEqual(first_result["slug"], random_post.slug)
 
     def test_get_property_data(self):
         """Validate property detail data"""
@@ -189,6 +190,7 @@ class SearchViewSetTestCase(
             first_result["extra"]["price"], random_property.get_price_str()
         )
         self.assertEqual(first_result["extra"]["meters"], random_property.meters)
+        self.assertEqual(first_result["slug"], random_property.slug)
 
     def test_get_link_data(self):
         """Validate link detail data"""
@@ -212,6 +214,7 @@ class SearchViewSetTestCase(
             first_result["image"],
         )
         self.assertEqual(first_result["description"], random_link.get_description("es"))
+        self.assertEqual(first_result["slug"], random_link.url)
 
     def test_get_no_results(self):
         """Validate no results when no posts or properties are found"""

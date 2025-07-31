@@ -57,3 +57,11 @@ class SearchLinkSearchSerializer(BaseSearchSerializer):
         """Retrieve extra fields (author) as dict"""
 
         return {}
+
+    def get_slug(self, obj) -> str:
+        """Retrieve slug in the correct language
+
+        Returns:
+            str: Slug in the correct language
+        """
+        return obj.url
