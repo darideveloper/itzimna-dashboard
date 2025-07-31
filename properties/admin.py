@@ -101,6 +101,7 @@ class PropertyAdmin(admin.ModelAdmin):
             {
                 "fields": (
                     "name",
+                    "slug",
                     "company",
                     "location",
                     "seller",
