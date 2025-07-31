@@ -69,6 +69,10 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     )[0]
                     self.assertEqual(tag_result["name"], getattr(tag_models.name, lang))
 
+                # Validate review data
+                self.assertEqual(result["review_name"], property.review_name)
+                self.assertEqual(result["review_rating"], property.review_rating)
+
     def test_property_banner_with_single_image(self):
         """valdiate banner in response with single image in property"""
 
@@ -332,6 +336,10 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
                     result["seller"]["whatsapp"], get_whatsapp_link(seller.phone)
                 )
 
+                # Validate review data
+                self.assertEqual(result["review_name"], property.review_name)
+                self.assertEqual(result["review_rating"], property.review_rating)
+
     def test_get_details_single(self):
         """Test authenticated user get single property request"""
 
@@ -402,6 +410,10 @@ class PropertyViewSetTestCase(TestPropertiesViewsBase):
             json_data["seller"]["whatsapp"],
             get_whatsapp_link(self.property_1.seller.phone),
         )
+
+        # Validate review data
+        self.assertEqual(json_data["review_name"], self.property_1.review_name)
+        self.assertEqual(json_data["review_rating"], self.property_1.review_rating)
 
     def test_get_details_seller_no_whatsapp(self):
         """valdiate seller's whatsapp in property response with no whatsapp"""

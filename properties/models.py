@@ -361,6 +361,19 @@ class Property(models.Model):
         verbose_name="src de Google Maps",
         help_text="Puedes insertar el iframe completo",
     )
+    review_name = models.CharField(
+        max_length=255,
+        verbose_name="Nombre de review",
+        help_text="Nombre de la persona que hizo el review. Ejemplo: Juan Perez",
+        null=True,
+        blank=True,
+    )
+    review_rating = models.FloatField(
+        verbose_name="Rating de review",
+        help_text="Rating que la persona le dio a la propiedad. Ejemplo: 4.5",
+        null=True,
+        blank=True,
+    )
     description_es = models.TextField(verbose_name="Descripción en español")
     description_en = models.TextField(verbose_name="Descripción en inglés")
     created_at = models.DateTimeField(

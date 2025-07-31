@@ -188,6 +188,8 @@ class TestPropertiesModelsBase(TestCase):
         price: float = 1000,
         meters: float = 100,
         active: bool = True,
+        review_name: str = "Test review name",
+        review_rating: float = 4.5,
         description_es: str = "Descripción de la propiedad",
         description_en: str = "Property description",
         google_maps_src: str = "https://www.google.com/maps/embed?pb=!1m.",
@@ -240,6 +242,8 @@ class TestPropertiesModelsBase(TestCase):
             description_en=description_en,
             short_description=short_description,
             google_maps_src=google_maps_src,
+            review_name=review_name,
+            review_rating=review_rating,
         )
 
     def create_property_image(
