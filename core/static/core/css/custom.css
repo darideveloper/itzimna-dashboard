@@ -63,7 +63,7 @@ a:hover {
   color: #010d04 !important;
   font-weight: bold;
 }
-.btn-info:hover:hover, .btn-info:hover:focus, .btn-info:hover:active, .btn-info:focus:hover, .btn-info:focus:focus, .btn-info:focus:active, .btn-info:active:hover, .btn-info:active:focus, .btn-info:active:active, .btn-secondary:hover:hover, .btn-secondary:hover:focus, .btn-secondary:hover:active, .btn-secondary:focus:hover, .btn-secondary:focus:focus, .btn-secondary:focus:active, .btn-secondary:active:hover, .btn-secondary:active:focus, .btn-secondary:active:active {
+.btn-info:hover, .btn-info:focus, .btn-info:active, .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:active {
   background-color: #010d04 !important;
   border-color: #010d04 !important;
   color: #fefefe !important;
@@ -196,6 +196,12 @@ input[type=checkbox], input[type=radio] {
   width: 100% !important;
 }
 
+@media (min-width: 576px) {
+  .col-sm-7 {
+    flex: 0 0 75%;
+    max-width: 75%;
+  }
+}
 .rendered-media {
   display: block;
   height: auto;

@@ -57,10 +57,9 @@ a
     font-weight: bold
 
     &:hover, &:focus, &:active
-        &:hover, &:focus, &:active
-            background-color: $color-black !important
-            border-color: $color-black !important
-            color: $color-white !important
+        background-color: $color-black !important
+        border-color: $color-black !important
+        color: $color-white !important
 
 .btn-primary, .btn-danger
     background-color: $color-green
@@ -75,6 +74,7 @@ a
 
 .select2-results__option--highlighted
     background-color: rgba($color-green, 0.5) !important
+
 .nav-link.active
     background-color: $color-yellow !important
     color: $color-black !important
@@ -185,3 +185,8 @@ input[type=checkbox], input[type=radio]
 // Fix related field drop down width 
 .select2.select2-container
     width: 100% !important
+
+@media (min-width: 576px)
+    .col-sm-7
+        flex: 0 0 75%
+        max-width: 75%

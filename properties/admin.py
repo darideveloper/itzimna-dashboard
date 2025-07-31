@@ -113,10 +113,8 @@ class PropertyAdmin(admin.ModelAdmin):
                     "featured",
                     "short_description",
                     "google_maps_src",
-                    (
-                        "description_es",
-                        "description_en",
-                    ),
+                    "description_es",
+                    "description_en",
                 ),
             },
         ),
