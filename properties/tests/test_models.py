@@ -1,3 +1,5 @@
+from properties import models
+from translations import models as translations_models
 from core.test_base.test_models import TestPropertiesModelsBase
 
 
@@ -97,13 +99,25 @@ class PropertyTestCase(TestPropertiesModelsBase):
             self.property.short_description.description.en,
         )
         
-    def test_save_generate_slug(self):
-        """Validate generating a slug for the property"""
-
-        self.property.name = "this is á   test name -- **"
-        self.property.save()
-        self.assertEqual(self.property.slug, "this-is-a-test-name")
-
+    def test_save_slug_generation(self):
+        """ Test slug generation """
+        
+        # Delete old data
+        models.Company.objects.all().delete()
+        models.Location.objects.all().delete()
+        models.Category.objects.all().delete()
+        models.Seller.objects.all().delete()
+        models.ShortDescription.objects.all().delete()
+        translations_models.Translation.objects.all().delete()
+        
+        # Create new data
+        post = self.create_property(
+            name="Test Property Slug",
+            price=1000000,
+            meters=100,
+        )
+        self.assertEqual(post.slug, "test-property-slug")
+    
     def test_save_google_maps_no_change_src(self):
         """Validate that the google maps src is not changed if it is already correct"""
 

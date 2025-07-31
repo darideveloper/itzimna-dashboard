@@ -316,7 +316,6 @@ class Property(models.Model):
         unique=True,
         null=True,
         blank=True,
-        editable=False,
     )
     company = models.ForeignKey(
         Company,
@@ -381,8 +380,17 @@ class Property(models.Model):
     def save(self, *args, **kwargs):
         """Custom save method"""
 
-        # Generate slug
-        self.slug = slugify(self.name)
+        # Override slug if not set
+        if not self.slug:
+            slug = slugify(self.name)
+            
+            # Validate slug is unique
+            extra_slug = 1
+            while Property.objects.filter(slug=slug).exists():
+                slug = f"{slug}-{extra_slug}"
+                extra_slug += 1
+            
+            self.slug = slug
 
         # get src from google maps iframe
         if self.google_maps_src:
