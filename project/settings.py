@@ -21,6 +21,8 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 STORAGE_AWS = os.environ.get("STORAGE_AWS") == "True"
 HOST = os.getenv("HOST")
 TEST_HEADLESS = os.getenv("TEST_HEADLESS", "False") == "True"
+EMAILS_LEADS_NOTIFICATIONS = os.getenv("EMAILS_LEADS_NOTIFICATIONS").split(",")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 
 print(f"DEBUG: {DEBUG}")
 print(f"STORAGE_AWS: {STORAGE_AWS}")
