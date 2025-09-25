@@ -83,7 +83,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Make request
         response = self.client.get(
-            f"{self.endpoint}{self.post_1.id}/", {"details": True}
+            f"{self.endpoint}{self.post_1.slug}/", {"details": True}
         )
 
         # Check response
@@ -119,7 +119,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Make request
         response = self.client.get(
-            f"{self.endpoint}{self.post_1.id}/",
+            f"{self.endpoint}{self.post_1.slug}/",
             {"details": True},
         )
 
@@ -139,7 +139,7 @@ class PostViewSetTestCase(TestPostsViewsBase):
 
         # Make request
         response = self.client.get(
-            f"{self.endpoint}{self.post_1.id}/",
+            f"{self.endpoint}{self.post_1.slug}/",
             {"details": True},
         )
 

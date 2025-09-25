@@ -8,6 +8,7 @@ class PostViewSet(viewsets.ReadOnlyModelViewSet):
     """ Api viewset for Post model """
     queryset = models.Post.objects.all()
     serializer_class = serializers.PostListItemSerializer
+    lookup_field = "slug"
 
     def get_queryset(self):
         """ filter with get parameters """
