@@ -321,42 +321,51 @@ if os.getenv("CORS_ALLOWED_ORIGINS") != "None":
 if os.getenv("CSRF_TRUSTED_ORIGINS") != "None":
     CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS").split(",")
 
+# Local development (Windows or local server)
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
 # Storage settings
 if STORAGE_AWS:
-    # aws settings
+    # 1. Credentials
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
     AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
-    AWS_DEFAULT_ACL = None
-    AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
-    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
 
-    # s3 static settings
-    STATIC_LOCATION = "static"
-    STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/"
+    # 2. Regional Settings
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME")
+
+    # 3. Domain/CDN settings
+    AWS_S3_CUSTOM_DOMAIN = os.getenv("AWS_S3_CUSTOM_DOMAIN")
+
+    # 4. Folder isolation
+    AWS_PROJECT_FOLDER = os.getenv("AWS_PROJECT_FOLDER", "")
+
+    # 5. File Locations
+    STATIC_LOCATION = f"{AWS_PROJECT_FOLDER}/static" if AWS_PROJECT_FOLDER else "static"
+    PUBLIC_MEDIA_LOCATION = (
+        f"{AWS_PROJECT_FOLDER}/media" if AWS_PROJECT_FOLDER else "media"
+    )
+    PRIVATE_MEDIA_LOCATION = (
+        f"{AWS_PROJECT_FOLDER}/private" if AWS_PROJECT_FOLDER else "private"
+    )
+
+    # 6. Django-Storages Engine Mapping
     STATICFILES_STORAGE = "project.storage_backends.StaticStorage"
-    # s3 public media settings
-
-    PUBLIC_MEDIA_LOCATION = "media"
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/"
     DEFAULT_FILE_STORAGE = "project.storage_backends.PublicMediaStorage"
-
-    # s3 private media settings
-    PRIVATE_MEDIA_LOCATION = "private"
     PRIVATE_FILE_STORAGE = "project.storage_backends.PrivateMediaStorage"
 
-    # Disable Django's own staticfiles handling in favour of WhiteNoise
-    # for greater consistency between gunicorn and
+    # 7. Optimization & Security
+    AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
+    AWS_DEFAULT_ACL = None
+
     STATIC_ROOT = None
     MEDIA_ROOT = None
-else:
-    # Local development (Windows or local server)
-    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-
-    # Static files (CSS, JavaScript, Images)
-    STATIC_URL = "/static/"
-    MEDIA_URL = "/media/"
 
 
 # Setup drf
