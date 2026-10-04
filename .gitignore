@@ -15,6 +15,7 @@ staticfiles/
 info.txt
 /media
 .env*
+!.env*.example
 .vscode
 */.DS_Store 
 .DS_Store 

@@ -11,17 +11,8 @@ class Command(BaseCommand):
     
     def handle(self, *args, **kwargs):
         commands_data = {
-            "landing": [
-                "Category",
-            ],
-            "store": [
-                "StoreStatus",
-                "Color",
-                "ColorsNum",
-                "Addon",
-                "SaleStatus",
-                "Set",
-                "PromoCodeType",
+            "translations": [
+                "TranslationGroup",
             ],
         }
         
