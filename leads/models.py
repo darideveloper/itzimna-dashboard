@@ -12,11 +12,10 @@ class Lead(models.Model):
     email = models.EmailField(verbose_name="Correo Electrónico")
     phone = models.CharField(max_length=20, verbose_name="Teléfono")
     message = models.CharField(max_length=300, verbose_name="Mensaje")
-    property = models.ForeignKey(
-        property_models.Property,
-        on_delete=models.SET_NULL,
-        null=True,
+    property = models.CharField(
+        max_length=200,
         blank=True,
+        default="",
         verbose_name="Propiedad",
     )
     company = models.ForeignKey(
@@ -57,6 +56,8 @@ class Lead(models.Model):
         # http://127.0.0.1:8000/admin/leads/lead/9/change/
         admin_lead_link = f"{settings.HOST}/admin/leads/lead/"
         message = f"Nuevo Lead: {self.name} - {self.email} - {self.phone}"
+        if self.property:
+            message += f"\nPropiedad: {self.property}"
         message += f'\n\n"{self.message}"'
         message += f"\n\nVer todos los leads: {admin_lead_link}"
         
