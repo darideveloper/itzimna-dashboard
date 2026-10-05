@@ -16,7 +16,7 @@ class LeadAdmin(admin.ModelAdmin):
         "done",
         "updated_at",
     ]
-    search_fields = ["name", "email", "message"]
+    search_fields = ["name", "email", "message", "property"]
     list_per_page = 10
     list_filter = ["property", "company", "created_at", "updated_at"]
     readonly_fields = ["created_at", "updated_at"]

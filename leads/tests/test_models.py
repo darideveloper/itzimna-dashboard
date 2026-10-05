@@ -88,3 +88,17 @@ class LeadTestCase(TestCase):
         
         # validate email was not sent
         self.assertEqual(len(mail.outbox), 0)
+
+    def test_send_notification_email_with_property(self):
+        """Test send notification email includes property when populated"""
+        lead = models.Lead.objects.create(
+            name="John Doe",
+            email="test@gmail.com",
+            phone="+1 (123) 456- 78.90",
+            message="Hello, World!",
+            property="Palta 152",
+        )
+        mail.outbox = []
+        lead.send_notification_email()
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("Propiedad: Palta 152", mail.outbox[-1].body)
