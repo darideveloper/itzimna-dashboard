@@ -356,9 +356,13 @@ if STORAGE_AWS:
     )
 
     # 6. Django-Storages Engine Mapping
-    STATICFILES_STORAGE = "project.storage_backends.StaticStorage"
-    DEFAULT_FILE_STORAGE = "project.storage_backends.PublicMediaStorage"
     PRIVATE_FILE_STORAGE = "project.storage_backends.PrivateMediaStorage"
+
+    # Django 5.1 removed STATICFILES_STORAGE and DEFAULT_FILE_STORAGE.
+    STORAGES = {
+        "default": {"BACKEND": "project.storage_backends.PublicMediaStorage"},
+        "staticfiles": {"BACKEND": "project.storage_backends.StaticStorage"},
+    }
 
     # 7. Optimization & Security
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
@@ -384,7 +388,6 @@ REST_FRAMEWORK = {
 DATE_FORMAT = "d/b/Y"
 TIME_FORMAT = "H:i"
 DATETIME_FORMAT = f"{DATE_FORMAT} {TIME_FORMAT}"
-USE_L10N = False
 
 
 # Setup emails
