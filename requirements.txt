@@ -1,3 +1,4 @@
+certifi==2026.10.19  # retira roots emSign (GHSA-6q48-6c7w-9gw2)
 Django==4.2.7
 psycopg==3.2.3
 psycopg2-binary==2.9.10
